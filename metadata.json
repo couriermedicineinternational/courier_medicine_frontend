@@ -1,0 +1,6 @@
+{
+  "name": "Courier Medicine",
+  "description": "Enterprise-level medical courier service enabling free doorstep pickup from India and international delivery with custom clearance and documentation assistance.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
