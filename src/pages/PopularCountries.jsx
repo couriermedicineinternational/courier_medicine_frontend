@@ -3,19 +3,35 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { Globe, ArrowUpRight, Search, X, ArrowUp } from "lucide-react";
 import { ALL_COUNTRIES } from "../constants";
+import api from "../utils/api";
 
 export default function PopularCountries() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [countries, setCountries] = useState(ALL_COUNTRIES || []);
 
-  // Simulated loading trigger
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 700);
-    return () => clearTimeout(timer);
+    api.get('/countries')
+      .then(res => {
+        if (res.data && res.data.data && res.data.data.length > 0) {
+          const formatted = res.data.data.map(c => {
+            const isSpecial = c.code === "AU-DELHI";
+            return {
+              ...c,
+              isSpecial,
+              customTitle: isSpecial ? "Send Medicine from Delhi to Australia" : undefined
+            };
+          });
+          setCountries(formatted);
+        }
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching countries from API:', err);
+        setIsLoading(false);
+      });
   }, []);
 
   // Monitor scroll for back-to-top button
@@ -33,13 +49,13 @@ export default function PopularCountries() {
 
   // Filter countries list based on search query
   const filteredCountries = useMemo(() => {
-    if (!searchQuery.trim()) return ALL_COUNTRIES;
-    return ALL_COUNTRIES.filter(c => 
+    if (!searchQuery.trim()) return countries;
+    return countries.filter(c => 
       c.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
       c.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (c.customTitle && c.customTitle.toLowerCase().includes(searchQuery.toLowerCase()))
     );
-  }, [searchQuery]);
+  }, [searchQuery, countries]);
 
   const containerVariants = {
     hidden: { opacity: 0 },

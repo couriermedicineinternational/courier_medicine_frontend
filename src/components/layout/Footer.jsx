@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Facebook, Instagram, Youtube, Twitter, MapPin, Mail, Phone, Heart } from "lucide-react";
+import { Facebook, Instagram, Youtube, Twitter, MapPin, Mail, Phone } from "lucide-react";
 import { FOOTER } from "../../constants";
 import Logo from "./Logo";
 
@@ -17,7 +17,10 @@ export default function Footer() {
               <Logo className="scale-90 origin-left" />
             </div>
           </div>
-          <p id="footer-about-text" className="text-sm text-slate-400 font-sans leading-relaxed">
+          <h3 id="footer-about-title" className="text-white font-bold text-base tracking-wider border-b border-slate-800 pb-2">
+            About Company
+          </h3>
+          <p id="footer-about-text" className="text-[14.5px] text-slate-400 font-sans leading-relaxed">
             {FOOTER.about.text}
           </p>
           <div id="footer-socials" className="flex items-center gap-3 pt-2">
@@ -65,7 +68,7 @@ export default function Footer() {
           <h3 id="footer-info-title" className="text-white font-bold text-base tracking-wider border-b border-slate-800 pb-2">
             {FOOTER.informative.title}
           </h3>
-          <ul id="footer-info-list" className="space-y-2.5 text-sm">
+          <ul id="footer-info-list" className="flex flex-wrap gap-x-5 gap-y-3 text-sm md:flex-col md:gap-y-2.5 md:gap-x-0">
             {FOOTER.informative.links.map((link, idx) => (
               <li key={idx}>
                 <Link
@@ -85,7 +88,7 @@ export default function Footer() {
           <h3 id="footer-quick-title" className="text-white font-bold text-base tracking-wider border-b border-slate-800 pb-2">
             {FOOTER.quickLinks.title}
           </h3>
-          <ul id="footer-quick-list" className="space-y-2.5 text-sm">
+          <ul id="footer-quick-list" className="flex flex-wrap gap-x-5 gap-y-3 text-sm md:flex-col md:gap-y-2.5 md:gap-x-0">
             {FOOTER.quickLinks.links.map((link, idx) => (
               <li key={idx}>
                 <Link
@@ -130,17 +133,6 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Bottom copyright bar */}
-      <div id="footer-bottom" className="border-t border-slate-800 bg-slate-950/70 text-slate-500 text-xs py-6">
-        <div id="footer-bottom-inner" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p id="footer-copyright-text">
-            © {FOOTER.copyright}
-          </p>
-          <p id="footer-made-by" className="flex items-center gap-1">
-            Carefully engineered for life-safety with <Heart size={11} className="text-red-500 fill-red-500 animate-pulse" /> Global Delivery Network
-          </p>
-        </div>
-      </div>
     </footer>
   );
 }

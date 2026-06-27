@@ -1,0 +1,102 @@
+S.No  Country               Service Provider  Half kg  1 kg  Estimated Delivery  
+---------------------------------------------------------------------------------
+1     Australia             UPS               3305     5254  4-6 Days            
+2     Australia             FedEx             3602     5254  5-7 Days            
+3     Australia             DHL               3729     5424  6-7 Days            
+4     Australia             ECONOMY POST      3127     5042  10-12 Days          
+5     Bahrain               ARAMEX            3432     5254  4-6 Days            
+6     Bahrain               FedEx             3602     5254  5-7 Days            
+7     Bahrain               DHL               3729     5424  6-8 Days            
+8     Bahrain               ECONOMY POST      3127     5042  10-12 Days          
+9     China                 ECONOMY POST      3127     5042  8-10 Days           
+10    China                 FedEx             3602     5254  10-12 Days          
+11    China                 DHL               3729     5424  10-12 Days          
+12    China                 ARAMEX            3432     5254  12-14 Days          
+13    Canada                UPS               3305     5254  4-6 Days            
+14    Canada                FedEx             3602     5254  5-7 Days            
+15    Canada                DHL               3729     5424  6-7 Days            
+16    Canada                ECONOMY POST      3127     5042  10-12 Days          
+17    Denmark               DHL               3729     5424  3-5 Days            
+18    Denmark               FedEx             3602     5254  4-6 Days            
+19    Denmark               UPS               3305     5254  5-7 Days            
+20    Denmark               ECONOMY POST      3127     5042  10-12 Days          
+21    Germany               ECONOMY POST      3127     5042  10-12 Days          
+22    Germany               DPD               3305     5254  10-14 Days          
+23    Germany               DHL               3729     5424  12-14 Days          
+24    Germany               FedEx             3602     5254  12-16 Days          
+25    Hong Kong             ECONOMY POST      3127     5042  8-10 Days           
+26    Hong Kong             DHL               3729     5424  9-11 Days           
+27    Hong Kong             FedEx             3602     5254  10-12 Days          
+28    Hong Kong             ARAMEX            3432     5254  12-14 Days          
+29    Ireland               DHL               3729     5424  3-5 Days            
+30    Ireland               FedEx             3602     5254  4-6 Days            
+31    Ireland               UPS               3305     5254  5-7 Days            
+32    Ireland               ECONOMY POST      3127     5042  8-10 Days           
+33    Japan                 DHL               3729     5424  5-7 Days            
+34    Japan                 ECONOMY POST      3127     5042  8-10 Days           
+35    Japan                 FedEx             3602     5254  10-12 Days          
+36    Japan                 ARAMEX            3432     5254  12-14 Days          
+37    Jordan                FedEx             3602     5254  5-7 Days            
+38    Jordan                ARAMEX            3432     5254  7-9 Days            
+39    Jordan                DHL               3729     5424  8-10 Days           
+40    Jordan                ECONOMY POST      3127     5042  10-12 Days          
+41    Kuwait                ARAMEX            3432     5254  4-6 Days            
+42    Kuwait                FedEx             3602     5254  5-7 Days            
+43    Kuwait                DHL               3729     5424  6-7 Days            
+44    Kuwait                ECONOMY POST      3127     5042  10-12 Days          
+45    Lebanon               FedEx             3602     5254  4-6 Days            
+46    Lebanon               DHL               3729     5424  6-8 Days            
+47    Lebanon               ARAMEX            3432     5254  8-10 Days           
+48    Lebanon               ECONOMY POST      3127     5042  10-12 Days          
+49    Malaysia              FedEx             3602     5254  4-6 Days            
+50    Malaysia              DHL               3729     5424  6-8 Days            
+51    Malaysia              UPS               3305     5254  7-9 Days            
+52    Malaysia              ECONOMY POST      3127     5042  10-12 Days          
+53    Netherlands           ECONOMY POST      3127     5042  10-12 Days          
+54    Netherlands           DPD               3305     5254  10-14 Days          
+55    Netherlands           DHL               3729     5424  12-14 Days          
+56    Netherlands           FedEx             3602     5254  12-16 Days          
+57    New Zealand           UPS               3305     5254  4-6 Days            
+58    New Zealand           FedEx             3602     5254  5-7 Days            
+59    New Zealand           DHL               3729     5424  6-7 Days            
+60    New Zealand           ECONOMY POST      3127     5042  10-12 Days          
+61    Philippines           DHL               3729     5424  4-6 Days            
+62    Philippines           FedEx             3602     5254  6-8 Days            
+63    Philippines           ARAMEX            3432     5254  10-12 Days          
+64    Philippines           ECONOMY POST      3127     5042  10-12 Days          
+65    Poland                DHL               3729     5424  8-10 Days           
+66    Poland                FedEx             3602     5254  8-10 Days           
+67    Poland                DPD               3305     5254  10-12 Days          
+68    Poland                ECONOMY POST      3127     5042  10-12 Days          
+69    Portugal              DHL               3729     5424  8-10 Days           
+70    Portugal              FedEx             3602     5254  8-10 Days           
+71    Portugal              DPD               3305     5254  10-12 Days          
+72    Portugal              ECONOMY POST      3127     5042  10-12 Days          
+73    Qatar                 DHL               3729     5424  4-6 Days            
+74    Qatar                 FedEx             3602     5254  5-7 Days            
+75    Qatar                 ARAMEX            3432     5254  7-9 Days            
+76    Qatar                 ECONOMY POST      3127     5042  10-12 Days          
+77    Romania               DHL               3729     5424  3-5 Days            
+78    Romania               FedEx             3602     5254  4-6 Days            
+79    Romania               UPS               3305     5254  5-7 Days            
+80    Romania               ECONOMY POST      3127     5042  10-14 Days          
+81    Singapore             FedEx             3602     5254  4-6 Days            
+82    Singapore             UPS               3305     5254  5-7 Days            
+83    Singapore             DHL               3729     5424  6-8 Days            
+84    Singapore             ECONOMY POST      3127     5042  10-12 Days          
+85    Sri Lanka             FedEx             3602     5254  4-6 Days            
+86    Sri Lanka             DHL               3729     5424  5-7 Days            
+87    Sri Lanka             UPS               3305     5254  6-8 Days            
+88    Sri Lanka             ECONOMY POST      3127     5042  10-12 Days          
+89    United Arab Emirates  FedEx             3602     5254  4-6 Days            
+90    United Arab Emirates  ARAMEX            3432     5254  5-7 Days            
+91    United Arab Emirates  DHL               3729     5424  6-8 Days            
+92    United Arab Emirates  UPS               3305     5254  6-10 Days           
+93    United Kingdom        DPD               3305     5254  6-8 Days            
+94    United Kingdom        FedEx             3602     5254  4-6 Days            
+95    United Kingdom        DHL               3729     5424  6-8 Days            
+96    United Kingdom        ECONOMY POST      3127     5042  10-12 Days          
+97    USA                   UPS               3305     5254  4-6 Days            
+98    USA                   FedEx             3602     5254  5-7 Days            
+99    USA                   DHL               3729     5424  6-8 Days            
+100   USA                   ECONOMY POST      3127     5042  10-12 Days       

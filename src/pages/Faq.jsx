@@ -1,26 +1,64 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FAQ_PAGE } from "../constants";
 import { motion, AnimatePresence } from "motion/react";
 import { ChevronDown, HelpCircle, ArrowLeft, Search } from "lucide-react";
+import DOMPurify from "dompurify";
+import api from "../utils/api";
 
 export default function Faq() {
   const [openIdx, setOpenIdx] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [faqs, setFaqs] = useState([]);
 
-  // Simulated loading trigger
+  // FAQ Page Header states
+  const [headerTitle, setHeaderTitle] = useState("Frequently Asked Questions");
+  const [headerImage, setHeaderImage] = useState("https://images.unsplash.com/photo-1557425955-df376b5903c8?auto=format&fit=crop&w=1600&q=80");
+
   useEffect(() => {
     window.scrollTo(0, 0);
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 700);
-    return () => clearTimeout(timer);
+
+    const loadFaqData = async () => {
+      try {
+        // Fetch FAQs list & Page Header settings concurrently
+        const [faqsRes, headerRes] = await Promise.all([
+          api.get('/faqs'),
+          api.get('/faqs/header').catch(err => {
+            console.error("Faq header endpoint failed, using fallback defaults", err);
+            return null;
+          })
+        ]);
+
+        if (faqsRes && faqsRes.data && faqsRes.data.data && faqsRes.data.data.length > 0) {
+          setFaqs(faqsRes.data.data.map(item => ({
+            q: item.question,
+            a: item.answer
+          })));
+        }
+
+        if (headerRes && headerRes.data && headerRes.data.data) {
+          setHeaderTitle(headerRes.data.data.title || "Frequently Asked Questions");
+          setHeaderImage(headerRes.data.data.bgImage || "https://images.unsplash.com/photo-1557425955-df376b5903c8?auto=format&fit=crop&w=1600&q=80");
+        }
+      } catch (err) {
+        console.error('Error fetching FAQs dynamic content:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadFaqData();
   }, []);
 
-  const filteredQuestions = FAQ_PAGE.questions.filter(item => 
-    item.q.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    item.a.toLowerCase().includes(searchQuery.toLowerCase())
+  const stripHtml = (html) => {
+    if (!html) return "";
+    return html.replace(/<[^>]*>/g, "");
+  };
+
+  const filteredQuestions = faqs.filter(item => 
+    stripHtml(item.q).toLowerCase().includes(searchQuery.toLowerCase()) || 
+    stripHtml(item.a).toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const containerVariants = {
@@ -90,31 +128,29 @@ export default function Faq() {
           {/* 1. Page Header Banner */}
           <div 
             id="faq-banner"
-            className="relative h-[220px] md:h-[280px] flex items-center overflow-hidden bg-slate-950"
+            className="relative h-[250px] md:h-[320px] overflow-hidden flex items-end pb-8 md:pb-12 bg-slate-950"
           >
             <motion.div 
-              initial={{ scale: 1.12, opacity: 0.3 }}
-              animate={{ scale: 1, opacity: 0.35 }}
+              initial={{ scale: 1.12, opacity: 0 }}
+              animate={{ scale: 1.0, opacity: 1.0 }}
               transition={{ duration: 1.2, ease: "easeOut" }}
               className="absolute inset-0 bg-cover bg-center"
-              style={{ 
-                backgroundImage: `url('https://images.unsplash.com/photo-1557425955-df376b5903c8?auto=format&fit=crop&w=1600&q=80')` 
-              }}
+              style={{ backgroundImage: `url('${headerImage}')` }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/60 to-transparent z-10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent pointer-events-none" />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-white relative z-20">
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-                className="space-y-1"
+                transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+                className="space-y-2"
               >
                 <Link to="/" className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-white transition-colors mb-2">
                   <ArrowLeft size={14} /> Back to Home
                 </Link>
-                <h1 className="text-3xl md:text-5xl font-black tracking-tight mb-2 font-display uppercase drop-shadow-xs">
-                  {FAQ_PAGE.title}
+                <h1 className="text-3xl md:text-5xl font-black tracking-tight mb-2 font-display uppercase drop-shadow-xs text-white">
+                  {headerTitle}
                 </h1>
                 <nav className="text-xs md:text-sm font-semibold tracking-wide font-sans flex items-center gap-2 text-white/80">
                   <Link to="/" className="hover:text-primary transition-colors text-white/95">Home</Link>
@@ -135,131 +171,87 @@ export default function Faq() {
               className="text-center mb-10"
             >
               <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight mb-4">
-                How Can We Help You?
-              </h2>
-              <p className="max-w-xl mx-auto text-sm text-slate-500 font-medium leading-relaxed mb-8">
                 {FAQ_PAGE.subtitle}
-              </p>
-
-              {/* Search Bar */}
-              <div className="relative max-w-lg mx-auto">
-                <span className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-                  <Search size={20} />
-                </span>
+              </h2>
+              
+              {/* Search Bar Input */}
+              <div className="relative max-w-lg mx-auto shadow-sm rounded-2xl overflow-hidden border border-slate-100 bg-white">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                 <input
                   type="text"
-                  placeholder="Search your question..."
+                  placeholder="Search FAQ questions..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 bg-white text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary shadow-sm transition-all"
+                  className="w-full pl-12 pr-4 py-3.5 focus:outline-none focus:ring-1 focus:ring-primary text-sm font-semibold text-slate-800"
                 />
               </div>
             </motion.div>
 
-            {/* Faq List */}
+            {/* Accordion Questions List */}
             <motion.div 
               variants={containerVariants}
               initial="hidden"
               whileInView="show"
               viewport={{ once: true, amount: 0.1 }}
-              id="faq-accordions" 
               className="space-y-4"
             >
-              {filteredQuestions.length > 0 ? filteredQuestions.map((item, idx) => {
+              {filteredQuestions.map((item, idx) => {
                 const isOpen = openIdx === idx;
+
                 return (
                   <motion.div
-                    variants={itemVariants}
-                    id={`faq-item-${idx}`}
                     key={idx}
-                    className={`border rounded-2xl transition-all duration-300 cursor-pointer overflow-hidden ${
-                      isOpen 
-                        ? "border-secondary/40 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)]" 
-                        : "border-slate-200/70 bg-white hover:border-slate-300 hover:shadow-sm"
-                    }`}
-                    onClick={() => setOpenIdx(isOpen ? null : idx)}
+                    variants={itemVariants}
+                    className="bg-white border border-slate-100 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:border-slate-200/60 overflow-hidden transition-all duration-300"
                   >
-                    {/* Header question click block */}
-                    <div className="p-5 flex items-center justify-between font-sans gap-4">
-                      <div className="flex items-start sm:items-center gap-3">
-                        <span className={`shrink-0 mt-0.5 sm:mt-0 p-1.5 rounded-lg ${isOpen ? "bg-secondary/10 text-secondary" : "bg-slate-100 text-slate-400"}`}>
-                          <HelpCircle size={18} />
-                        </span>
-                        <h4 className={`text-sm md:text-base tracking-wide ${
-                          isOpen ? "text-slate-900 font-extrabold" : "text-slate-700 font-bold"
-                        }`}>
-                          {item.q}
-                        </h4>
+                    {/* Collapsible Header */}
+                    <button
+                      onClick={() => setOpenIdx(isOpen ? -1 : idx)}
+                      className="w-full flex items-center justify-between p-5 text-left transition-colors hover:bg-slate-50/50 cursor-pointer"
+                    >
+                      <div className="text-sm md:text-base font-extrabold text-slate-800 leading-snug pr-4 flex-1">
+                        {item.q}
                       </div>
-                      <motion.div 
-                        animate={{ rotate: isOpen ? 180 : 0 }}
-                        transition={{ duration: 0.2 }}
-                        className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${isOpen ? "bg-secondary text-white" : "bg-slate-100 text-slate-400"}`}
-                      >
-                        <ChevronDown size={16} className={isOpen ? "stroke-[3]" : "stroke-[2]"} />
-                      </motion.div>
-                    </div>
+                      <ChevronDown 
+                        size={18} 
+                        className={`text-slate-450 shrink-0 transition-transform duration-300 ${
+                          isOpen ? "rotate-180 text-primary" : ""
+                        }`}
+                      />
+                    </button>
 
-                    {/* Collapsible details review */}
+                    {/* Collapsible Content */}
                     <AnimatePresence initial={false}>
                       {isOpen && (
                         <motion.div
-                          id={`faq-item-content-${idx}`}
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: "auto", opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.3, ease: "easeInOut" }}
+                          transition={{ duration: 0.25, ease: "easeInOut" }}
                         >
-                          <div className="px-5 sm:pl-[68px] pb-6 text-sm text-slate-600 leading-relaxed font-sans font-medium">
-                            {item.a}
+                          <div className="p-5 md:p-6 bg-slate-50/50 border-t border-slate-100">
+                            <div 
+                              className="text-sm font-medium text-slate-600 leading-relaxed max-w-3xl prose prose-sm prose-slate max-w-none"
+                              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(item.a) }} 
+                            />
                           </div>
                         </motion.div>
                       )}
                     </AnimatePresence>
                   </motion.div>
                 );
-              }) : (
-                <div className="text-center py-12 bg-white border border-slate-100 rounded-3xl">
-                  <HelpCircle size={48} className="mx-auto text-slate-200 mb-3" />
-                  <h3 className="text-base font-black text-slate-800">No questions found</h3>
-                  <p className="text-xs text-slate-500 mt-1">Try adjusting your search criteria</p>
-                </div>
-              )}
+              })}
             </motion.div>
 
-            {/* Support helper CTA */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="mt-16 p-8 bg-gradient-to-br from-slate-50 to-slate-100/50 border border-slate-200/60 rounded-3xl text-center space-y-4 shadow-sm"
-            >
-              <span className="w-12 h-12 bg-white shadow-sm rounded-2xl flex items-center justify-center mx-auto mb-2 text-primary">
-                <HelpCircle size={24} />
-              </span>
-              <h4 className="text-lg md:text-xl font-black text-slate-800 tracking-tight">
-                Still Confused about Regulations?
-              </h4>
-              <p className="text-sm text-slate-500 font-medium max-w-lg mx-auto leading-relaxed">
-                Custom clearance codes and rules change dynamically across different nations. Speak to our active team directly to check medicine eligibility.
-              </p>
-              <div className="flex justify-center flex-col sm:flex-row items-center gap-3 pt-3">
-                <a
-                  href="https://wa.me/918882691919"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-6 py-3 bg-primary hover:bg-primary text-white font-bold text-sm rounded-xl shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all w-full sm:w-auto flex justify-center items-center gap-2"
-                >
-                  💬 WhatsApp Active Support Desk
-                </a>
-                <a
-                  href="mailto:couriermedicines@gmail.com"
-                  className="px-6 py-3 border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-bold text-sm rounded-xl w-full sm:w-auto transition-colors flex justify-center items-center gap-2"
-                >
-                  ✉ Email Compliance team
-                </a>
-              </div>
-            </motion.div>
+            {/* Back Button Link */}
+            <div className="flex justify-center mt-12">
+              <Link
+                to="/"
+                className="inline-flex items-center gap-1.5 px-6 py-3 rounded-xl border border-slate-250 hover:bg-slate-50 text-slate-700 font-bold text-xs shadow-xs hover:scale-[1.01] active:scale-[0.99] transition-all"
+              >
+                <ArrowLeft size={14} /> Back to Home Page
+              </Link>
+            </div>
 
           </div>
         </motion.div>

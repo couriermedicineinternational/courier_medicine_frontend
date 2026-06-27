@@ -1,0 +1,22 @@
+export const COUNTRY_CALLING_CODES = [
+  { code: '+91', name: 'India', iso: 'IN' },
+  { code: '+1', name: 'USA/Canada', iso: 'US' },
+  { code: '+44', name: 'UK', iso: 'GB' },
+  { code: '+61', name: 'Australia', iso: 'AU' },
+  { code: '+971', name: 'UAE', iso: 'AE' },
+  { code: '+65', name: 'Singapore', iso: 'SG' },
+  { code: '+64', name: 'New Zealand', iso: 'NZ' },
+  { code: '+49', name: 'Germany', iso: 'DE' },
+  { code: '+33', name: 'France', iso: 'FR' },
+  { code: '+39', name: 'Italy', iso: 'IT' },
+  { code: '+81', name: 'Japan', iso: 'JP' },
+  { code: '+86', name: 'China', iso: 'CN' },
+  { code: '+27', name: 'South Africa', iso: 'ZA' },
+  { code: '+966', name: 'Saudi Arabia', iso: 'SA' },
+  { code: '+60', name: 'Malaysia', iso: 'MY' },
+  { code: '+62', name: 'Indonesia', iso: 'ID' },
+  { code: '+66', name: 'Thailand', iso: 'TH' },
+  { code: '+34', name: 'Spain', iso: 'ES' },
+  { code: '+55', name: 'Brazil', iso: 'BR' },
+  { code: '+52', name: 'Mexico', iso: 'MX' }
+];

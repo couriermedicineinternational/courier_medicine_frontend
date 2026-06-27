@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import api from "../utils/api";
 
 // Section Components
 import HeroSection from "../components/sections/HeroSection";
@@ -11,20 +12,42 @@ import DocSection from "../components/sections/DocSection";
 import CtaBannerSection from "../components/sections/CtaBannerSection";
 import ProcessSection from "../components/sections/ProcessSection";
 import TestimonialsSection from "../components/sections/TestimonialsSection";
-import TrackModal from "../components/sections/TrackModal";
+
+// Map section database keys to local components
+const componentMap = {
+  "hero": HeroSection,
+  "stats": StatsSection,
+  "what-medicines": WhatMedicinesSection,
+  "easy-courier": EasySection,
+  "flags": FlagsSection,
+  "documents": DocSection,
+  "cta-banner": CtaBannerSection,
+  "process": ProcessSection,
+  "testimonials": TestimonialsSection
+};
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
+  const [sections, setSections] = useState([]);
 
-  // Simulated loading trigger for home page
+  // Fetch dynamic sections configuration from API
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 850);
-    return () => clearTimeout(timer);
+    const loadHomepageData = async () => {
+      try {
+        const res = await api.get("/homepage");
+        if (res.data && res.data.success && res.data.data) {
+          console.log("Homepage sections fetched successfully:", res.data.data);
+          setSections(res.data.data);
+        }
+      } catch (err) {
+        console.error("Failed to load dynamic homepage configuration:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    loadHomepageData();
   }, []);
-
-  // Order Tracking feature has been moved to TrackModal directly if needed, or handles via external means
 
   return (
     <div id="home-page" className="w-full relative overflow-x-hidden bg-white font-sans">
@@ -38,7 +61,7 @@ export default function Home() {
             transition={{ duration: 0.25 }}
             className="w-full space-y-16 pb-20"
           >
-            {/* 1. Hero Banner Shimmer Layout */}
+            {/* Hero Banner Shimmer Layout */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 md:pt-16 pb-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               <div className="lg:col-span-7 space-y-6">
                 <div className="shimmer-bg h-5 w-32 rounded-full" />
@@ -57,7 +80,7 @@ export default function Home() {
               <div className="lg:col-span-5 h-[340px] md:h-[450px] rounded-3xl shimmer-bg shadow-sm" />
             </div>
 
-            {/* 2. Stats Row Shimmer Layout */}
+            {/* Stats Row Shimmer Layout */}
             <div className="bg-slate-50 border-y border-slate-100 py-12">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8">
                 {Array.from({ length: 4 }).map((_, i) => (
@@ -68,38 +91,9 @@ export default function Home() {
                 ))}
               </div>
             </div>
-
-            {/* 3. What Medicines Section Shimmer Layout */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-              <div className="lg:col-span-5 space-y-5">
-                <div className="shimmer-bg h-5 w-36 rounded-full" />
-                <div className="shimmer-bg h-10 w-4/5 rounded-xl" />
-                <div className="shimmer-bg h-10 w-2/3 rounded-xl" />
-                <div className="space-y-2 pt-2">
-                  <div className="shimmer-bg h-4.5 w-full rounded" />
-                  <div className="shimmer-bg h-4.5 w-11/12 rounded" />
-                </div>
-                <div className="flex gap-3 pt-3">
-                  <div className="shimmer-bg h-12 w-44 rounded-xl" />
-                  <div className="shimmer-bg h-12 w-32 rounded-xl" />
-                </div>
-              </div>
-              <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="border border-slate-100 p-5 rounded-[20px] bg-white flex items-start gap-4 shadow-[0_4px_20px_rgba(0,0,0,0.01)]">
-                    <div className="shimmer-bg h-11 w-11 rounded-xl shrink-0" />
-                    <div className="space-y-2 grow pt-1">
-                      <div className="shimmer-bg h-4.5 w-24 rounded" />
-                      <div className="shimmer-bg h-3.5 w-full rounded" />
-                      <div className="shimmer-bg h-3.5 w-4/5 rounded" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
           </motion.div>
         ) : (
-          /* Actual Homepage Content */
+          /* Actual Homepage Content (Loaded from DB with fallback) */
           <motion.div
             key="home-content"
             initial={{ opacity: 0 }}
@@ -107,34 +101,20 @@ export default function Home() {
             transition={{ duration: 0.3 }}
             className="w-full"
           >
-            {/* Hero Section */}
-            <HeroSection />
-
-            {/* 1. Stats Section banner */}
-            <StatsSection />
-
-            {/* 2. What Medicines We Can Courier */}
-            <WhatMedicinesSection />
-
-            {/* 3. We Made Courier Medicines Easy accordion */}
-            <EasySection />
-
-            {/* Global Network / Flags Section */}
-            <FlagsSection />
-
-            {/* 4. Documentation support accordion */}
-            <DocSection />
-
-            {/* CTA Tracking Banner Section */}
-            <CtaBannerSection />
-
-            {/* 5. Our Logistics Process Steps */}
-            <ProcessSection />
-
-            {/* 6. Testimonials Reviews slider carousel */}
-            <TestimonialsSection />
-
-            {/* Removed TrackModal instance from here, as state is gone */}
+            {sections.length > 0 ? (
+              sections.map((section) => {
+                const Component = componentMap[section.key];
+                if (!Component) return null;
+                return (
+                  <Component 
+                    key={section.key} 
+                    title={section.title} 
+                    subtitle={section.subtitle} 
+                    content={section.content} 
+                  />
+                );
+              })
+            ) : null}
           </motion.div>
         )}
       </AnimatePresence>

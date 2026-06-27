@@ -76,7 +76,7 @@ export default function Navbar() {
   return (
     <nav id="navbar-container" ref={navRef} className="bg-white relative z-50">
       <div id="navbar-inner" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div id="navbar-header" className="flex justify-between items-center h-20">
+        <div id="navbar-header" className="flex justify-between items-center min-h-20 py-3">
 
           {/* Logo */}
           <Link id="navbar-logo-link" to="/" onClick={closeAll}
@@ -125,7 +125,7 @@ export default function Navbar() {
                         </Link>
                       ))}
                     </div>
-                    <Link to="/popular-countries.htm"
+                    <Link to="/countries.php"
                       className="flex items-center justify-center gap-1 w-full py-2 text-[11px] font-black text-[#03ADA4] hover:text-[#0052CC] border-t border-slate-100 pt-3 transition-colors">
                       View All Countries →
                     </Link>
@@ -152,7 +152,7 @@ export default function Navbar() {
                         </Link>
                       ))}
                     </div>
-                    <Link to="/popular-locations.htm"
+                    <Link to="/location.php"
                       className="flex items-center justify-center gap-1 w-full py-2 text-[11px] font-black text-[#03ADA4] hover:text-[#0052CC] border-t border-slate-100 pt-3 transition-colors">
                       View All Locations →
                     </Link>
@@ -284,7 +284,7 @@ export default function Navbar() {
                                 </Link>
                               ))}
                               <Link
-                                to="/popular-countries.htm"
+                                to="/countries.php"
                                 onClick={closeAll}
                                 className="flex items-center justify-center gap-1 w-full py-2 text-[11px] font-black text-[#03ADA4] border-t border-slate-200 pt-3 mt-1"
                               >
@@ -323,7 +323,7 @@ export default function Navbar() {
                                 </Link>
                               ))}
                               <Link
-                                to="/popular-locations.htm"
+                                to="/location.php"
                                 onClick={closeAll}
                                 className="col-span-1 flex items-center justify-center gap-1 w-full py-2 text-[11px] font-black text-[#03ADA4] border-t border-slate-200 pt-3 mt-1"
                               >

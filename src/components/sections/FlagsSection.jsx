@@ -41,28 +41,42 @@ const flagsRow2 = [
 function FlagCard({ code, name }) {
   return (
     <div 
-      className="flex-shrink-0 w-[100px] h-[70px] md:w-[128px] md:h-[90px] bg-white rounded-2xl border border-slate-100 shadow-sm flex items-center justify-center mx-1.5 md:mx-2 hover:scale-110 hover:shadow-md transition-transform duration-300"
+      className="flex-shrink-0 w-[110px] h-[95px] md:w-[136px] md:h-[115px] bg-white rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center justify-center p-2 mx-1.5 md:mx-2 hover:scale-110 hover:shadow-md transition-all duration-300"
       title={name}
     >
       <img
         src={`https://flagcdn.com/w160/${code.toLowerCase()}.png`}
         alt={name}
-        className="w-[84px] h-[54px] md:w-[108px] md:h-[70px] object-cover rounded-xl"
+        className="w-full aspect-[1.6] object-cover rounded-lg border border-slate-100/50 shrink-0"
         loading="lazy"
       />
+      <span className="text-[9px] md:text-[10px] font-extrabold text-slate-600 truncate w-full text-center mt-2 uppercase tracking-wide leading-none">
+        {name}
+      </span>
     </div>
   );
 }
 
-export default function FlagsSection() {
+export default function FlagsSection({ title, subtitle }) {
+  const displayTitle = title || (
+    <>
+      Global Courier Network –{" "}
+      <br className="hidden sm:block" />
+      Deliveries to <span className="text-[#0052CC]">220+</span> Countries
+    </>
+  );
+
   return (
     <section id="flags-section" className="py-10 md:py-12 bg-[#F8FAFC] overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 md:mb-8">
         <h2 className="text-2xl md:text-4xl font-black text-slate-800 tracking-tight leading-tight">
-          Global Courier Network –{" "}
-          <br className="hidden sm:block" />
-          Deliveries to <span className="text-[#0052CC]">220+</span> Countries
+          {displayTitle}
         </h2>
+        {subtitle && (
+          <p className="text-slate-600 text-sm md:text-[15px] font-medium mt-2 leading-relaxed max-w-3xl">
+            {subtitle}
+          </p>
+        )}
       </div>
 
       {/* Row 1 — slides LEFT */}

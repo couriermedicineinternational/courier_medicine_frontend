@@ -1,201 +1,10 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import DOMPurify from "dompurify";
+import api from "../utils/api";
 import { BLOG_PAGE } from "../constants";
 import { Calendar, User, Clock, ArrowRight, ArrowLeft, BookOpen, CheckCircle, AlertCircle, Lightbulb, Tag } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-
-// Rich article body content keyed by post id
-const POST_CONTENT = {
-  1: {
-    sections: [
-      {
-        heading: "1. The Doctor's Rx Prescription (Essential)",
-        body: "Every international parcel containing pharmaceuticals must have a computerized, valid Rx prescription copy from a registered medical practitioner. The prescription should state the drug names, active chemical molecules, dosages, and exact quantities. Handwriting notes must be clear and readable."
-      },
-      {
-        heading: "2. Authentic Tax Retail Invoice",
-        body: "Under trade regulations in India, a physical cash memo or GST computerized tax invoice must accompany the parcel. The name of the patient on both the invoice and prescription should strictly correspond. Our packaging team reconciles these two elements before starting customs commercial invoices."
-      },
-      {
-        heading: "3. Temperature & Material Bubble Packaging",
-        body: "Many chronic disease medications require stable container states. We apply secondary insulated bubble wrapping and clean cardboard overlays to protect vials and liquid bottles against cargo flight pressure shifts or bumps."
-      },
-      {
-        heading: "4. Customs Declaration Form",
-        body: "A correctly filled customs declaration form is mandatory for all international pharmaceutical shipments. This includes the HS code for medicines, declared value, and a brief description of the contents. Incorrect declarations can result in seizure or heavy fines."
-      }
-    ],
-    tip: "Always retain copies of all documents submitted. Customs officers may request originals at the destination country's border."
-  },
-  2: {
-    sections: [
-      {
-        heading: "1. Why Liquid Medicines Are High-Risk",
-        body: "Cargo holds in commercial aircraft experience significant pressure changes during ascent and descent. Liquid medicines in glass vials or plastic bottles can expand, crack, or leak if not properly sealed and wrapped — contaminating other items and rendering the medicine unusable."
-      },
-      {
-        heading: "2. Our Secondary Insulated Wrapping System",
-        body: "We use a two-layer protection system: first, individual medicines are wrapped in food-grade bubble wrap. Then, each batch is placed inside a rigid cardboard shell with moisture-absorbing silica gel packets. This double barrier prevents breakage and moisture ingress."
-      },
-      {
-        heading: "3. Leak-Proof Zip Sealing",
-        body: "All liquid vials and syrup bottles are placed inside leak-proof polythene zip pouches before entering the bubble wrap stage. Even if a bottle develops a hairline crack, the sealed pouch prevents spillage."
-      },
-      {
-        heading: "4. Cold-Chain for Temperature-Sensitive Liquids",
-        body: "For insulin and other biologics in liquid form, we use validated cold-chain boxes with gel ice packs that maintain 2°C–8°C for up to 48 hours in transit — sufficient for most international destinations via DHL Express or UPS Express."
-      }
-    ],
-    tip: "Request a cold-chain shipment declaration certificate from us if your destination country's customs require proof of temperature-controlled transport."
-  },
-  3: {
-    sections: [
-      {
-        heading: "1. United States (FDA Regulations)",
-        body: "The US FDA requires that all imported medicines are for personal use only, with a maximum 3-month supply. A valid prescription from a licensed US physician or the prescribing Indian doctor is needed. Schedule H and Schedule X drugs are strictly monitored by CBP (Customs & Border Protection)."
-      },
-      {
-        heading: "2. United Kingdom (MHRA Rules)",
-        body: "The UK's MHRA mandates that all controlled medicines — including many common Indian generics — must be declared at the border. A prescription and a covering letter from the patient's UK GP explaining medical necessity significantly speeds up clearance."
-      },
-      {
-        heading: "3. Germany & Schengen Zone",
-        body: "BfArM (German Federal Institute) allows personal import of up to a 3-month supply with a valid Rx prescription. Medicines must be in their original manufacturer packaging with German or English labels. Homeopathic and Ayurvedic medicines may require additional NOC documents."
-      },
-      {
-        heading: "4. Australia (TGA Rules)",
-        body: "Australia's Therapeutic Goods Administration (TGA) permits personal medicine imports under the personal importation scheme. Quantities must not exceed 3 months' supply, and biosimilars or biologics require advance TGA approval before shipping."
-      }
-    ],
-    tip: "For destinations with strict policies, we recommend shipping 4–5 days before the patient's medicine supply runs out to account for customs processing time."
-  },
-  4: {
-    sections: [
-      {
-        heading: "1. Transit Time Comparison",
-        body: "DHL Express typically delivers within 3–5 business days from India to most destinations. UPS Express Saver averages 4–6 business days. For urgent medicines, DHL's Express Worldwide service (2–3 days to USA and Europe) is the clear winner."
-      },
-      {
-        heading: "2. Cold-Chain Capability",
-        body: "Both carriers offer cold-chain services, but DHL's Medical Express service is purpose-built for pharmaceutical shipments, with validated cool-chain packaging and dedicated healthcare logistics teams. UPS also has a reliable cold-chain network via UPS Temperature True."
-      },
-      {
-        heading: "3. Pricing Differences",
-        body: "For packages under 5kg, DHL is typically 10–15% cheaper than UPS to the USA and Europe. However, for heavier shipments (10–20kg), UPS often offers more competitive volumetric weight pricing. Always get a quote for your specific package dimensions."
-      },
-      {
-        heading: "4. Our Recommendation",
-        body: "Based on our 500+ shipment history, we recommend DHL for time-sensitive medicines and UPS for larger, non-critical bulk orders. Both carriers have excellent customs brokerage in India and most destination countries."
-      }
-    ],
-    tip: "We negotiate bulk rates with both DHL and UPS — so booking through Courier Medicines often gets you a better price than booking directly."
-  },
-  5: {
-    sections: [
-      {
-        heading: "1. US FDA Personal Import Rules",
-        body: "NRIs in the USA can legally receive Indian medicines under the FDA's Personal Importation Policy. The parcel must be for personal use only, with a maximum 90-day supply. The medicine must not be commercially available as a US-approved equivalent at an affordable price."
-      },
-      {
-        heading: "2. UK MHRA Guidelines for NRIs",
-        body: "NRIs in the UK can import Indian medicines for personal use by obtaining a supporting letter from their UK GP. The letter should state the medical necessity and confirm the prescription. Controlled drugs require an individual import license from the Home Office."
-      },
-      {
-        heading: "3. Canada Health Regulations",
-        body: "Health Canada permits personal importation of up to a 90-day supply of prescription medicines. The medicines must be in their original manufacturer packaging. A valid prescription from any licensed medical practitioner (Indian or Canadian) must accompany the shipment."
-      },
-      {
-        heading: "4. How to Place an Order with Us",
-        body: "Simply WhatsApp us your prescription, the list of medicines needed, and your full delivery address. We source the medicines, prepare all customs documents, and ship via DHL or UPS. You receive a tracking number within 24 hours of order confirmation."
-      }
-    ],
-    tip: "NRIs should check whether their health insurance covers imported medicines — some plans in the USA and Canada provide partial reimbursement."
-  },
-  6: {
-    sections: [
-      {
-        heading: "1. Why 2°C–8°C Cold-Chain Matters",
-        body: "Insulin, biologics, and biosimilars are protein-based medicines that denature (become inactive) when exposed to temperatures above 8°C for extended periods. A single flight without cold-chain packaging can render an entire shipment of insulin ineffective — a serious health risk."
-      },
-      {
-        heading: "2. Our Validated Cold Box System",
-        body: "We use validated ISO-certified cold boxes with phase-change gel ice packs. These maintain 2°C–8°C for 48–72 hours — well beyond the transit time of any DHL or UPS Express shipment to any international destination."
-      },
-      {
-        heading: "3. Cold-Chain Documentation",
-        body: "Each cold-chain shipment includes a temperature monitoring log (a small digital data logger inside the box), a cold-chain declaration certificate for customs, and a Certificate of Analysis from the original pharmacy confirming the medicine's storage history."
-      },
-      {
-        heading: "4. Special Packaging for Pens and Cartridges",
-        body: "Insulin pens and cartridges require additional cushioning to prevent the pen mechanism from jamming during transit. We individually wrap each pen in foam sheets and place them in a rigid secondary box before inserting into the cold unit."
-      }
-    ],
-    tip: "Request a temperature log certificate from us upon delivery. This document confirms your insulin maintained the correct temperature throughout transit."
-  },
-  7: {
-    sections: [
-      {
-        heading: "1. Valid Rx Prescription",
-        body: "A computerized prescription from a licensed medical practitioner showing the patient's name, medicine names, dosages, and duration is the most critical document. Without this, customs will hold or seize the package at the destination."
-      },
-      {
-        heading: "2. GST Tax Invoice from Pharmacy",
-        body: "A GST-compliant tax invoice from the pharmacy confirming the purchase is required by Indian customs for export clearance. The patient's name on the invoice must exactly match the prescription and the shipping label."
-      },
-      {
-        heading: "3. Customs Commercial Invoice",
-        body: "Our team prepares a detailed customs commercial invoice listing each medicine, its HS code, declared value, quantity, and country of origin. This document is submitted to both Indian Customs (for export) and destination country customs (for import clearance)."
-      },
-      {
-        heading: "4. Packing List & NOC (if required)",
-        body: "A packing list detailing box dimensions, weight, and contents is required for all shipments. Some countries (UAE, Saudi Arabia, Japan) additionally require a No Objection Certificate (NOC) from the destination country's health authority for certain controlled medicines."
-      }
-    ],
-    tip: "We prepare all customs documents on your behalf at no extra charge. All you need to provide is your prescription and delivery address."
-  },
-  8: {
-    sections: [
-      {
-        heading: "1. UAE Ministry of Health Requirements",
-        body: "The UAE requires all imported medicines to be on the Ministry of Health's approved list. A valid prescription from a UAE-registered doctor is preferred. Medicines containing pseudoephedrine, codeine, or other controlled substances require an advance import permit from the UAE MOH."
-      },
-      {
-        heading: "2. Saudi Arabia SFDA Rules",
-        body: "Saudi Arabia's SFDA (Saudi Food & Drug Authority) limits personal medicine imports to a 3-month supply. Psychotropic or narcotic medicines require a special import authorization. All medicines must have Arabic language inserts or labels."
-      },
-      {
-        heading: "3. Qatar MOPHRegulations",
-        body: "Qatar's Ministry of Public Health allows personal medicine imports with a valid Qatari doctor's prescription. The quantity is limited to 3 months' supply. Medicines must be in original sealed manufacturer packaging with English or Arabic instructions."
-      },
-      {
-        heading: "4. Our Gulf Region Expertise",
-        body: "We have shipped to UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, and Oman over 200 times. Our team is well-versed in Gulf customs requirements and prepares country-specific documentation for each destination, including Arabic declarations where required."
-      }
-    ],
-    tip: "For the UAE and Saudi Arabia, we recommend placing your order 7 days in advance to allow time for any MOH approval requirements."
-  },
-  9: {
-    sections: [
-      {
-        heading: "1. Same Active Compound, Lower Price",
-        body: "Indian generics contain exactly the same active pharmaceutical ingredient (API) as their branded counterparts — the only difference is the manufacturer and price. A branded diabetes medicine costing $200 in the USA can cost as little as ₹300 (under $4) in India."
-      },
-      {
-        heading: "2. WHO-GMP Certified Indian Manufacturers",
-        body: "The majority of Indian generic medicine manufacturers hold WHO-GMP certifications and supply generics to over 200 countries, including the USA (FDA-approved plants), UK (MHRA-approved), and EU. India is the world's largest supplier of generic medicines."
-      },
-      {
-        heading: "3. Chronic Condition Cost Savings",
-        body: "NRI families managing chronic conditions like diabetes, hypertension, thyroid disorders, or cancer often save 80–95% on their annual medicine spend by sourcing from India versus buying in their country of residence. This makes Indian generics particularly valuable for uninsured or underinsured NRIs."
-      },
-      {
-        heading: "4. Ayurvedic & Herbal Medicine Demand",
-        body: "Beyond allopathic generics, Indian Ayurvedic and herbal formulations — Ashwagandha, Triphala, Brahmi, Shilajit — are in extremely high demand among NRIs worldwide who prefer natural alternatives. These are generally easier to import (fewer restrictions) than prescription allopathics."
-      }
-    ],
-    tip: "Always verify the generic medicine's brand name with your Indian doctor before ordering, to ensure exact equivalence with your current prescription."
-  }
-};
 
 // Hero banner image for article detail (like About page style)
 const BLOG_HERO_IMAGE = "https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1600&q=80";
@@ -204,16 +13,48 @@ export default function Blog() {
   const [selectedPost, setSelectedPost] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Simulated shimmer loading (like About page)
+  // Pagination & Data states
+  const [posts, setPosts] = useState([]);
+  const [pagination, setPagination] = useState({ page: 1, limit: 6, total: 0, pages: 1 });
+  const [page, setPage] = useState(1);
+
+  // Fetch blogs on mount & page change
   useEffect(() => {
-    const t = setTimeout(() => setIsLoading(false), 800);
-    return () => clearTimeout(t);
-  }, []);
+    const fetchBlogs = async () => {
+      setIsLoading(true);
+      try {
+        const res = await api.get(`/blogs?page=${page}&limit=6`);
+        if (res.data.success) {
+          setPosts(res.data.data);
+          setPagination(res.data.pagination);
+        }
+      } catch (err) {
+        console.error("Failed to fetch blogs:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchBlogs();
+  }, [page]);
 
   // When opening/closing a post, scroll to top
-  const openPost = (post) => {
+  const openPost = async (post) => {
     setSelectedPost(post);
     window.scrollTo({ top: 0, behavior: "smooth" });
+
+    // Hit the backend by slug to increment the view count
+    try {
+      const res = await api.get(`/blogs/${post.slug}`);
+      if (res.data && res.data.success) {
+        const updatedPost = res.data.data;
+        // Update the detail view with fresh data (including new views)
+        setSelectedPost(updatedPost);
+        // Update the post in the main list so the count updates there too
+        setPosts(prevPosts => prevPosts.map(p => p._id === updatedPost._id ? updatedPost : p));
+      }
+    } catch (err) {
+      console.error("Failed to increment blog views:", err);
+    }
   };
   const closePost = () => {
     setSelectedPost(null);
@@ -344,7 +185,7 @@ export default function Blog() {
                         className="flex flex-wrap items-center gap-3 text-xs text-slate-400 font-semibold mb-6 pb-5 border-b border-slate-100 font-mono"
                       >
                         <span className="flex items-center gap-1.5 bg-slate-50 border border-slate-100 rounded-lg px-3 py-1.5">
-                          <Calendar size={12} className="text-[#0052CC]" /> {selectedPost.date}
+                          <Calendar size={12} className="text-[#0052CC]" /> {selectedPost.date || new Date(selectedPost.publishedAt || selectedPost.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
                         </span>
                         <span className="flex items-center gap-1.5 bg-slate-50 border border-slate-100 rounded-lg px-3 py-1.5">
                           <Clock size={12} className="text-[#03ADA4]" /> {selectedPost.readTime}
@@ -368,17 +209,26 @@ export default function Blog() {
                       </motion.p>
 
                       {/* Intro paragraph */}
-                      <motion.p
+                      <motion.div
                         initial={{ opacity: 0, y: 12 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.45, delay: 0.35 }}
-                        className="text-sm md:text-base text-slate-600 leading-relaxed font-medium mb-10"
-                      >
-                        Shipping medicine across international boundaries is governed by complex regulations because medicines fall under safety, health, and custom import-export checks. To make sure NRI families can receive their critical prescriptions easily, a structured procedural path must be followed.
-                      </motion.p>
+                        className="text-sm md:text-base text-slate-600 leading-relaxed font-medium mb-10 prose prose-slate max-w-none"
+                        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(selectedPost.introParagraph || "Shipping medicine across international boundaries is governed by complex regulations because medicines fall under safety, health, and custom import-export checks. To make sure NRI families can receive their critical prescriptions easily, a structured procedural path must be followed.") }}
+                      />
+
+                      {/* Full Content Body (Main Article Text) */}
+                      {selectedPost.content && selectedPost.content !== selectedPost.excerpt && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 15 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="prose prose-sm max-w-none text-sm text-slate-600 leading-relaxed font-medium space-y-4 font-sans mb-8 whitespace-pre-line"
+                          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(selectedPost.content) }}
+                        />
+                      )}
 
                       {/* Article Sections */}
-                      {(POST_CONTENT[selectedPost.id]?.sections || []).map((section, i) => (
+                      {(selectedPost.sections || []).map((section, i) => (
                         <motion.div
                           key={i}
                           initial={{ opacity: 0, y: 20 }}
@@ -393,14 +243,15 @@ export default function Blog() {
                             </span>
                             {section.heading.replace(/^\d+\.\s*/, "")}
                           </h3>
-                          <p className="text-sm text-slate-600 leading-relaxed font-medium">
-                            {section.body}
-                          </p>
+                          <div 
+                            className="text-sm text-slate-600 leading-relaxed font-medium whitespace-pre-line prose prose-sm max-w-none"
+                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(section.body) }}
+                          />
                         </motion.div>
                       ))}
 
                       {/* Pro Tip */}
-                      {POST_CONTENT[selectedPost.id]?.tip && (
+                      {selectedPost.tip && (
                         <motion.div
                           initial={{ opacity: 0, y: 16 }}
                           whileInView={{ opacity: 1, y: 0 }}
@@ -411,10 +262,37 @@ export default function Blog() {
                           <Lightbulb size={18} className="text-[#03ADA4] flex-shrink-0 mt-0.5" />
                           <div>
                             <p className="text-xs font-black text-[#03ADA4] uppercase tracking-wider mb-1">Pro Tip</p>
-                            <p className="text-sm text-slate-600 leading-relaxed font-medium">{POST_CONTENT[selectedPost.id].tip}</p>
+                            <p className="text-sm text-slate-600 leading-relaxed font-medium">{selectedPost.tip}</p>
                           </div>
                         </motion.div>
                       )}
+
+                      {/* Next / Previous Article Navigation */}
+                      <div className="flex items-center justify-between mt-10 pt-8 border-t border-slate-100 gap-4">
+                        {posts.findIndex(p => p._id === selectedPost._id) > 0 ? (
+                          <motion.button
+                            onClick={() => openPost(posts[posts.findIndex(p => p._id === selectedPost._id) - 1])}
+                            whileHover={{ scale: 1.02, x: -3 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="flex-1 flex flex-col items-start p-4 bg-slate-50 border border-slate-100 rounded-2xl hover:bg-white hover:shadow-md transition-all group text-left cursor-pointer"
+                          >
+                            <span className="text-[10px] uppercase font-black tracking-widest text-[#0052CC] mb-1 flex items-center gap-1.5"><ArrowLeft size={10} className="group-hover:-translate-x-1 transition-transform" /> Previous Article</span>
+                            <span className="text-sm font-bold text-slate-800 line-clamp-1">{posts[posts.findIndex(p => p._id === selectedPost._id) - 1]?.title}</span>
+                          </motion.button>
+                        ) : <div className="flex-1"></div>}
+
+                        {posts.findIndex(p => p._id === selectedPost._id) < posts.length - 1 ? (
+                          <motion.button
+                            onClick={() => openPost(posts[posts.findIndex(p => p._id === selectedPost._id) + 1])}
+                            whileHover={{ scale: 1.02, x: 3 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="flex-1 flex flex-col items-end p-4 bg-slate-50 border border-slate-100 rounded-2xl hover:bg-white hover:shadow-md transition-all group text-right cursor-pointer"
+                          >
+                            <span className="text-[10px] uppercase font-black tracking-widest text-[#03ADA4] mb-1 flex items-center gap-1.5">Next Article <ArrowRight size={10} className="group-hover:translate-x-1 transition-transform" /></span>
+                            <span className="text-sm font-bold text-slate-800 line-clamp-1">{posts[posts.findIndex(p => p._id === selectedPost._id) + 1]?.title}</span>
+                          </motion.button>
+                        ) : <div className="flex-1"></div>}
+                      </div>
 
                       {/* Bottom CTA */}
                       <motion.div
@@ -464,7 +342,7 @@ export default function Blog() {
                         <div className="space-y-3">
                           <div className="flex items-center justify-between text-xs">
                             <span className="text-slate-500 font-semibold flex items-center gap-1.5"><Calendar size={12} /> Published</span>
-                            <span className="font-black text-slate-700">{selectedPost.date}</span>
+                            <span className="font-black text-slate-700">{selectedPost.date || new Date(selectedPost.publishedAt || selectedPost.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                           </div>
                           <div className="flex items-center justify-between text-xs">
                             <span className="text-slate-500 font-semibold flex items-center gap-1.5"><Clock size={12} /> Read Time</span>
@@ -476,7 +354,7 @@ export default function Blog() {
                           </div>
                           <div className="flex items-center justify-between text-xs">
                             <span className="text-slate-500 font-semibold flex items-center gap-1.5"><BookOpen size={12} /> Sections</span>
-                            <span className="font-black text-slate-700">{(POST_CONTENT[selectedPost.id]?.sections || []).length}</span>
+                            <span className="font-black text-slate-700">{(selectedPost.sections || []).length}</span>
                           </div>
                         </div>
                       </motion.div>
@@ -492,12 +370,12 @@ export default function Blog() {
                           <BookOpen size={13} /> More Articles
                         </p>
                         <div className="space-y-4">
-                          {BLOG_PAGE.posts
-                            .filter(p => p.id !== selectedPost.id)
+                          {posts
+                            .filter(p => p._id !== selectedPost._id)
                             .slice(0, 4)
                             .map((p) => (
                               <motion.button
-                                key={p.id}
+                                key={p._id}
                                 onClick={() => openPost(p)}
                                 whileHover={{ x: 4, transition: { type: "spring", stiffness: 250, damping: 18 } }}
                                 className="w-full text-left flex gap-3 group cursor-pointer"
@@ -606,10 +484,10 @@ export default function Blog() {
 
                   {/* Cards Grid */}
                   <div id="blogs-grid" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
-                    {BLOG_PAGE.posts.map((post, idx) => (
+                    {posts.map((post, idx) => (
                       <motion.div
-                        id={`blog-box-${post.id}`}
-                        key={post.id}
+                        id={`blog-box-${post._id}`}
+                        key={post._id}
                         initial={{ opacity: 0, y: 40 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, amount: 0.12 }}
@@ -639,7 +517,7 @@ export default function Blog() {
                           {/* Date & author */}
                           <div className="flex items-center gap-2 text-[10px] text-slate-400 font-semibold mb-3 font-mono">
                             <Calendar size={11} className="text-[#03ADA4]" />
-                            <span>{post.date}</span>
+                            <span>{post.date || new Date(post.publishedAt || post.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                             <span className="text-slate-200">•</span>
                             <User size={11} className="text-slate-400" />
                             <span className="truncate">{post.author}</span>
@@ -675,24 +553,47 @@ export default function Blog() {
                     ))}
                   </div>
 
-                  {/* Bottom CTA */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 24 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.3 }}
-                    transition={{ duration: 0.5, delay: 0.1 }}
-                    className="mt-16 text-center"
-                  >
-                    <p className="text-xs text-slate-400 font-semibold mb-4">Have a medicine shipping question not covered here?</p>
-                    <a
-                      href="https://wa.me/918882691919"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 bg-gradient-to-r from-[#0052CC] to-[#03ADA4] text-white font-black text-sm px-8 py-3.5 rounded-2xl hover:shadow-lg hover:scale-105 transition-all duration-200"
+                  {/* Pagination Controls */}
+                  {pagination.pages > 1 && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: 0.2 }}
+                      className="mt-14 flex items-center justify-center gap-4"
                     >
-                      💬 Ask Our Experts on WhatsApp
-                    </a>
-                  </motion.div>
+                      <motion.button
+                        whileHover={page > 1 ? { scale: 1.05 } : {}}
+                        whileTap={page > 1 ? { scale: 0.95 } : {}}
+                        onClick={() => setPage(p => Math.max(1, p - 1))}
+                        disabled={page === 1}
+                        className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-sm transition-all ${
+                          page === 1 
+                            ? 'bg-slate-100 text-slate-400 cursor-not-allowed' 
+                            : 'bg-white border border-slate-200 text-slate-700 hover:border-[#0052CC] hover:text-[#0052CC] shadow-sm hover:shadow'
+                        }`}
+                      >
+                        <ArrowLeft size={16} /> Previous
+                      </motion.button>
+                      
+                      <div className="flex items-center gap-2 text-sm font-black text-slate-500">
+                        Page <span className="w-8 h-8 flex items-center justify-center bg-[#0052CC] text-white rounded-full mx-1">{page}</span> of {pagination.pages}
+                      </div>
+
+                      <motion.button
+                        whileHover={page < pagination.pages ? { scale: 1.05 } : {}}
+                        whileTap={page < pagination.pages ? { scale: 0.95 } : {}}
+                        onClick={() => setPage(p => Math.min(pagination.pages, p + 1))}
+                        disabled={page === pagination.pages}
+                        className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-sm transition-all ${
+                          page === pagination.pages 
+                            ? 'bg-slate-100 text-slate-400 cursor-not-allowed' 
+                            : 'bg-[#03ADA4] text-white hover:bg-[#028b84] shadow hover:shadow-md'
+                        }`}
+                      >
+                        Next <ArrowRight size={16} />
+                      </motion.button>
+                    </motion.div>
+                  )}
 
                 </div>
               </motion.div>

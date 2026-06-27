@@ -1,4 +1,4 @@
-import { Phone, MessageCircle, Mail, Clock, Truck } from "lucide-react";
+import { Phone, MessageCircle, Mail, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { TOP_BAR } from "../../constants";
 
@@ -44,16 +44,6 @@ export default function Topbar() {
 
         {/* Right Side: Email & Hours */}
         <div id="topbar-right" className="flex items-center gap-3">
-          {/* Track Shipment Button */}
-          <Link
-            id="topbar-track-link"
-            to="/track.htm"
-            className="flex items-center h-8 bg-[#03ADA4] hover:bg-[#03ADA4]/95 text-white rounded-full px-3 py-1 transition-all duration-300 ease-out shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-[0.98] cursor-pointer font-bold gap-1.5 shrink-0"
-          >
-            <Truck id="topbar-track-icon" size={13} className="text-white shrink-0" />
-            <span id="topbar-track-text">Track Shipment</span>
-          </Link>
-
           {/* Email */}
           <a
             id="topbar-email-link"

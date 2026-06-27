@@ -8,9 +8,10 @@ import {
   Archive, 
   Send 
 } from "lucide-react";
+import * as Lucide from "lucide-react";
 import { PROCESS_STEPS } from "../../constants";
 
-export default function ProcessSection() {
+export default function ProcessSection({ title, subtitle, content }) {
   const stepIcons = [
     Calendar,
     UserCheck,
@@ -21,13 +22,63 @@ export default function ProcessSection() {
   ];
 
   const stepImages = [
-    "/process_booking.png",
-    "/process_pickup.png",
-    "/process_warehouse.png",
-    "/process_documentation.png",
-    "/process_packing.png",
-    "/process_dispatch.png"
+    "/process_booking_new.png",
+    "/process_pickup_new.png",
+    "/process_warehouse_new.png",
+    "/process_docs_new.png",
+    "/process_packing_new.png",
+    "/process_dispatch_new.png"
   ];
+
+  const renderTitle = () => {
+    if (!title) {
+      return (
+        <>
+          Understand Our <span className="text-secondary">PROCESS</span> In Steps
+        </>
+      );
+    }
+    const words = title.split(" ");
+    if (words.length > 1) {
+      const lastWord = words.pop();
+      return (
+        <>
+          {words.join(" ")} <span className="text-secondary">{lastWord}</span>
+        </>
+      );
+    }
+    return title;
+  };
+
+  const stepsToRender = content?.steps
+    ? content.steps.map((dbStep, index) => {
+        const configIcon = stepIcons[index % stepIcons.length] || Calendar;
+        let Icon = configIcon;
+        if (dbStep.icon && Lucide[dbStep.icon]) {
+          Icon = Lucide[dbStep.icon];
+        }
+        
+        let displayTitle = dbStep.title || "";
+        const match = displayTitle.match(/^\d+\.\s*(.*)/);
+        if (match) {
+          displayTitle = match[1];
+        }
+
+        return {
+          step: dbStep.step || `STEP ${index + 1}`,
+          title: displayTitle,
+          description: dbStep.description,
+          imageUrl: dbStep.imageUrl || dbStep.img || stepImages[index % stepImages.length],
+          icon: Icon
+        };
+      })
+    : PROCESS_STEPS.steps.map((item, idx) => ({
+        step: item.step,
+        title: item.title,
+        description: item.description,
+        imageUrl: stepImages[idx % stepImages.length],
+        icon: stepIcons[idx % stepIcons.length] || Calendar
+      }));
 
   return (
     <section id="process-section" className="py-16 bg-white border-b border-slate-100">
@@ -35,18 +86,23 @@ export default function ProcessSection() {
         
         <div className="text-center mb-12">
           <h2 id="process-heading" className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight uppercase leading-none">
-            Understand Our <span className="text-secondary">PROCESS</span> In Steps
+            {renderTitle()}
           </h2>
-          <div className="w-16 h-1 bg-secondary mx-auto rounded-full mt-2" />
+          {subtitle && (
+            <p className="text-slate-500 text-sm font-medium mt-3 max-w-2xl mx-auto">
+              {subtitle}
+            </p>
+          )}
+          <div className="w-16 h-1 bg-secondary mx-auto rounded-full mt-3" />
         </div>
 
         <div 
           id="process-grid" 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 md:gap-8"
         >
-          {PROCESS_STEPS.steps.map((item, idx) => {
-            const IconComp = stepIcons[idx] || Calendar;
-            const imgPath = stepImages[idx] || "/process_booking.png";
+          {stepsToRender.map((item, idx) => {
+            const IconComp = item.icon;
+            const imgPath = item.imageUrl;
 
             return (
               <motion.div 
@@ -61,10 +117,9 @@ export default function ProcessSection() {
                     opacity: 1, 
                     x: 0,
                     transition: {
-                      type: "spring",
-                      stiffness: 70,
-                      damping: 14,
-                      mass: 0.8,
+                      type: "tween",
+                      ease: "easeOut",
+                      duration: 0.65,
                       delay: (idx % 3) * 0.15
                     }
                   }
@@ -74,37 +129,37 @@ export default function ProcessSection() {
                   scale: 1.015,
                   boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.04), 0 10px 10px -5px rgba(0, 0, 0, 0.01)"
                 }}
-                className="bg-[#F8FBFD] border border-slate-100/80 rounded-[24px] p-6 flex flex-col justify-between relative group transition-colors duration-300 hover:bg-white hover:border-secondary/20 cursor-default min-h-[380px]"
+                className="bg-[#F8FBFD] border border-slate-100/80 rounded-[24px] p-3 sm:p-6 flex flex-col justify-between relative group transition-colors duration-300 hover:bg-white hover:border-secondary/20 cursor-default h-[250px] xs:h-[280px] sm:h-[350px] md:h-auto md:min-h-[380px]"
               >
                 <div>
                   {/* Top Row: Icon Container on Left, Step Indicator on Right */}
-                  <div className="flex justify-between items-center w-full mb-4">
-                    <div className="w-12 h-12 bg-secondary rounded-xl flex items-center justify-center text-white shadow-xs group-hover:scale-105 transition-transform duration-300">
-                      <IconComp size={20} className="stroke-[2.5]" />
+                  <div className="flex justify-between items-center w-full mb-3 sm:mb-4">
+                    <div className="w-8 h-8 sm:w-12 sm:h-12 bg-secondary rounded-lg sm:rounded-xl flex items-center justify-center text-white shadow-xs group-hover:scale-105 transition-transform duration-300 shrink-0">
+                      <IconComp className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.5]" />
                     </div>
-                    <div className="bg-[#0052CC]/10 text-secondary rounded-full w-8 h-8 flex items-center justify-center font-extrabold text-xs">
+                    <div className="bg-[#0052CC]/10 text-secondary rounded-full w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center font-black sm:font-extrabold text-[10px] sm:text-xs shrink-0">
                       0{idx + 1}
                     </div>
                   </div>
 
                   {/* Step Text Indicator */}
-                  <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block mt-2">
+                  <span className="text-[8px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block mt-1 sm:mt-2">
                     {item.step}
                   </span>
 
                   {/* Step Title */}
-                  <h4 className="text-base font-extrabold text-slate-800 tracking-tight mt-1 mb-2">
+                  <h4 className="text-xs sm:text-base font-black sm:font-extrabold text-slate-800 tracking-tight mt-0.5 sm:mt-1 mb-1 sm:mb-2 line-clamp-1 sm:line-clamp-none">
                     {item.title}
                   </h4>
 
                   {/* Step Description */}
-                  <p className="text-xs text-slate-500 font-sans font-medium leading-relaxed mb-6">
+                  <p className="text-[10px] sm:text-xs text-slate-500 font-sans font-medium leading-normal sm:leading-relaxed mb-3 sm:mb-6 line-clamp-3 sm:line-clamp-none">
                     {item.description}
                   </p>
                 </div>
 
                 {/* Step Image */}
-                <div className="overflow-hidden rounded-[16px] aspect-[16/10] w-full border border-slate-100/20 mt-auto">
+                <div className="overflow-hidden rounded-lg sm:rounded-[16px] aspect-[16/10] w-full border border-slate-100/20 mt-auto h-16 xs:h-20 sm:h-28 md:h-auto shrink-0">
                   <img 
                     src={imgPath} 
                     alt={item.title} 

@@ -6,6 +6,8 @@ import {
   ArrowLeft, CheckCircle, MessageSquare, AlertCircle 
 } from "lucide-react";
 import { ALL_COUNTRIES } from "../constants";
+import api from "../utils/api";
+import { getProvidersForCountry, getProviderUI, calculatePrice as getProviderPrice, getProviderImage } from "../utils/pricing";
 
 // Animation Variants
 const containerVariants = {
@@ -79,50 +81,52 @@ export default function CountryDetail() {
   const [packageWeight, setPackageWeight] = useState(0.5);
   const [activeFaq, setActiveFaq] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [country, setCountry] = useState(null);
 
-  // Find country data from route params
-  const country = ALL_COUNTRIES.find(
-    c => c.slug === slug
-  );
-
-  // Scroll to top on route mount and trigger loader
+  // Fetch country data from route params
   useEffect(() => {
+    import('../utils/pricing').then(m => m.loadPricingData());
     window.scrollTo(0, 0);
     setIsLoading(true);
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 800);
-    return () => clearTimeout(timer);
+
+    api.get(`/countries/${slug}`)
+      .then(res => {
+        if (res.data && res.data.success) {
+          setCountry(res.data.data);
+        } else {
+          const localCountry = ALL_COUNTRIES.find(c => c.slug === slug);
+          setCountry(localCountry || null);
+        }
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching country detail from API:', err);
+        const localCountry = ALL_COUNTRIES.find(c => c.slug === slug);
+        setCountry(localCountry || null);
+        setIsLoading(false);
+      });
   }, [slug]);
 
-  if (!country) {
+  if (!isLoading && !country) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center p-6 text-center">
         <AlertCircle size={48} className="text-red-500 mb-3" />
         <h2 className="text-xl font-black text-slate-800">Destination Not Found</h2>
         <p className="text-xs text-slate-500 mt-1 mb-4">The selected shipping destination is not registered in our system.</p>
-        <Link to="/popular-countries.htm" className="px-5 py-2.5 bg-primary text-white text-xs font-bold rounded-xl shadow">
+        <Link to="/countries.php" className="px-5 py-2.5 bg-primary text-white text-xs font-bold rounded-xl shadow">
           Back to Countries List
         </Link>
       </div>
     );
   }
 
-  const countryName = country.name;
+  const countryName = country ? country.name : "";
 
-  // Pricing calculations
-  const calculatePrice = (basePrice, weight, carrierMultiplier = 1) => {
-    let finalPrice = basePrice * carrierMultiplier;
-    if (weight > 0.5) {
-      const extraWeight = weight - 0.5;
-      const incrementalRate = 800 * carrierMultiplier; // INR per block of 0.5 kg
-      finalPrice += Math.ceil(extraWeight / 0.5) * incrementalRate;
-    }
-    return Math.round(finalPrice);
-  };
-
-  const dhlPrice = calculatePrice(country.basePrice, packageWeight, 1);
-  const upsPrice = calculatePrice(country.basePrice, packageWeight, 0.95);
+  const providersList = getProvidersForCountry(countryName);
+  const displayProviders = providersList.length > 0 ? providersList : [
+    { provider: "DHL", timeline: "4-6 Days" },
+    { provider: "UPS", timeline: "5-7 Days" }
+  ];
 
   const getTimelineString = (code) => {
     if (code === "AE" || code === "SG" || code === "HK") return "2 to 3 Business Days";
@@ -234,7 +238,7 @@ export default function CountryDetail() {
                 <nav className="text-xs md:text-sm font-semibold tracking-wide font-sans flex items-center justify-center gap-2 text-white/80 mt-6">
                   <Link to="/" className="hover:text-secondary transition-colors text-white/95">Home</Link>
                   <span className="text-white/40">»</span>
-                  <Link to="/popular-countries.htm" className="hover:text-secondary transition-colors text-white/95">Countries</Link>
+                  <Link to="/countries.php" className="hover:text-secondary transition-colors text-white/95">Countries</Link>
                   <span className="text-white/40">»</span>
                   <span className="text-secondary font-bold">India to {countryName} charges</span>
                 </nav>
@@ -562,81 +566,53 @@ export default function CountryDetail() {
                   </div>
                 </div>
 
-                {/* DHL Option */}
-                <div className="bg-gradient-to-br from-white to-slate-50/20 border border-slate-200/80 rounded-3xl p-6 shadow-sm flex flex-col justify-between relative overflow-hidden group">
-                  <div className="absolute bottom-0 inset-x-0 h-1 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-350" />
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-start">
-                      <div className="flex flex-col items-stretch gap-1.5 w-fit">
-                        <span className="text-xs font-black text-slate-800 tracking-wide pt-1">DHL Express</span>
-                        <div className="h-6 w-full flex items-center justify-center bg-[#FFCC00] px-2.5 py-0.5 rounded shadow-xs select-none">
-                          <svg className="h-4 w-auto" viewBox="0 0 100 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g transform="skewX(-15)">
-                              <text x="50" y="18" fill="#D40511" fontWeight="900" fontSize="18" fontFamily="Impact, Arial Black, sans-serif" letterSpacing="0.5" textAnchor="middle">DHL</text>
-                            </g>
-                          </svg>
+                {/* Dynamic Provider Options */}
+                {displayProviders.map((p) => {
+                  const ui = getProviderUI(p.provider);
+                  const providerPrice = getProviderPrice(countryName, p.provider, packageWeight) || 3500;
+                  
+                  return (
+                    <div key={p.provider} className="bg-gradient-to-br from-white to-slate-50/20 border border-slate-200/80 rounded-3xl p-6 shadow-sm flex flex-col justify-between relative overflow-hidden group">
+                      <div className={`absolute bottom-0 inset-x-0 h-1 ${ui.themeColor} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-350`} />
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-start">
+                          <div className="flex flex-col items-stretch gap-1.5 w-fit">
+                            <span className="text-xs font-black text-slate-800 tracking-wide pt-1">{p.provider} Express</span>
+                            {getProviderImage(p.provider) ? (
+                              <div className="h-8 flex items-center select-none">
+                                <img src={getProviderImage(p.provider)} alt={p.provider} className="h-8 w-auto object-contain drop-shadow-sm" />
+                              </div>
+                            ) : (
+                              ui.logoNode
+                            )}
+                          </div>
+                          <span className={`text-[10px] font-bold ${ui.themeText} ${ui.themeColor.replace('bg-', 'bg-')}/10 px-2 py-0.5 rounded uppercase border border-slate-100`}>
+                            {ui.badgeLabel}
+                          </span>
+                        </div>
+                        <div className="space-y-1">
+                          <span className="text-[10px] text-slate-400 font-bold uppercase block tracking-wider">Estimated Cost</span>
+                          <h4 className="text-2xl font-black text-slate-800 font-mono tracking-tight">₹{providerPrice.toLocaleString("en-IN")}</h4>
+                        </div>
+                        <div className="space-y-2 border-t border-slate-100 pt-3 text-xs font-medium text-slate-500">
+                          <p>⏱ Transit: {p.timeline}</p>
+                          <p>📦 Free collection from India</p>
+                          <p>📄 Customs clearance support</p>
                         </div>
                       </div>
-                      <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded uppercase">Fastest</span>
+                      
+                      <a
+                        href={`https://wa.me/918882691919?text=Hi! I want to book ${p.provider} Medicine Courier from India to ${countryName} for package weight: ${packageWeight} kg. Estimated price: ₹${providerPrice}.`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`mt-6 w-full text-center py-2.5 rounded-xl ${ui.themeColor} ${ui.hoverBg} text-white font-bold text-xs shadow-sm hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer block leading-none`}
+                      >
+                        Book {p.provider} Pickup
+                      </a>
                     </div>
-                    <div className="space-y-1">
-                      <span className="text-[10px] text-slate-400 font-bold uppercase block tracking-wider">Estimated Cost</span>
-                      <h4 className="text-2xl font-black text-slate-800 font-mono tracking-tight">₹{dhlPrice.toLocaleString("en-IN")}</h4>
-                    </div>
-                    <div className="space-y-2 border-t border-slate-100 pt-3 text-xs font-medium text-slate-500">
-                      <p>⏱ Transit: {getTimelineString(country.code)}</p>
-                      <p>📦 Free collection from India</p>
-                      <p>📄 Customs clearance support</p>
-                    </div>
-                  </div>
-                  
-                  <a
-                    href={`https://wa.me/918882691919?text=Hi! I want to book DHL Medicine Courier from India to ${countryName} for package weight: ${packageWeight} kg. Estimated price: ₹${dhlPrice}.`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-6 w-full text-center py-2.5 rounded-xl bg-primary hover:bg-primary text-white font-bold text-xs shadow-sm hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer block leading-none"
-                  >
-                    Book DHL Pickup
-                  </a>
-                </div>
+                  );
+                })}
 
-                {/* UPS Option */}
-                <div className="bg-gradient-to-br from-white to-slate-50/20 border border-slate-200/80 rounded-3xl p-6 shadow-sm flex flex-col justify-between relative overflow-hidden group">
-                  <div className="absolute bottom-0 inset-x-0 h-1 bg-secondary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-350" />
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-start">
-                      <div className="flex flex-col items-start gap-1.5">
-                        <span className="text-xs font-black text-slate-800 tracking-wide pt-1">UPS Express</span>
-                        <div className="h-8 flex items-center select-none">
-                          <svg className="h-8 w-auto" viewBox="0 0 40 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M20 2 C28 2, 38 4, 38 16 C38 28, 28 38, 20 44 C12 38, 2 28, 2 16 C2 4, 12 2, 20 2 Z" fill="#351C15" stroke="#FFC72C" strokeWidth="2.5" />
-                            <path d="M4 14C10 11 30 11 36 14" stroke="#FFC72C" strokeWidth="2" />
-                            <text x="20" y="32" fill="#FFC72C" fontWeight="bold" fontSize="15" fontFamily="sans-serif" textAnchor="middle" letterSpacing="-0.5">ups</text>
-                          </svg>
-                        </div>
-                      </div>
-                      <span className="text-[10px] font-bold text-secondary bg-secondary/10 px-2 py-0.5 rounded uppercase">Best Value</span>
-                    </div>
-                    <div className="space-y-1">
-                      <span className="text-[10px] text-slate-400 font-bold uppercase block tracking-wider">Estimated Cost</span>
-                      <h4 className="text-2xl font-black text-slate-800 font-mono tracking-tight">₹{upsPrice.toLocaleString("en-IN")}</h4>
-                    </div>
-                    <div className="space-y-2 border-t border-slate-100 pt-3 text-xs font-medium text-slate-500">
-                      <p>⏱ Transit: 3 to 5 Business Days</p>
-                      <p>📦 Free collection from India</p>
-                      <p>📄 Customs invoice assistance</p>
-                    </div>
-                  </div>
-                  
-                  <a
-                    href={`https://wa.me/918882691919?text=Hi! I want to book UPS Medicine Courier from India to ${countryName} for package weight: ${packageWeight} kg. Estimated price: ₹${upsPrice}.`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-6 w-full text-center py-2.5 rounded-xl bg-secondary hover:bg-[#0047b3] text-white font-bold text-xs shadow-sm hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer block leading-none"
-                  >
-                    Book UPS Pickup
-                  </a>
-                </div>
 
               </div>
             </motion.div>

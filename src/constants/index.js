@@ -33,28 +33,28 @@ export const NAVIGATION = {
     { label: "About Us", path: "/about.htm" },
     { 
       label: "Popular Countries", 
-      path: "/popular-countries.htm",
+      path: "/countries.php",
       dropdown: [
-        { label: "USA", path: "/popular-countries.htm" },
-        { label: "UK", path: "/popular-countries.htm" },
-        { label: "Canada", path: "/popular-countries.htm" },
-        { label: "Australia", path: "/popular-countries.htm" },
-        { label: "UAE", path: "/popular-countries.htm" },
-        { label: "Zambia", path: "/popular-countries.htm" },
-        { label: "Lebanon", path: "/popular-countries.htm" }
+        { label: "USA", path: "/countries.php" },
+        { label: "UK", path: "/countries.php" },
+        { label: "Canada", path: "/countries.php" },
+        { label: "Australia", path: "/countries.php" },
+        { label: "UAE", path: "/countries.php" },
+        { label: "Zambia", path: "/countries.php" },
+        { label: "Lebanon", path: "/countries.php" }
       ]
     },
     { 
       label: "Popular Locations", 
-      path: "/popular-locations.htm",
+      path: "/location.php",
       dropdown: [
-        { label: "Delhi NCR", path: "/popular-locations.htm" },
-        { label: "Mumbai", path: "/popular-locations.htm" },
-        { label: "Bangalore", path: "/popular-locations.htm" },
-        { label: "Punjab", path: "/popular-locations.htm" },
-        { label: "Kolkata", path: "/popular-locations.htm" },
-        { label: "Kerala", path: "/popular-locations.htm" },
-        { label: "Madhya Pradesh", path: "/popular-locations.htm" }
+        { label: "Delhi NCR", path: "/location.php" },
+        { label: "Mumbai", path: "/location.php" },
+        { label: "Bangalore", path: "/location.php" },
+        { label: "Punjab", path: "/location.php" },
+        { label: "Kolkata", path: "/location.php" },
+        { label: "Kerala", path: "/location.php" },
+        { label: "Madhya Pradesh", path: "/location.php" }
       ]
     },
     { label: "Blog", path: "/blog.htm" },
@@ -76,7 +76,7 @@ export const HERO = {
     title: "Calculate Courier Charges",
     countryLabel: "Select Country",
     countryPlaceholder: "Select Country",
-    locationLabel: "Select Location",
+    locationLabel: "Select Your Location",
     locationPlaceholder: "Select City/State",
     medicineTypeLabel: "MEDICINES TYPE",
     medicineTypePlaceholder: "Select Medicine Type",
@@ -848,12 +848,12 @@ export const FOOTER = {
   quickLinks: {
     title: "Quick Links",
     links: [
-      { label: "Popular Countries", path: "/popular-countries.htm" },
-      { label: "India To Australia Medicine Courier Charges", path: "/popular-countries?country=AU" },
-      { label: "India To USA Medicine Courier Charges", path: "/popular-countries?country=US" },
-      { label: "India To Germany Medicine Courier Charges", path: "/popular-countries?country=DE" },
-      { label: "India To Hong Kong Medicine Courier Charges", path: "/popular-countries?country=HK" },
-      { label: "more..", path: "/popular-countries.htm" }
+      { label: "Popular Countries", path: "/countries.php" },
+      { label: "India To Australia Medicine Courier Charges", path: "/countries.php?country=AU" },
+      { label: "India To USA Medicine Courier Charges", path: "/countries.php?country=US" },
+      { label: "India To Germany Medicine Courier Charges", path: "/countries.php?country=DE" },
+      { label: "India To Hong Kong Medicine Courier Charges", path: "/countries.php?country=HK" },
+      { label: "more..", path: "/countries.php" }
     ]
   },
   locateUs: {
@@ -988,10 +988,12 @@ export const CONTACT_PAGE = {
   socialsTitle: "Connect With Us"
 };
 
-// List of all 43 countries/routes
+// List of all 45 countries/routes
 export const ALL_COUNTRIES = [
   { code: "AU", name: "Australia", slug: "india-to-australia-medicine-courier-charges.htm", basePrice: 3400, advice: "TGA therapeutic items personal import scheme allows 3-month supply easily." },
   { code: "US", name: "United States (USA)", slug: "india-to-united-states-usa-medicine-courier-charges.htm", basePrice: 3300, advice: "FDA 510(k) Proxy clearance applied. No local sales tax up to $200 personal medicine value." },
+  { code: "CA", name: "Canada", slug: "india-to-canada-medicine-courier-charges.htm", basePrice: 3200, advice: "Health Canada personal import regulations allow up to a 90-day supply with a doctor's prescription." },
+  { code: "CN", name: "China", slug: "india-to-china-medicine-courier-charges.htm", basePrice: 2800, advice: "NMPA regulations apply. Valid doctor's prescription and clear invoice mandatory." },
   { code: "DE", name: "Germany", slug: "india-to-germany-medicine-courier-charges.htm", basePrice: 3200, advice: "BfArM import rules apply. Personal import allows up to 3-month supply with doctor's prescription." },
   { code: "HK", name: "Hong Kong", slug: "india-to-hong-kong-medicine-courier-charges.htm", basePrice: 2200, advice: "Department of Health regulations apply. Prescription must match patient details." },
   { code: "IE", name: "Ireland", slug: "india-to-ireland-medicine-courier-charges.htm", basePrice: 3100, advice: "HPRA rules apply. Doctor's prescription required for customs clearance." },
@@ -1313,3 +1315,4 @@ export const ALL_LOCATIONS = [
   { id: "punjab-to-usa", city: "Punjab", country: "USA", name: "Punjab to USA", slug: "medicine-courier-from-punjab-to-usa.htm" },
   { id: "punjab-to-zambia", city: "Punjab", country: "Zambia", name: "Punjab to Zambia", slug: "medicine-courier-from-punjab-to-zambia.htm" },
 ];
+

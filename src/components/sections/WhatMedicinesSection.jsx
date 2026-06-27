@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import React from "react";
+import { motion } from "motion/react";
 import { 
   Activity, 
   Leaf, 
@@ -8,40 +8,92 @@ import {
   PhoneCall, 
   Send 
 } from "lucide-react";
+import * as Lucide from "lucide-react";
 
-export default function WhatMedicinesSection() {
-  const [activeCategory, setActiveCategory] = useState(0);
+const categoryDesigns = [
+  {
+    icon: Activity,
+    color: "text-[#0052CC] bg-[#0052CC]/5 border-[#0052CC]/10",
+  },
+  {
+    icon: Leaf,
+    color: "text-emerald-600 bg-emerald-50 border-emerald-100",
+  },
+  {
+    icon: FlaskConical,
+    color: "text-purple-600 bg-purple-50 border-purple-100",
+  },
+  {
+    icon: Droplet,
+    color: "text-teal-600 bg-teal-50 border-teal-100",
+  }
+];
 
-  const categories = [
-    {
-      title: "Allopathic Medicines",
-      desc: "Cancer, diabetes, HIV, cardiac, arthritis & standard general prescriptions.",
-      icon: Activity,
-      color: "text-[#0052CC] bg-[#0052CC]/5 border-[#0052CC]/10",
-      img: "/cat_allopathic.png"
-    },
-    {
-      title: "Ayurvedic & Herbal",
-      desc: "Patanjali, Baidyanath, Dabur, Zandu, and major natural formulations.",
-      icon: Leaf,
-      color: "text-emerald-600 bg-emerald-50 border-emerald-100",
-      img: "/cat_ayurvedic.png"
-    },
-    {
-      title: "Homeopathic Care",
-      desc: "SBL, Reckeweg, Schwabe, Wheezal, and other dilution remedies.",
-      icon: FlaskConical,
-      color: "text-purple-600 bg-purple-50 border-purple-100",
-      img: "/cat_homeopathic.png"
-    },
-    {
-      title: "Liquids & Cold-Chain",
-      desc: "Insulin, injections, liquid syrups, and temperature-sensitive vials.",
-      icon: Droplet,
-      color: "text-teal-600 bg-teal-50 border-teal-100",
-      img: "/cat_coldchain.png"
-    }
-  ];
+export default function WhatMedicinesSection({ title, subtitle, content }) {
+  const displayTitle = title || (
+    <>
+      What Medicines <span className="text-[#0052CC]">We Can Courier</span>
+    </>
+  );
+
+  const displaySubtitle = subtitle || (
+    <>
+      <span className="text-[#0052CC] font-bold">Courier Medicines</span> is the leading international pharmaceutical logistics provider in India. We dispatch a wide range of medications globally to ensure your family's health is always supported, adhering to all export protocols.
+    </>
+  );
+
+  const categoriesToRender = content?.categories
+    ? content.categories.map((dbCat, index) => {
+        const design = categoryDesigns[index % categoryDesigns.length];
+        let IconComponent = design.icon;
+        if (dbCat.icon && Lucide[dbCat.icon]) {
+          IconComponent = Lucide[dbCat.icon];
+        }
+        
+        let localImg = dbCat.imageUrl || dbCat.img;
+        if (index === 0) localImg = "/allopathic.png";
+        else if (index === 1) localImg = "/ayurvedic.png";
+        else if (index === 2) localImg = "/homeopathic.png";
+        else if (index === 3) localImg = "/coldchain.png";
+
+        return {
+          title: dbCat.title,
+          desc: dbCat.description || dbCat.desc,
+          icon: IconComponent,
+          color: design.color,
+          img: localImg
+        };
+      })
+    : [
+        {
+          title: "Allopathic Medicines",
+          desc: "Cancer, diabetes, HIV, cardiac, arthritis & standard general prescriptions.",
+          icon: Activity,
+          color: "text-[#0052CC] bg-[#0052CC]/5 border-[#0052CC]/10",
+          img: "/allopathic.png"
+        },
+        {
+          title: "Ayurvedic & Herbal",
+          desc: "Patanjali, Baidyanath, Dabur, Zandu, and major natural formulations.",
+          icon: Leaf,
+          color: "text-emerald-600 bg-emerald-50 border-emerald-100",
+          img: "/ayurvedic.png"
+        },
+        {
+          title: "Homeopathic Care",
+          desc: "SBL, Reckeweg, Schwabe, Wheezal, and other dilution remedies.",
+          icon: FlaskConical,
+          color: "text-purple-600 bg-purple-50 border-purple-100",
+          img: "/homeopathic.png"
+        },
+        {
+          title: "Liquids & Cold-Chain",
+          desc: "Insulin, injections, liquid syrups, and temperature-sensitive vials.",
+          icon: Droplet,
+          color: "text-teal-600 bg-teal-50 border-teal-100",
+          img: "/coldchain.png"
+        }
+      ];
 
   const containerVariants = {
     hidden: {},
@@ -61,9 +113,9 @@ export default function WhatMedicinesSection() {
       opacity: 1, 
       x: 0,
       transition: {
-        type: "spring",
-        stiffness: 45,
-        damping: 14
+        type: "tween",
+        ease: "easeOut",
+        duration: 0.65
       }
     }
   };
@@ -76,7 +128,7 @@ export default function WhatMedicinesSection() {
       {/* Background Layer */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <img 
-          src="/bright-bg.png" 
+          src="https://res.cloudinary.com/dib6l7ocv/image/upload/v1781865141/courier-medicine-static/bright-bg.jpg" 
           alt="Background Pattern" 
           className="w-full h-full object-cover object-center opacity-70"
           loading="lazy"
@@ -85,7 +137,7 @@ export default function WhatMedicinesSection() {
       </div>
 
       <div id="what-medicines-inner" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div id="medicines-grid" className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        <div id="medicines-grid" className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           
           {/* Left Column - Content & CTAs */}
           <motion.div 
@@ -101,13 +153,26 @@ export default function WhatMedicinesSection() {
                 Shipment Capabilities
               </span>
               <h2 id="medicines-type-title" className="text-2xl md:text-3xl lg:text-[36px] font-black text-slate-800 tracking-tight leading-tight">
-                What Medicines <span className="text-[#0052CC]">We Can Courier</span>
+                {displayTitle}
               </h2>
             </div>
 
             {/* Introductory Paragraph */}
-            <p className="text-slate-600 text-sm md:text-[15px] leading-relaxed font-sans font-medium">
-              <span className="text-[#0052CC] font-bold">Courier Medicines</span> is the leading international pharmaceutical logistics provider in India. We dispatch a wide range of medications globally to ensure your family's health is always supported, adhering to all export protocols.
+            <p className="text-slate-600 text-sm md:text-[15px] leading-relaxed font-sans font-medium whitespace-pre-line">
+              {typeof displaySubtitle === "string" ? (
+                <span 
+                  dangerouslySetInnerHTML={{ 
+                    __html: displaySubtitle
+                      .replace(/<em\b[^>]*><\/em>|<strong\b[^>]*><\/strong>|<span\b[^>]*><\/span>/gi, "")
+                      .replace(
+                        /Call\s*\/\s*WhatsApp\s*(?:on)?\s*\+?91\s*-\s*8882691919/gi,
+                        '<a href="https://wa.me/918882691919" target="_blank" rel="noopener noreferrer" class="text-emerald-500 hover:text-emerald-600 font-black hover:underline">Call / WhatsApp on +91-8882691919</a>'
+                      )
+                  }} 
+                />
+              ) : (
+                displaySubtitle
+              )}
             </p>
 
             {/* Contact Call-To-Action Buttons */}
@@ -131,13 +196,13 @@ export default function WhatMedicinesSection() {
 
           {/* Right Column - Horizontal Categories Grid (Side-by-Side Cards) */}
           <motion.div 
-            className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4"
+            className="lg:col-span-7 grid grid-cols-2 gap-3 sm:gap-4 lg:mt-9"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.15 }}
           >
-            {categories.map((cat, idx) => {
+            {categoriesToRender.map((cat, idx) => {
               const Icon = cat.icon;
 
               return (
@@ -147,24 +212,32 @@ export default function WhatMedicinesSection() {
                   whileHover={{ 
                     y: -6, 
                     scale: 1.02,
-                    boxShadow: "0 15px 30px -5px rgba(0, 0, 0, 0.04)"
+                    boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02)"
                   }}
-                  className="group relative overflow-hidden border border-slate-100 bg-white rounded-[20px] p-5 shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:border-slate-200/60 transition-colors duration-300 flex items-start gap-4 cursor-pointer"
+                  className="group relative overflow-hidden border border-slate-100 bg-white rounded-[20px] shadow-[0_4px_20px_rgba(0,0,0,0.01)] flex flex-col cursor-pointer h-[215px] xs:h-[235px] sm:h-[300px]"
                 >
-                  {/* Rising Gradient Background Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0052CC] to-[#03ADA4] translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out z-0 pointer-events-none" />
-
-                  {/* Icon Container */}
-                  <div className={`relative z-10 w-11 h-11 rounded-xl flex items-center justify-center shrink-0 border transition-all duration-300 ${cat.color} group-hover:bg-white/20 group-hover:border-white/30 group-hover:text-white`}>
-                    <Icon size={20} className="stroke-[2.2] transition-colors duration-300" />
+                  {/* Top Image Container */}
+                  <div className="w-full h-24 xs:h-28 sm:h-44 overflow-hidden relative shrink-0">
+                    <img 
+                      src={cat.img} 
+                      alt={cat.title} 
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                    />
+                    {/* Small Icon Badge Overlay */}
+                    <div className={`absolute top-1.5 right-1.5 sm:top-3 sm:right-3 w-6 h-6 sm:w-8 sm:h-8 rounded-md sm:rounded-lg flex items-center justify-center border transition-all duration-300 ${cat.color} bg-white/95 backdrop-blur-sm shadow-sm z-20 group-hover:scale-110`}>
+                      <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.2]" />
+                    </div>
                   </div>
 
-                  {/* Text details */}
-                  <div className="relative z-10 space-y-1">
-                    <h4 className="text-xs md:text-sm font-extrabold text-slate-800 group-hover:text-white transition-colors duration-300 tracking-tight leading-snug">
+                  {/* Details Container */}
+                  <div className="p-3 xs:p-4 sm:p-5 flex-1 flex flex-col justify-start space-y-1 sm:space-y-1.5 relative overflow-hidden">
+                    {/* Rising Gradient Background Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0052CC] to-[#03ADA4] translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out z-0 pointer-events-none" />
+
+                    <h4 className="relative z-10 text-xs md:text-sm font-extrabold text-slate-800 group-hover:text-white transition-colors duration-300 tracking-tight leading-snug">
                       {cat.title}
                     </h4>
-                    <p className="text-[11px] md:text-xs text-slate-500 group-hover:text-white/80 transition-colors duration-300 font-sans leading-relaxed">
+                    <p className="relative z-10 text-[10px] sm:text-[11px] md:text-xs text-slate-500 group-hover:text-white/80 transition-colors duration-300 font-sans leading-relaxed">
                       {cat.desc}
                     </p>
                   </div>

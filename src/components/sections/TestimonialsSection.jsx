@@ -1,36 +1,52 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { useState, useEffect } from "react";
+import { motion } from "motion/react";
 import { Star, ChevronLeft, ChevronRight, PenTool } from "lucide-react";
 import { TESTIMONIALS } from "../../constants";
+import api from "../../utils/api";
 
-export default function TestimonialsSection() {
+export default function TestimonialsSection({ title, subtitle }) {
   const [testimonialIdx, setTestimonialIdx] = useState(0);
-  const [testimonialsList] = useState(TESTIMONIALS.list);
+  const [testimonialsList, setTestimonialsList] = useState(TESTIMONIALS.list || []);
+
+  useEffect(() => {
+    api.get('/testimonials')
+      .then(res => {
+        if (res.data && res.data.data && res.data.data.length > 0) {
+          setTestimonialsList(res.data.data);
+        }
+      })
+      .catch(err => console.error('Error fetching testimonials from API:', err));
+  }, []);
 
   const nextTestimonial = () => {
+    if (testimonialsList.length === 0) return;
     setTestimonialIdx((prev) => (prev + 1) % testimonialsList.length);
   };
 
   const prevTestimonial = () => {
+    if (testimonialsList.length === 0) return;
     setTestimonialIdx((prev) => (prev - 1 + testimonialsList.length) % testimonialsList.length);
   };
 
   const len = testimonialsList.length;
-  const activeIndices = [
+  const activeIndices = len > 0 ? [
     testimonialIdx,
     (testimonialIdx + 1) % len,
     (testimonialIdx + 2) % len
-  ];
+  ] : [];
+
+  const displayTitle = title || "Customer Feedback";
+  const displayLabel = subtitle || TESTIMONIALS.sectionTitle || "Testimonials & Reviews";
 
   return (
     <section 
       id="testimonials-section" 
-      className="py-16 md:py-20 border-y border-slate-100 relative overflow-hidden bg-white"
+      className="py-10 md:py-14 border-y border-slate-100 relative overflow-hidden bg-white"
     >
       {/* Background Layer */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <img 
-          src="/bright-bg.png" 
+          src="https://res.cloudinary.com/dib6l7ocv/image/upload/v1781865141/courier-medicine-static/bright-bg.jpg" 
           alt="Background Pattern" 
           className="w-full h-full object-cover object-center opacity-70"
           loading="lazy"
@@ -47,12 +63,12 @@ export default function TestimonialsSection() {
         transition={{ duration: 1.0, ease: "easeOut" }}
       >
         
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           <span className="text-xs font-black uppercase tracking-widest text-secondary">
-            {TESTIMONIALS.sectionTitle}
+            {displayLabel}
           </span>
           <h2 id="testimonials-heading" className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight leading-none mt-1">
-            Customer Feedback
+            {displayTitle}
           </h2>
           <div className="w-16 h-1 bg-secondary mx-auto rounded-full mt-2" />
         </div>
@@ -62,6 +78,7 @@ export default function TestimonialsSection() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
             {activeIndices.map((i, activePos) => {
               const item = testimonialsList[i];
+              if (!item) return null;
               const displayClasses = activePos === 0 
                 ? "flex" 
                 : activePos === 1 
@@ -75,11 +92,11 @@ export default function TestimonialsSection() {
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.96, y: -15 }}
                   transition={{ duration: 0.35, ease: "easeOut" }}
-                  className={`bg-[#F1F3F4] rounded-3xl md:rounded-[2.2rem] p-6 md:p-10 text-center flex-col justify-between items-center min-h-[320px] md:min-h-[380px] w-full ${displayClasses}`}
+                  className={`bg-[#F1F3F4] rounded-3xl md:rounded-[2.2rem] p-6 md:p-8 text-center flex-col justify-between items-center min-h-[280px] md:min-h-[330px] w-full ${displayClasses}`}
                 >
                   <div className="flex flex-col items-center w-full">
                     {/* Five Stars */}
-                    <div className="flex justify-center items-center gap-1 mb-3 md:mb-5 text-[#FCBC05] relative z-10">
+                    <div className="flex justify-center items-center gap-1 mb-2 md:mb-4 text-[#FCBC05] relative z-10">
                       {Array.from({ length: 5 }).map((_, starIdx) => (
                         <Star 
                           key={starIdx} 
@@ -90,14 +107,14 @@ export default function TestimonialsSection() {
                     </div>
 
                     {/* Review Text block */}
-                    <p className="text-slate-700 text-[13px] md:text-[15px] font-semibold leading-relaxed font-sans px-1 md:px-4 mb-4 md:mb-6 relative z-10">
+                    <p className="text-slate-700 text-[13px] md:text-[15px] font-semibold leading-relaxed font-sans px-1 md:px-4 mb-3 md:mb-4 relative z-10">
                       {item.review}
                     </p>
                   </div>
 
                   <div className="flex flex-col items-center w-full">
                     {/* User Avatar */}
-                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#7B1FA2] text-white font-black text-sm md:text-base flex items-center justify-center shadow-sm mb-2 md:mb-3 uppercase leading-none relative z-10">
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#7B1FA2] text-white font-black text-sm md:text-base flex items-center justify-center shadow-sm mb-1.5 md:mb-2 uppercase leading-none relative z-10">
                       {item.avatar}
                     </div>
 
@@ -109,13 +126,13 @@ export default function TestimonialsSection() {
                       <p className="text-slate-500 text-[11px] md:text-xs font-semibold leading-none mb-1">
                         {item.designation || "Verified Customer"}
                       </p>
-                      <p className="text-slate-400 text-[10px] md:text-[11px] font-medium leading-none mb-2">
+                      <p className="text-slate-400 text-[10px] md:text-[11px] font-medium leading-none mb-1.5">
                         {item.date || "Posted recently"}
                       </p>
                     </div>
 
                     {/* Google Brand Logo */}
-                    <div className="relative z-10 mt-2 md:mt-3 flex justify-center">
+                    <div className="relative z-10 mt-1.5 md:mt-2 flex justify-center">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 272 92" className="w-[55px] md:w-[70px] opacity-95">
                         <path fill="#EA4335" d="M115.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18C71.25 34.3 81.24 25 93.5 25s22.25 9.3 22.25 22.18zm-9.74 0c0-7.62-5.7-12.98-12.51-12.98S80.99 39.56 80.99 47.18c0 7.51 5.7 12.98 12.51 12.98s12.51-5.47 12.51-12.98z"/>
                         <path fill="#FBBC05" d="M163.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18c0-12.88 9.99-22.18 22.25-22.18s22.25 9.3 22.25 22.18zm-9.74 0c0-7.62-5.7-12.98-12.51-12.98s-12.51 5.36-12.51 12.98c0 7.51 5.7 12.98 12.51 12.98s12.51-5.47 12.51-12.98z"/>
@@ -151,7 +168,7 @@ export default function TestimonialsSection() {
         </div>
 
         {/* Pagination Counter & Action Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-5">
           <span className="text-sm font-bold text-slate-400 tracking-widest font-mono bg-white px-4 py-1 rounded-full border border-slate-100 shadow-sm">
             <span className="text-secondary">{String(testimonialIdx + 1).padStart(2, '0')}</span> / {String(testimonialsList.length).padStart(2, '0')}
           </span>

@@ -3,19 +3,34 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { MapPin, ArrowUpRight, Search, X, ArrowUp } from "lucide-react";
 import { ALL_LOCATIONS } from "../constants";
+import api from "../utils/api";
 
 export default function PopularLocations() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [locations, setLocations] = useState(ALL_LOCATIONS || []);
 
-  // Simulated loading trigger
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 700);
-    return () => clearTimeout(timer);
+    api.get('/locations')
+      .then(res => {
+        if (res.data && res.data.data && res.data.data.length > 0) {
+          const formatted = res.data.data.map(l => ({
+            id: l.locationId,
+            city: l.city,
+            country: l.country,
+            name: l.name,
+            slug: l.slug
+          }));
+          setLocations(formatted);
+        }
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching locations from API:', err);
+        setIsLoading(false);
+      });
   }, []);
 
   // Monitor scroll for back-to-top button
@@ -33,11 +48,11 @@ export default function PopularLocations() {
 
   // Filter locations list based on search query
   const filteredLocations = useMemo(() => {
-    if (!searchQuery.trim()) return ALL_LOCATIONS;
-    return ALL_LOCATIONS.filter(l => 
+    if (!searchQuery.trim()) return locations;
+    return locations.filter(l => 
       l.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
-  }, [searchQuery]);
+  }, [searchQuery, locations]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -69,7 +84,7 @@ export default function PopularLocations() {
   };
 
   const handleLocationClick = (loc) => {
-    navigate(`/popular-locations/${loc.id.toLowerCase()}`);
+    navigate(`/location.php/${loc.id.toLowerCase()}`);
   };
 
   return (
