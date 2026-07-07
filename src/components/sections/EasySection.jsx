@@ -140,7 +140,7 @@ export default function EasySection({ title, subtitle, content }) {
             <button
               type="button"
               onClick={prevSlide}
-              className="absolute left-[-18px] lg:left-[-26px] top-[206px] -translate-y-1/2 w-[52px] h-[52px] rounded-full bg-white/95 hover:bg-white text-slate-800 border border-slate-200/80 shadow-md hover:shadow-lg hidden md:flex items-center justify-center transition-all z-30 hover:scale-105 active:scale-95 cursor-pointer"
+              className="absolute left-[-18px] lg:left-[-26px] top-[206px] -translate-y-1/2 w-[52px] h-[52px] rounded-full bg-white/95 hover:bg-white text-slate-800 border border-slate-200/80 shadow-md hover:shadow-lg hidden md:flex items-center justify-center transition-all z-[60] hover:scale-105 active:scale-95 cursor-pointer"
             >
               <ChevronLeft size={26} className="stroke-[2.5]" />
             </button>
@@ -151,7 +151,7 @@ export default function EasySection({ title, subtitle, content }) {
             <button
               type="button"
               onClick={nextSlide}
-              className="absolute right-[-18px] lg:right-[-26px] top-[206px] -translate-y-1/2 w-[52px] h-[52px] rounded-full bg-white/95 hover:bg-white text-slate-800 border border-slate-200/80 shadow-md hover:shadow-lg hidden md:flex items-center justify-center transition-all z-30 hover:scale-105 active:scale-95 cursor-pointer"
+              className="absolute right-[-18px] lg:right-[-26px] top-[206px] -translate-y-1/2 w-[52px] h-[52px] rounded-full bg-white/95 hover:bg-white text-slate-800 border border-slate-200/80 shadow-md hover:shadow-lg hidden md:flex items-center justify-center transition-all z-[60] hover:scale-105 active:scale-95 cursor-pointer"
             >
               <ChevronRight size={26} className="stroke-[2.5]" />
             </button>
@@ -159,13 +159,13 @@ export default function EasySection({ title, subtitle, content }) {
 
           {/* Mobile Swipe Nudge Indicator */}
           {currentIndex < maxIndex && (
-            <div className="md:hidden absolute right-1.5 top-[206px] -translate-y-1/2 z-30 pointer-events-none">
+            <div className="md:hidden absolute right-0 top-[300px] -translate-y-1/2 z-[60] pointer-events-none drop-shadow-md">
               <motion.div
-                animate={{ x: [0, 6, 0] }}
+                animate={{ x: [0, 8, 0] }}
                 transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
-                className="w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm border border-slate-200/80 shadow-md flex items-center justify-center text-[#0052CC]"
+                className="flex items-center justify-center text-[#0052CC]/70"
               >
-                <ChevronRight size={18} className="stroke-[2.5]" />
+                <ChevronRight size={36} className="stroke-[3]" />
               </motion.div>
             </div>
           )}
@@ -191,7 +191,7 @@ export default function EasySection({ title, subtitle, content }) {
                 return (
                   <div
                     key={item.id || idx}
-                    className="w-[85%] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] shrink-0 h-[460px] sm:h-[380px] relative snap-start"
+                    className="w-[85%] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] shrink-0 h-[600px] sm:h-[580px] lg:h-[620px] relative snap-start"
                   >
                     <motion.div
                       id={`easy-item-${item.id || idx}`}
@@ -201,10 +201,10 @@ export default function EasySection({ title, subtitle, content }) {
                         y: -8, 
                         scale: 1.015
                       }}
-                      className={`absolute top-0 left-0 w-full bg-gradient-to-br from-white via-white to-slate-50/50 border border-slate-200 p-7 sm:p-8 rounded-[28px] flex flex-col items-start cursor-default transition-all duration-300 overflow-hidden group ${glowClass} ${
+                      className={`absolute top-0 left-0 w-full h-[600px] sm:h-[580px] lg:h-[620px] bg-gradient-to-br from-white via-white to-slate-50/50 border border-slate-200 p-7 sm:p-8 rounded-[28px] flex flex-col items-start cursor-default transition-all duration-300 overflow-hidden group ${glowClass} ${
                         hoveredIndex === idx 
-                          ? "h-[460px] sm:h-[480px] z-50 shadow-2xl" 
-                          : "max-sm:h-[460px] sm:h-[380px] z-10"
+                          ? "z-50 shadow-2xl" 
+                          : "z-10 shadow-sm"
                       }`}
                     >
                       {/* Top Row: Icon Badge & Numeric Display */}
@@ -221,9 +221,9 @@ export default function EasySection({ title, subtitle, content }) {
                       <h3 className="text-base md:text-lg font-black text-slate-800 tracking-tight leading-snug mt-8 font-display">
                         {item.title}
                       </h3>
-
+ 
                       {/* Description Container */}
-                      <div className="relative w-full mt-3 flex-grow overflow-hidden sm:group-hover:overflow-y-auto max-sm:overflow-y-auto custom-scrollbar pr-1">
+                      <div className="relative w-full mt-3 flex-grow overflow-hidden custom-scrollbar pr-1">
                         <div 
                           className="text-xs md:text-[13px] text-slate-500 font-sans leading-relaxed font-medium pb-8"
                           dangerouslySetInnerHTML={{ 
@@ -237,8 +237,6 @@ export default function EasySection({ title, subtitle, content }) {
                             ) 
                           }}
                         />
-                        {/* Fade-out Overlay - Visible only when NOT hovered */}
-                        <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white to-transparent pointer-events-none transition-opacity duration-300 sm:group-hover:opacity-0 max-sm:hidden" />
                       </div>
                     </motion.div>
                   </div>

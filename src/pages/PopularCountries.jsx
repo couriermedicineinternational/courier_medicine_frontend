@@ -92,9 +92,9 @@ export default function PopularCountries() {
       {/* 1. Page Header Banner (Matches the screenshot layout) */}
       <div 
         id="countries-banner"
-        className="relative h-[220px] md:h-[280px] bg-cover bg-center flex items-end pb-8 md:pb-12 bg-slate-950"
+        className="relative h-[280px] md:h-[380px] bg-cover bg-center flex items-end pb-8 md:pb-12 bg-slate-950"
         style={{ 
-          backgroundImage: `url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1600&q=80')` 
+          backgroundImage: `url('/global_network_banner_v3.png')` 
         }}
       >
         {/* Scrim Gradient Overlay */}
@@ -134,7 +134,7 @@ export default function PopularCountries() {
             </span>
             <input
               type="text"
-              placeholder="Search destination country..."
+              placeholder="Search Destination"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary shadow-sm transition-all"

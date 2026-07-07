@@ -165,11 +165,7 @@ export const PROVIDER_UI_CONFIG = {
     themeText: "text-slate-600",
     hoverBg: "hover:bg-slate-700",
     badgeLabel: "Budget",
-    logoNode: (
-      <div className="h-8 flex items-center select-none">
-        <span className="text-sm font-black tracking-widest text-slate-700 uppercase">India Post</span>
-      </div>
-    )
+    logoNode: null
   }
 };
 

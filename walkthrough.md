@@ -106,8 +106,7 @@ I have successfully updated the card load animation on `/service-provider.php` t
 - Added a floating swipe nudge chevron icon on the right side on mobile (`md:hidden`) that subtly bounces horizontally (`x: [0, 6, 0]`) to indicate swipeability. The indicator automatically disappears once the user reaches the end of the carousel.
 
 ### 19. Mobile 2x2 Grid Layout for Process Steps
-- Refactored the layout in [ProcessSection.jsx](file:///c:/Users/ahaad/OneDrive/Desktop/courier-medicine/src/components/sections/ProcessSection.jsx#L101) to display the process steps cards in a 2x2 grid (`grid-cols-2`) on mobile viewports instead of vertical stacking (`grid-cols-1`).
-- Implemented responsive heights (`h-[250px] xs:h-[280px] sm:h-[350px]`), responsive image containers (`h-24 xs:h-28 sm:h-44`), and responsive padding (`p-3 xs:p-4 sm:p-5`) to make all cards fit perfectly on small mobile screens.
+- **Image Fitting Fix:** Changed card heights in [ProcessSection.jsx](file:///C:/Users/ahaad/OneDrive/Desktop/courier-medicine/src/components/sections/ProcessSection.jsx) to be dynamic (`h-auto` with responsive min-heights) and updated the image container to use a taller `aspect-[4/3]` ratio instead of the wide `aspect-[16/10]` ratio. This prevents the top/bottom cropping of human heads and branding logos, making the entire image content fully visible and perfectly proportioned.
 
 ### 20. Granular Sender & Receiver Columns in Admin Orders Table
 - Separated the single generic "Customer" column in the admin orders dashboard table [AdminOrders.jsx](file:///c:/Users/ahaad/OneDrive/Desktop/courier-medicine/src/pages/admin/AdminOrders.jsx#L256) into dedicated **Sender Details** and **Receiver Details** columns.

@@ -11,25 +11,26 @@ import {
   ChevronRight
 } from "lucide-react";
 import api from "../../utils/api";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminLocations() {
+  const navigate = useNavigate();
   const [locations, setLocations] = useState([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Modal control states
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState(null); // null when adding new
-  const [form, setForm] = useState({ 
-    locationId: "", 
-    city: "", 
-    country: "", 
-    name: "", 
-    slug: "", 
-    isActive: true 
+  // Global images state
+  const [globalImages, setGlobalImages] = useState({
+    processImage1: null,
+    processImage2: null,
+    processImage3: null,
+    processImage4: null,
+    processImage5: null,
+    documentImage: null
   });
-  
+  const [isSavingImages, setIsSavingImages] = useState(false);
+
   const [saveError, setSaveError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
@@ -49,29 +50,67 @@ export default function AdminLocations() {
     }
   };
 
+  const fetchSettings = async () => {
+    try {
+      // Assuming GET /settings returns the settings object (not implemented in the UI yet, but exists in API)
+      const res = await api.get("/settings");
+      // Actually we don't strictly need to fetch them to show in the file input (file inputs are unmanaged),
+      // but it's good practice. We'll just leave them null until new ones are selected.
+    } catch (err) {
+      console.error("Error fetching settings:", err);
+    }
+  };
+
   useEffect(() => {
     fetchLocations();
+    fetchSettings();
   }, []);
 
-  // Sync route name/slug/id as city and country change in add mode
-  const handleCityOrCountryChange = (field, value) => {
-    const updatedForm = { ...form, [field]: value };
-    
-    // Only auto-generate in Create mode (when selectedLocation is null)
-    if (!selectedLocation) {
-      const cityClean = updatedForm.city.trim();
-      const countryClean = updatedForm.country.trim();
-      
-      if (cityClean && countryClean) {
-        const urlPart = `${cityClean.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-to-${countryClean.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
-        updatedForm.name = `${cityClean} to ${countryClean}`;
-        updatedForm.locationId = urlPart;
-        updatedForm.slug = `medicine-courier-from-${urlPart}.htm`;
-      }
-    }
-    
-    setForm(updatedForm);
+  const handleGlobalFileChange = (e) => {
+    setGlobalImages({ ...globalImages, [e.target.name]: e.target.files[0] });
   };
+
+  const handleSaveGlobalImages = async () => {
+    setIsSavingImages(true);
+    try {
+      const submitData = new FormData();
+      let hasFiles = false;
+      Object.keys(globalImages).forEach(key => {
+        if (globalImages[key]) {
+          submitData.append(key, globalImages[key]);
+          hasFiles = true;
+        }
+      });
+      
+      if (!hasFiles) {
+        alert("Please select at least one image to upload.");
+        setIsSavingImages(false);
+        return;
+      }
+
+      await api.put("/settings", submitData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      alert("Global images updated successfully!");
+      // Reset the file inputs by resetting state
+      setGlobalImages({
+        processImage1: null,
+        processImage2: null,
+        processImage3: null,
+        processImage4: null,
+        processImage5: null,
+        documentImage: null
+      });
+      // Optionally re-fetch settings
+    } catch (err) {
+      console.error("Error saving global images:", err);
+      alert("Failed to save global images.");
+    } finally {
+      setIsSavingImages(false);
+    }
+  };
+
+
 
   // Filter list locally for snappy UI
   const filteredLocations = locations.filter(l => 
@@ -90,61 +129,12 @@ export default function AdminLocations() {
     setPage(1);
   }, [search]);
 
-  // Open modal
-  const openModal = (locationObj = null) => {
-    setSelectedLocation(locationObj);
-    if (locationObj) {
-      setForm({
-        locationId: locationObj.locationId || "",
-        city: locationObj.city || "",
-        country: locationObj.country || "",
-        name: locationObj.name || "",
-        slug: locationObj.slug || "",
-        isActive: locationObj.isActive !== undefined ? locationObj.isActive : true
-      });
-    } else {
-      setForm({ locationId: "", city: "", country: "", name: "", slug: "", isActive: true });
-    }
-    setSaveError("");
-    setIsModalOpen(true);
-  };
-
-  // Save Location (Create or Update)
-  const handleSaveLocation = async (e) => {
-    e.preventDefault();
-    setSaveError("");
-    setIsSaving(true);
-    try {
-      if (selectedLocation) {
-        // Update
-        const res = await api.put(`/locations/${selectedLocation._id}`, form);
-        if (res.data && res.data.success) {
-          setIsModalOpen(false);
-          fetchLocations();
-        }
-      } else {
-        // Create
-        const res = await api.post("/locations", form);
-        if (res.data && res.data.success) {
-          setIsModalOpen(false);
-          fetchLocations();
-        }
-      }
-    } catch (err) {
-      console.error("Error saving location:", err);
-      setSaveError(err.response?.data?.message || "Failed to save location configuration.");
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
   // Delete Location
   const handleDeleteLocation = async (id) => {
     if (!window.confirm("Are you sure you want to delete this route? This will remove its metadata page.")) return;
     try {
       const res = await api.delete(`/locations/${id}`);
       if (res.data && res.data.success) {
-        setIsModalOpen(false);
         fetchLocations();
       }
     } catch (err) {
@@ -172,14 +162,42 @@ export default function AdminLocations() {
         </div>
 
         {/* Action Button */}
-        <button
-          onClick={() => openModal(null)}
-          className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-primary text-white text-xs font-bold hover:scale-[1.01] active:scale-[0.99] transition-all shadow-sm shadow-primary/10"
+        <button 
+          onClick={() => navigate('/admin/locations/new/edit')}
+          className="bg-primary hover:bg-primary-dark text-white px-5 py-2.5 rounded-full text-xs font-bold tracking-wide flex items-center gap-2 shadow-sm transition-all"
         >
-          <Plus size={14} />
-          Add Location Route
+          <Plus size={16} />
+          Add Location
         </button>
 
+      </div>
+
+      {/* Global Images Panel */}
+      <div className="bg-white border border-slate-200/60 rounded-3xl p-5 md:p-6 shadow-sm">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-sm font-bold text-slate-800">Global Process & Document Images</h2>
+          <button
+            onClick={handleSaveGlobalImages}
+            disabled={isSavingImages}
+            className="px-4 py-2 bg-[#0052CC] text-white text-xs font-bold rounded-xl shadow-sm hover:bg-[#0052CC]/90 transition-colors disabled:opacity-50"
+          >
+            {isSavingImages ? "Saving..." : "Update Images"}
+          </button>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {['processImage1', 'documentImage', 'processImage2', 'processImage3', 'processImage4', 'processImage5'].map(imgKey => (
+            <div key={imgKey} className="bg-slate-50 p-4 border border-slate-200 rounded-xl shadow-sm">
+              <label className="block text-xs font-semibold text-slate-700 mb-2 capitalize">{imgKey.replace(/([A-Z])/g, ' $1')}</label>
+              <input 
+                type="file" 
+                name={imgKey} 
+                onChange={handleGlobalFileChange} 
+                className="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" 
+                accept="image/*" 
+              />
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Datatable */}
@@ -231,7 +249,7 @@ export default function AdminLocations() {
                     <td className="px-6 py-4 whitespace-nowrap text-right">
                       <div className="flex items-center justify-end gap-2">
                         <button
-                          onClick={() => openModal(l)}
+                          onClick={() => navigate(`/admin/locations/${l._id}/edit`)}
                           className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-slate-200 text-[10px] font-black uppercase text-slate-700 bg-white hover:bg-slate-50 transition-colors"
                         >
                           <Edit size={12} />
@@ -278,149 +296,6 @@ export default function AdminLocations() {
           </div>
         )}
       </div>
-
-      {/* Modal Dialog */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white border border-slate-200/70 rounded-3xl max-w-lg w-full overflow-hidden flex flex-col shadow-2xl animate-scaleUp">
-            
-            {/* Header */}
-            <div className="h-16 border-b border-slate-100 flex items-center justify-between px-6 shrink-0 bg-slate-50/50">
-              <h3 className="text-sm font-extrabold text-slate-800 uppercase tracking-wider">
-                {selectedLocation ? "Configure Location Route" : "Register New Pickup Route"}
-              </h3>
-              <button 
-                onClick={() => setIsModalOpen(false)}
-                className="p-1 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
-              >
-                <X size={20} />
-              </button>
-            </div>
-
-            {/* Error notifications */}
-            {saveError && (
-              <div className="bg-red-500/10 border-b border-red-500/20 text-red-500 px-6 py-3 text-xs font-semibold flex items-center gap-2">
-                <Info size={14} />
-                <span>{saveError}</span>
-              </div>
-            )}
-
-            {/* Form body */}
-            <form onSubmit={handleSaveLocation}>
-              <div className="p-6 space-y-4">
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Pickup City</label>
-                    <input
-                      type="text"
-                      value={form.city}
-                      onChange={(e) => handleCityOrCountryChange("city", e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold"
-                      placeholder="e.g. Pune"
-                      required
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Destination Country</label>
-                    <input
-                      type="text"
-                      value={form.country}
-                      onChange={(e) => handleCityOrCountryChange("country", e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold"
-                      placeholder="e.g. Canada"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Route Unique ID</label>
-                  <input
-                    type="text"
-                    value={form.locationId}
-                    onChange={(e) => setForm({ ...form, locationId: e.target.value })}
-                    className="w-full bg-slate-100 border border-slate-200 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-500 font-mono"
-                    placeholder="e.g. pune-to-canada"
-                    required
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Full Display Route Title</label>
-                  <input
-                    type="text"
-                    value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold"
-                    placeholder="e.g. Pune to Canada"
-                    required
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">URL SEO Slug</label>
-                  <input
-                    type="text"
-                    value={form.slug}
-                    onChange={(e) => setForm({ ...form, slug: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold font-mono"
-                    placeholder="e.g. medicine-courier-from-pune-to-canada.htm"
-                    required
-                  />
-                </div>
-
-                <div className="flex items-center gap-2 pt-2">
-                  <input
-                    id="location-is-active"
-                    type="checkbox"
-                    checked={form.isActive}
-                    onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
-                    className="w-4 h-4 text-primary bg-slate-50 border-slate-200 rounded focus:ring-primary focus:ring-1"
-                  />
-                  <label htmlFor="location-is-active" className="text-xs font-bold text-slate-700">
-                    Publish this route dynamically on directory lists
-                  </label>
-                </div>
-
-              </div>
-
-              {/* Actions Footer */}
-              <div className="p-5 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                {selectedLocation && (
-                  <button
-                    type="button"
-                    onClick={() => handleDeleteLocation(selectedLocation._id)}
-                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl border border-red-200 text-[10px] font-black uppercase text-red-500 hover:bg-red-50 transition-colors order-last sm:order-first"
-                  >
-                    <Trash2 size={13} />
-                    Delete Route
-                  </button>
-                )}
-                <div className="flex gap-2 justify-end flex-1">
-                  <button
-                    type="button"
-                    onClick={() => setIsModalOpen(false)}
-                    className="px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-white hover:bg-slate-50 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isSaving}
-                    className="px-5 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow disabled:opacity-50"
-                  >
-                    {isSaving ? "Saving..." : "Save Route"}
-                  </button>
-                </div>
-              </div>
-
-            </form>
-
-          </div>
-        </div>
-      )}
-
     </div>
   );
 }

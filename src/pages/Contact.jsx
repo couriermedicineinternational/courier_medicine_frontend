@@ -391,11 +391,11 @@ export default function Contact() {
                         <label htmlFor="contact-phone" className="text-[10.5px] font-bold uppercase tracking-wider text-slate-700">
                           Contact Mobile No. <span className="text-red-500">*</span>
                         </label>
-                        <div className="flex h-11 relative shadow-sm">
+                        <div className={`flex h-11 relative shadow-sm rounded-xl border ${errors.phone ? "border-red-400 focus-within:ring-2 focus-within:ring-red-200 focus-within:border-red-500 bg-red-50/50" : "border-slate-200 focus-within:ring-2 focus-within:ring-secondary/20 focus-within:border-secondary bg-white"} transition-all overflow-hidden`}>
                           <select 
                             value={countryCode}
                             onChange={(e) => setCountryCode(e.target.value)}
-                            className="w-[85px] px-2 rounded-l-xl border-y border-l border-slate-200 bg-white/70 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-1 focus:ring-secondary/20 z-10"
+                            className="w-[85px] px-2 bg-slate-100/50 text-xs font-semibold text-slate-800 focus:outline-none border-r border-slate-200 cursor-pointer"
                           >
                             {COUNTRY_CALLING_CODES.map(c => (
                               <option key={c.iso} value={c.code}>{c.iso} {c.code}</option>
@@ -412,7 +412,7 @@ export default function Contact() {
                                 message: "Invalid numbers format"
                               }
                             })}
-                            className={`w-full px-4 rounded-r-xl border ${errors.phone ? "border-red-400 bg-red-50/50" : "border-slate-200 bg-white"} text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all`}
+                            className="w-full px-4 bg-transparent text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none"
                           />
                         </div>
                         {errors.phone && <span className="text-[10px] text-red-500 font-bold ml-1">{errors.phone.message}</span>}

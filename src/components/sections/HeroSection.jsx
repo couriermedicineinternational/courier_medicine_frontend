@@ -234,7 +234,7 @@ export default function HeroSection({ title, subtitle, content }) {
 
   return (
     <>
-      <section id="hero-section" className="relative w-full pt-5 md:pt-8 pb-8 md:pb-12 font-sans">
+      <section id="hero-section" className="relative w-full pt-2 md:pt-3 pb-6 md:pb-8 font-sans">
         
         {/* Background Layer */}
         <div className="absolute inset-0 z-0 overflow-hidden bg-white">
@@ -249,7 +249,7 @@ export default function HeroSection({ title, subtitle, content }) {
 
         {/* Hero Content Layer */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div id="hero-grid" className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch pt-2">
+          <div id="hero-grid" className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch pt-0">
           
           {/* Left Hero: Picture Column with Text Overlay */}
           <motion.div 

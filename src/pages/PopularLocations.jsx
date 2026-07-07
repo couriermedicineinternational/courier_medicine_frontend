@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { MapPin, ArrowUpRight, Search, X, ArrowUp } from "lucide-react";
-import { ALL_LOCATIONS } from "../constants";
 import api from "../utils/api";
 
 export default function PopularLocations() {
@@ -10,7 +9,7 @@ export default function PopularLocations() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [locations, setLocations] = useState(ALL_LOCATIONS || []);
+  const [locations, setLocations] = useState([]);
 
   useEffect(() => {
     api.get('/locations')
@@ -132,7 +131,7 @@ export default function PopularLocations() {
             </span>
             <input
               type="text"
-              placeholder="Search pickup location..."
+              placeholder="Search Destination"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary shadow-sm transition-all"

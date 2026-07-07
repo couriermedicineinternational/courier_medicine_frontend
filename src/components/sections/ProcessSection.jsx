@@ -129,7 +129,7 @@ export default function ProcessSection({ title, subtitle, content }) {
                   scale: 1.015,
                   boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.04), 0 10px 10px -5px rgba(0, 0, 0, 0.01)"
                 }}
-                className="bg-[#F8FBFD] border border-slate-100/80 rounded-[24px] p-3 sm:p-6 flex flex-col justify-between relative group transition-colors duration-300 hover:bg-white hover:border-secondary/20 cursor-default h-[250px] xs:h-[280px] sm:h-[350px] md:h-auto md:min-h-[380px]"
+                className="bg-[#F8FBFD] border border-slate-100/80 rounded-[24px] p-4 sm:p-6 flex flex-col justify-between relative group transition-colors duration-300 hover:bg-white hover:border-secondary/20 cursor-default h-auto min-h-[340px] xs:min-h-[400px] sm:min-h-[500px] md:min-h-[520px]"
               >
                 <div>
                   {/* Top Row: Icon Container on Left, Step Indicator on Right */}
@@ -141,25 +141,25 @@ export default function ProcessSection({ title, subtitle, content }) {
                       0{idx + 1}
                     </div>
                   </div>
-
+ 
                   {/* Step Text Indicator */}
                   <span className="text-[8px] sm:text-[10px] font-black uppercase tracking-wider text-slate-400 block mt-1 sm:mt-2">
                     {item.step}
                   </span>
-
+ 
                   {/* Step Title */}
                   <h4 className="text-xs sm:text-base font-black sm:font-extrabold text-slate-800 tracking-tight mt-0.5 sm:mt-1 mb-1 sm:mb-2 line-clamp-1 sm:line-clamp-none">
                     {item.title}
                   </h4>
-
+ 
                   {/* Step Description */}
                   <p className="text-[10px] sm:text-xs text-slate-500 font-sans font-medium leading-normal sm:leading-relaxed mb-3 sm:mb-6 line-clamp-3 sm:line-clamp-none">
                     {item.description}
                   </p>
                 </div>
-
+ 
                 {/* Step Image */}
-                <div className="overflow-hidden rounded-lg sm:rounded-[16px] aspect-[16/10] w-full border border-slate-100/20 mt-auto h-16 xs:h-20 sm:h-28 md:h-auto shrink-0">
+                <div className="overflow-hidden rounded-lg sm:rounded-[16px] aspect-[4/3] w-full border border-slate-100/20 mt-auto h-auto shrink-0">
                   <img 
                     src={imgPath} 
                     alt={item.title} 

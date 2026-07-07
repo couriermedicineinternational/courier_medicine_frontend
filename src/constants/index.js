@@ -81,7 +81,7 @@ export const HERO = {
     medicineTypeLabel: "MEDICINES TYPE",
     medicineTypePlaceholder: "Select Medicine Type",
     mobileLabel: "MOBILE NO.*",
-    mobilePlaceholder: "Enter Your Mobile No.",
+    mobilePlaceholder: "ENTER MOBILE NUMBER",
     prescriptionQuestion: "DO YOU HAVE PRESCRIPTION ?",
     prescriptionYes: "YES",
     prescriptionNo: "NO",
@@ -888,6 +888,26 @@ export const FAQ_PAGE = {
     {
       q: "Is insurance included for expensive lifesaving oncology drugs?",
       a: "Yes! We provide complete parcel damage and loss insurance covers for sensitive, critical, and high-value drugs (e.g. oncology, chronic cardiac items) so your valuable health parcels are fully protected."
+    },
+    {
+      q: "How do I track my international medicine shipment?",
+      a: "We provide a live tracking AWB number the moment your package is dispatched. You can track your parcel's journey globally on our website until it safely reaches the destination address."
+    },
+    {
+      q: "Do you offer door pickup services for medicines in India?",
+      a: "Yes, we provide free door pickup from most major cities and towns in India. Just book your shipment and our executive will safely collect the parcel and documents from your home."
+    },
+    {
+      q: "Can I send Ayurvedic and Homeopathic medicines?",
+      a: "Absolutely. We routinely ship Allopathic, Ayurvedic, Homeopathic, and Unani medicines. Just ensure you have the original doctor's prescription and pharmacy bill."
+    },
+    {
+      q: "Are there any restrictions on what medicines I can send?",
+      a: "Narcotics, sleeping pills, and restricted psychotropic substances cannot be shipped. All medicines must be legal for personal import in the destination country and accompanied by a valid Rx."
+    },
+    {
+      q: "What happens if my parcel is held by customs?",
+      a: "Our logistics team ensures full documentation compliance before dispatch. In rare cases of customs queries, our experts actively coordinate with local authorities to expedite clearance."
     }
   ]
 };

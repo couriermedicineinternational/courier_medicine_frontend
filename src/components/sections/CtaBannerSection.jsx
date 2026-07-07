@@ -67,36 +67,7 @@ export default function CtaBannerSection({ title, subtitle, content }) {
 
           {/* Right Buttons Column */}
           <div className="relative z-10 flex flex-col sm:flex-row items-center gap-3.5 w-full lg:w-auto">
-            {/* Button 1: Dynamic Action Button */}
-            {content?.buttonText ? (
-              content.buttonLink?.startsWith("http") || content.buttonLink?.startsWith("mailto") || content.buttonLink?.startsWith("tel") ? (
-                <a
-                  href={content.buttonLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-[#0052CC] text-white font-bold text-xs shadow-md shadow-[#0052CC]/10 hover:bg-[#0052CC]/95 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 group cursor-pointer leading-none border-b border-[#0052CC]"
-                >
-                  <span>{content.buttonText}</span>
-                  <ArrowUpRight size={13} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
-                </a>
-              ) : (
-                <button
-                  onClick={handleGetQuoteClick}
-                  className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-[#0052CC] text-white font-bold text-xs shadow-md shadow-[#0052CC]/10 hover:bg-[#0052CC]/95 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 group cursor-pointer leading-none border-b border-[#0052CC]"
-                >
-                  <span>{content.buttonText}</span>
-                  <ArrowUpRight size={13} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
-                </button>
-              )
-            ) : (
-              <button
-                onClick={handleGetQuoteClick}
-                className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-[#0052CC] text-white font-bold text-xs shadow-md shadow-[#0052CC]/10 hover:bg-[#0052CC]/95 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 group cursor-pointer leading-none border-b border-[#0052CC]"
-              >
-                <span>Get A Quote</span>
-                <ArrowUpRight size={13} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
-              </button>
-            )}
+
 
             {/* Button 2: Call Us */}
             <a
@@ -109,7 +80,7 @@ export default function CtaBannerSection({ title, subtitle, content }) {
 
             {/* Button 3: WhatsApp Support */}
             <a
-              href="https://wa.me/918882691919?text=Hi! I want to courier medicines from India. Can I get a quote?"
+              href="https://wa.me/918882691919"
               target="_blank"
               rel="noopener noreferrer"
               className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-white border border-slate-200 text-slate-700 font-bold text-xs shadow-xs hover:border-emerald-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer leading-none"

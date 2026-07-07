@@ -7,7 +7,7 @@ import { COUNTRY_CALLING_CODES } from "../../constants/countryCodes";
 import Input from "../ui/Input";
 import api from "../../utils/api";
 
-const weightLabels = ["0.5 kg", "1.0 kg", "Above"];
+const weightLabels = ["0.5 kg", "1.0 kg", "Above 1kg"];
 
 export default function CalculatorForm() {
   const navigate = useNavigate();
@@ -16,7 +16,8 @@ export default function CalculatorForm() {
   const [countries, setCountries] = useState(ALL_COUNTRIES || []);
   const [locations, setLocations] = useState(HERO.locationsList || []);
   const [weightIndex, setWeightIndex] = useState(0);
-  const [serviceType, setServiceType] = useState("PICKUP");
+  const [serviceType, setServiceType] = useState(null);
+  const [serviceTypeError, setServiceTypeError] = useState(false);
   const [countryCode, setCountryCode] = useState("+91");
 
   useEffect(() => {
@@ -40,7 +41,7 @@ export default function CalculatorForm() {
 
   const { register, handleSubmit, setValue, formState: { errors } } = useForm({
     defaultValues: {
-      country: "US",
+      country: "",
       weight: "0.5",
       medicineType: "allopathic",
       mobile: ""
@@ -77,16 +78,19 @@ export default function CalculatorForm() {
         setWeightIndex(idx);
       }
     }
-  }, [location.state, setValue]);
+  }, [location.state, setValue, countries]);
 
-  const handleSliderChange = (e) => {
-    const idx = parseInt(e.target.value);
-    setWeightIndex(idx);
-    const val = idx === 0 ? "0.5" : idx === 1 ? "1.0" : "2.0"; // "2.0" represents "Above" for calculations
+  const handleIndexChange = (newIndex) => {
+    setWeightIndex(newIndex);
+    const val = newIndex === 0 ? "0.5" : newIndex === 1 ? "1.0" : "2.0"; // "2.0" represents "Above" for calculations
     setValue("weight", val);
   };
 
   const onSubmitCalculator = async (data) => {
+    if (!serviceType) {
+      setServiceTypeError(true);
+      return;
+    }
     const defaultLocId = locations[0]?.id || "delhi";
     const defaultLocName = locations[0]?.name || "Delhi";
 
@@ -99,7 +103,7 @@ export default function CalculatorForm() {
         countryCode: data.country,
         location: defaultLocName,
         medicineType: medTypeObj?.name || "Allopathic",
-        mobile: data.mobile,
+        mobile: `${countryCode} ${data.mobile}`,
         prescription: prescriptionValue,
         weight: "Above 1 KG",
         serviceType: serviceType === "PICKUP" ? "I WANT PICK UP" : "BUY MEDICINES ON MY BEHALF"
@@ -209,29 +213,72 @@ export default function CalculatorForm() {
           <div className="p-5">
             <form id="calculator-form" onSubmit={handleSubmit(onSubmitCalculator)} className="space-y-3.5 font-sans">
               {/* Service Option Buttons */}
-              <div className="grid grid-cols-2 gap-2 mb-3">
-                <button
-                  type="button"
-                  onClick={() => setServiceType("PICKUP")}
-                  className={`py-2 px-2 rounded-full border text-center font-black text-[8px] sm:text-[9.5px] transition-all uppercase tracking-wider cursor-pointer ${
-                    serviceType === "PICKUP"
-                      ? "bg-secondary text-white border-secondary shadow-sm scale-[1.01]"
-                      : "bg-white text-secondary border-slate-200 hover:bg-slate-50 hover:border-slate-300"
-                  }`}
-                >
-                  I Want Pick Up
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setServiceType("BUY")}
-                  className={`py-2 px-2 rounded-full border text-center font-black text-[8px] sm:text-[9.5px] transition-all uppercase tracking-wider cursor-pointer ${
-                    serviceType === "BUY"
-                      ? "bg-secondary text-white border-secondary shadow-md scale-[1.01]"
-                      : "bg-white text-secondary border-slate-200 hover:bg-slate-50 hover:border-slate-300"
-                  }`}
-                >
-                  Buy Medicines on My Behalf
-                </button>
+              <div className="flex flex-col gap-1.5 mb-3 w-full">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-slate-700">
+                  Select Service Mode <span className="text-red-500">*</span>
+                </label>
+                <div className={`grid grid-cols-2 gap-3 p-1 rounded-2xl transition-all duration-200 ${
+                  serviceTypeError ? "ring-2 ring-red-400 bg-red-50/50 p-2" : ""
+                }`}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setServiceType("PICKUP");
+                      setServiceTypeError(false);
+                    }}
+                    className={`flex flex-col items-center justify-center py-2.5 px-2 rounded-xl border-2 text-center transition-all duration-200 shadow-xs hover:shadow-sm cursor-pointer group active:scale-97 select-none relative overflow-hidden ${
+                      serviceType === "PICKUP"
+                        ? "bg-[#0052cc] border-[#0052cc] text-white font-black scale-[1.01] shadow-xs"
+                        : "bg-white border-slate-200 hover:border-slate-350 hover:bg-slate-50 text-slate-700 font-extrabold"
+                    }`}
+                  >
+                    <div className="flex flex-col items-center gap-1">
+                      <svg className={`w-5 h-5 transition-transform duration-200 group-hover:scale-105 ${serviceType === "PICKUP" ? "text-white" : "text-slate-500 group-hover:text-secondary"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M17 17h2a3 3 0 003-3V9.5a2.5 2.5 0 00-2.5-2.5H18m-5-3.5h-8A2.5 2.5 0 002.5 6v8a3 3 0 003 3h2m10 0a3 3 0 11-6 0m6 0h-2m-3 0a3 3 0 11-6 0m6 0H9" />
+                      </svg>
+                      <span className="text-[9.5px] sm:text-[11px] uppercase tracking-wide">I Want Pick Up</span>
+                    </div>
+                    {serviceType === "PICKUP" && (
+                      <div className="absolute top-0.5 right-0.5 bg-white text-[#0052cc] rounded-full p-0.5 shadow-xs">
+                        <svg className="w-3 h-3 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                      </div>
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setServiceType("BUY");
+                      setServiceTypeError(false);
+                    }}
+                    className={`flex flex-col items-center justify-center py-2.5 px-2 rounded-xl border-2 text-center transition-all duration-200 shadow-xs hover:shadow-sm cursor-pointer group active:scale-97 select-none relative overflow-hidden ${
+                      serviceType === "BUY"
+                        ? "bg-[#0052cc] border-[#0052cc] text-white font-black scale-[1.01] shadow-xs"
+                        : "bg-white border-slate-200 hover:border-slate-350 hover:bg-slate-50 text-slate-700 font-extrabold"
+                    }`}
+                  >
+                    <div className="flex flex-col items-center gap-1">
+                      <svg className={`w-5 h-5 transition-transform duration-200 group-hover:scale-105 ${serviceType === "BUY" ? "text-white" : "text-slate-500 group-hover:text-secondary"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                      </svg>
+                      <span className="text-[9px] sm:text-[11px] uppercase tracking-wide">Buy Medicines For Me</span>
+                    </div>
+                    {serviceType === "BUY" && (
+                      <div className="absolute top-0.5 right-0.5 bg-white text-[#0052cc] rounded-full p-0.5 shadow-xs">
+                        <svg className="w-3 h-3 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                      </div>
+                    )}
+                  </button>
+                </div>
+                {serviceTypeError && (
+                  <span className="text-[10px] text-red-500 font-bold ml-1 animate-in fade-in duration-200">
+                    Please select a service option (Pick Up or Buy Medicines)
+                  </span>
+                )}
               </div>
 
               {/* Country & Weight row */}
@@ -262,18 +309,31 @@ export default function CalculatorForm() {
                     <input
                       type="range"
                       min="0"
-                      max="2"
-                      value={weightIndex}
-                      onChange={handleSliderChange}
+                      max="100"
+                      step="1"
+                      value={weightIndex * 50}
+                      onChange={(e) => {
+                        const val = parseInt(e.target.value);
+                        const currentVal = weightIndex * 50;
+                        let newIdx = weightIndex;
+                        if (val > currentVal) {
+                          if (val > 75 && weightIndex === 0) newIdx = 2;
+                          else newIdx = Math.min(2, weightIndex + 1);
+                        } else if (val < currentVal) {
+                          if (val < 25 && weightIndex === 2) newIdx = 0;
+                          else newIdx = Math.max(0, weightIndex - 1);
+                        }
+                        handleIndexChange(newIdx);
+                      }}
                       className="w-full custom-slider cursor-pointer"
                     />
                     <input type="hidden" {...register("weight")} />
                   </div>
 
                   <div className="flex justify-between text-[11px] font-bold text-slate-400 px-1 mt-1">
-                    <span>0.5 kg</span>
-                    <span>1.0 kg</span>
-                    <span>Above</span>
+                    <span className="cursor-pointer hover:text-secondary transition-colors" onClick={() => handleIndexChange(0)}>0.5 kg</span>
+                    <span className="cursor-pointer hover:text-secondary transition-colors" onClick={() => handleIndexChange(1)}>1.0 kg</span>
+                    <span className="cursor-pointer hover:text-secondary transition-colors" onClick={() => handleIndexChange(2)}>Above 1kg</span>
                   </div>
                 </div>
               </div>
@@ -294,11 +354,11 @@ export default function CalculatorForm() {
                   <label htmlFor="form-mobile" className="text-[10.5px] font-bold uppercase tracking-wider text-slate-700">
                     {HERO.form.mobileLabel} <span className="text-red-500">*</span>
                   </label>
-                  <div className="flex h-11 relative shadow-sm">
+                  <div className={`flex h-11 relative shadow-sm rounded-xl border ${errors.mobile ? "border-red-400 focus-within:ring-2 focus-within:ring-red-200 focus-within:border-red-500 bg-red-50/50" : "border-slate-200 focus-within:ring-2 focus-within:ring-secondary/20 focus-within:border-secondary bg-white"} transition-all overflow-hidden`}>
                     <select 
                       value={countryCode}
                       onChange={(e) => setCountryCode(e.target.value)}
-                      className="w-[85px] px-2 rounded-l-xl border-y border-l border-slate-200 bg-white/70 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-1 focus:ring-secondary/20 z-10"
+                      className="w-[62px] shrink-0 px-1 bg-slate-100/50 text-[11px] font-bold text-slate-800 focus:outline-none border-r border-slate-200 cursor-pointer"
                     >
                       {COUNTRY_CALLING_CODES.map(c => (
                         <option key={c.iso} value={c.code}>{c.iso} {c.code}</option>
@@ -315,7 +375,7 @@ export default function CalculatorForm() {
                           message: "Invalid mobile phone format"
                         }
                       })}
-                      className={`w-full px-4 rounded-r-xl border ${errors.mobile ? "border-red-400 bg-red-50/50" : "border-slate-200 bg-white"} text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all`}
+                      className="w-full px-2 bg-transparent text-[10px] sm:text-[11px] md:text-xs font-semibold text-slate-800 placeholder-slate-400 focus:outline-none tracking-tight"
                     />
                   </div>
                   {errors.mobile && <span className="text-[10px] text-red-500 font-bold ml-1">{errors.mobile.message}</span>}

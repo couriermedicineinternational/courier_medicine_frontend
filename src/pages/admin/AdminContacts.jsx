@@ -683,14 +683,6 @@ export default function AdminContacts() {
                             </>
                           )}
                         </button>
-
-                        <button
-                          onClick={() => openConvertWizard(contact)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary hover:bg-primary/95 text-white text-[10px] font-black uppercase shadow-sm transition-all hover:scale-[1.02] whitespace-nowrap"
-                        >
-                          <PackagePlus size={12} />
-                          Convert to Order
-                        </button>
                       </div>
 
                       <button

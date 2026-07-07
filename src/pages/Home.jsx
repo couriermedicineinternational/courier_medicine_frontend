@@ -36,7 +36,6 @@ export default function Home() {
       try {
         const res = await api.get("/homepage");
         if (res.data && res.data.success && res.data.data) {
-          console.log("Homepage sections fetched successfully:", res.data.data);
           setSections(res.data.data);
         }
       } catch (err) {

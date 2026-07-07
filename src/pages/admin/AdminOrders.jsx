@@ -196,16 +196,23 @@ export default function AdminOrders() {
                       <span className="font-extrabold text-slate-900 tracking-wider font-mono">{order.bookingRef}</span>
                     </td>
                     <td className="px-2 sm:px-3 py-3">
-                      <div className="flex flex-col max-w-[160px]">
-                        <span className="font-extrabold text-slate-900 text-xs truncate">{order.customerName}</span>
-                        <span className="text-[9px] text-slate-500 mt-0.5 font-semibold">{order.customerPhone}</span>
-                        {order.customerEmail && (
-                          <span className="text-[9px] text-slate-400 mt-0.5 font-sans break-all">{order.customerEmail}</span>
-                        )}
-                        <span className="text-[9px] text-slate-400 mt-0.5 font-sans whitespace-normal break-words leading-tight">
-                          {order.originAddress || order.customerAddress || order.originCity || "N/A"}
-                        </span>
-                      </div>
+                      {order.originAddress && order.originAddress.includes("Buy Medicines") ? (
+                        <div className="flex flex-col items-start justify-center p-1.5 bg-indigo-50/50 border border-indigo-100/50 rounded-lg max-w-[160px]">
+                          <span className="text-[9px] font-extrabold text-indigo-500 uppercase tracking-wider">Buy on Behalf</span>
+                          <span className="text-[8px] font-semibold text-indigo-400/80 mt-0.5">Receiver details only</span>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col max-w-[160px]">
+                          <span className="font-extrabold text-slate-900 text-xs truncate">{order.customerName}</span>
+                          <span className="text-[9px] text-slate-500 mt-0.5 font-semibold">{order.customerPhone}</span>
+                          {order.customerEmail && (
+                            <span className="text-[9px] text-slate-400 mt-0.5 font-sans break-all">{order.customerEmail}</span>
+                          )}
+                          <span className="text-[9px] text-slate-400 mt-0.5 font-sans whitespace-normal break-words leading-tight">
+                            {order.originAddress || order.customerAddress || order.originCity || "N/A"}
+                          </span>
+                        </div>
+                      )}
                     </td>
                     <td className="px-2 sm:px-3 py-3">
                       {(() => {

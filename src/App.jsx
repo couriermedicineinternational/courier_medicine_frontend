@@ -6,6 +6,7 @@ import Topbar from "./components/layout/Topbar";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import MobileBottomNav from "./components/layout/MobileBottomNav";
+import ScrollToTopButton from "./components/layout/ScrollToTopButton";
 
 // Pages (Lazy Loaded)
 const Home = lazy(() => import("./pages/Home"));
@@ -33,7 +34,9 @@ const AdminLayout = lazy(() => import("./components/admin/AdminLayout"));
 
 // Expanded Admin Pages
 const AdminCountries = lazy(() => import("./pages/admin/AdminCountries"));
+const AdminCountryEdit = lazy(() => import("./pages/admin/AdminCountryEdit"));
 const AdminLocations = lazy(() => import("./pages/admin/AdminLocations"));
+const AdminLocationEdit = lazy(() => import("./pages/admin/AdminLocationEdit"));
 const AdminBlogs = lazy(() => import("./pages/admin/AdminBlogs"));
 const AdminFaqs = lazy(() => import("./pages/admin/AdminFaqs"));
 const AdminTestimonials = lazy(() => import("./pages/admin/AdminTestimonials"));
@@ -143,7 +146,9 @@ export default function App() {
               <Route path="/admin/quotes" element={<AdminLayout><AdminQuotes /></AdminLayout>} />
               <Route path="/admin/contacts" element={<AdminLayout><AdminContacts /></AdminLayout>} />
               <Route path="/admin/countries" element={<AdminLayout><AdminCountries /></AdminLayout>} />
+              <Route path="/admin/countries/:id/edit" element={<AdminLayout><AdminCountryEdit /></AdminLayout>} />
               <Route path="/admin/locations" element={<AdminLayout><AdminLocations /></AdminLayout>} />
+              <Route path="/admin/locations/:id/edit" element={<AdminLayout><AdminLocationEdit /></AdminLayout>} />
               <Route path="/admin/blogs" element={<AdminLayout><AdminBlogs /></AdminLayout>} />
               <Route path="/admin/faqs" element={<AdminLayout><AdminFaqs /></AdminLayout>} />
               <Route path="/admin/testimonials" element={<AdminLayout><AdminTestimonials /></AdminLayout>} />
@@ -164,6 +169,7 @@ export default function App() {
         {/* Shared footer section */}
         {!isAdminRoute && <Footer />}
         {!isAdminRoute && <MobileBottomNav />}
+        {!isAdminRoute && <ScrollToTopButton />}
       </div>
     </>
   );

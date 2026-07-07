@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, useInView, animate } from "motion/react";
-import { Package, Globe, MapPin, Smile } from "lucide-react";
+import { Package, Globe, MapPin, Smile, Star } from "lucide-react";
 
 const STATS_DATA = [
   { 
@@ -62,6 +62,17 @@ const GoogleIcon = ({ className }) => (
   </svg>
 );
 
+const TrustpilotIcon = ({ className }) => (
+  <svg 
+    viewBox="0 0 24 24" 
+    className={className}
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path fill="#00B67A" d="M12 17.25l-6.18 3.73 1.64-7.03-5.46-4.73 7.19-.62L12 2l2.81 6.6 7.19.62-5.46 4.73 1.64 7.03z"/>
+  </svg>
+);
+
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -73,11 +84,10 @@ const containerVariants = {
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 0, scale: 0.98 },
+  hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
-    scale: 1,
     transition: {
       duration: 0.5,
       ease: "easeOut"
@@ -85,47 +95,19 @@ const cardVariants = {
   }
 };
 
-function AnimatedCounter({ endValue, suffix, isFloat, className }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.5 });
-  const [displayValue, setDisplayValue] = useState("0");
-
-  useEffect(() => {
-    if (isInView) {
-      const controls = animate(0, endValue, {
-        duration: 2.2,
-        ease: "easeOut",
-        onUpdate(value) {
-          if (isFloat) {
-            setDisplayValue(value.toFixed(1));
-          } else {
-            setDisplayValue(Math.floor(value).toLocaleString("en-US"));
-          }
-        }
-      });
-      return () => controls.stop();
-    }
-  }, [isInView, endValue, isFloat]);
-
-  const trimmedSuffix = (suffix || "").trim();
-  const isTextSuffix = /^[a-zA-Z]+/.test(trimmedSuffix);
-
-  return (
-    <div ref={ref} className={`${className} flex flex-col items-center justify-center leading-none`}>
-      <div className="flex items-baseline justify-center">
-        <span>{displayValue}</span>
-        {!isTextSuffix && <span>{suffix}</span>}
-      </div>
-      {isTextSuffix && (
-        <span className="text-[13px] sm:text-[15px] font-bold mt-1.5 bg-gradient-to-r from-[#0052CC] to-[#4c8bf5] bg-clip-text text-transparent block">
-          {trimmedSuffix}
-        </span>
-      )}
-    </div>
-  );
+function formatValue(numPart) {
+  const numValue = parseFloat(numPart.replace(/,/g, ''));
+  if (Number.isNaN(numValue)) return numPart;
+  if (numPart.includes('.')) {
+    return numValue.toFixed(1);
+  }
+  return Math.floor(numValue).toLocaleString("en-US");
 }
 
-export default function StatsSection() {
+export default function StatsSection({ title, subtitle, content }) {
+  // Use CMS data if available, fallback to hardcoded STATS_DATA for structure/styling
+  const displayStats = content?.stats && content.stats.length > 0 ? content.stats : STATS_DATA;
+
   return (
     <div id="stats-section" className="flex flex-col bg-[#0052CC]/5 py-16 md:py-20">
       {/* Top Intro Part */}
@@ -138,7 +120,7 @@ export default function StatsSection() {
       >
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
           <span className="text-[#0052CC] bg-[#0052CC]/10 text-[10px] md:text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full mb-6">
-            Who we are
+            {title || "Who we are"}
           </span>
           <h2 className="text-3xl md:text-4xl lg:text-[42px] font-bold text-[#0F172A] tracking-tight leading-tight mb-5">
             Ensuring Safe, Legal & Worldwide <br className="hidden sm:block" />
@@ -150,43 +132,125 @@ export default function StatsSection() {
             overseas.
           </p>
         </div>
+
+        {/* Mobile Google Rating Badge */}
+        <div className="flex md:hidden items-center justify-center gap-2 mt-6 bg-white shadow-sm border border-slate-100 rounded-full px-4 py-2 mx-auto w-max">
+          <GoogleIcon className="w-4 h-4" />
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs font-black text-slate-800">4.9/5</span>
+            <div className="flex gap-0.5 text-[#FBBC05]">
+              <Star size={10} fill="currentColor" />
+              <Star size={10} fill="currentColor" />
+              <Star size={10} fill="currentColor" />
+              <Star size={10} fill="currentColor" />
+              <Star size={10} fill="currentColor" />
+            </div>
+          </div>
+        </div>
       </motion.div>
 
       {/* Stats Banner Part */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <motion.div 
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-8"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
         >
-          {STATS_DATA.map((stat, idx) => {
-            const IconComponent = stat.icon;
+          {displayStats.map((stat, idx) => {
+            const isGoogle = (stat.label || "").toLowerCase().includes("google") || idx === 1;
+            const isTrustpilot = (stat.label || "").toLowerCase().includes("trustpilot") || (stat.label || "").toLowerCase().includes("trust pilot") || idx === 3;
+
+            // Merge CMS dynamic data with hardcoded styling based on index (to keep the nice colors)
+            const staticStyle = STATS_DATA[idx] || STATS_DATA[0];
+            const IconComponent = staticStyle.icon;
+            
+            // Clean up suffix text
+            const trimmedSuffix = (stat.suffix || "").trim();
+            const isTextSuffix = /^[a-zA-Z]+/.test(trimmedSuffix);
+
+            // Parse value to separate numbers/symbols from alphabetical words
+            const rawValue = String(stat.value !== undefined ? stat.value : stat.endValue);
+            const numMatch = rawValue.match(/^([\d.,]+)(.*)$/);
+            const numPart = numMatch ? numMatch[1] : rawValue;
+            const textPart = numMatch ? numMatch[2].trim() : "";
+            const isAlphabetic = /[a-zA-Z]/.test(textPart);
+
+            // Calculate numeric value for animation
+            const numValue = parseFloat(numPart.replace(/,/g, ''));
+            const isFloat = !Number.isNaN(numValue) && numPart.includes('.');
+
+            const CardComponent = (isGoogle || isTrustpilot) ? 'a' : 'div';
+            const cardProps = isGoogle ? {
+              href: "https://www.google.com/search?q=courier+medicines+international+services&oq=courier+medi&gs_lcrp=EgZjaHJvbWUqBwgBEAAYgAQyBwgAEAAYgAQyBwgBEAAYgAQyBwgCEAAYgAQyBggDEEUYOTIHCAQQABiABDIHCAUQABiABDIHCAYQABiABDIHCAcQABiABDIHCAgQABiABDIHCAkQABiABNIBCTc5NzNqMGoxNagCCLACAfEF92Jo1dH9Dio&sourceid=chrome&ie=UTF-8&zx=1783411816019#sv=CAwShQMKBmxjbF9wdhJbCgNwdnESVENnMHZaeTh4TVhneGVXMDJaM0ZrSWk0S0tHTnZkWEpwWlhJZ2JXVmthV05wYm1WeklHbHVkR1Z5Ym1GMGFXOXVZV3dnYzJWeWRtbGpaWE1RQWhnRBLGAQoDbHFpEr4BQ2loamIzVnlhV1Z5SUcxbFpHbGphVzVsY3lCcGJuUmxjbTVoZEdsdmJtRnNJSE5sY25acFkyVnpTTXoxek5tSHZJQ0FDRnBHRUFBUUFSQUNFQU1ZQUJnQkdBSVlBeUlvWTI5MWNtbGxjaUJ0WldScFkybHVaWE1nYVc1MFpYSnVZWFJwYjI1aGJDQnpaWEoyYVdObGN5b0tDQUlRQUJBQkVBSVFBNUlCRDJOdmRYSnBaWEpmYzJWeWRtbGpaURISCgN0YnMSC2xyZjohM3NJQUU9Ei0KAXESKGNvdXJpZXIgbWVkaWNpbmVzIGludGVybmF0aW9uYWwgc2VydmljZXMaEmxvY2FsLXBsYWNlLXZpZXdlchgKILTR36oN",
+              target: "_blank",
+              rel: "noopener noreferrer"
+            } : isTrustpilot ? {
+              href: "https://www.trustpilot.com/review/couriermedicines.com",
+              target: "_blank",
+              rel: "noopener noreferrer"
+            } : {};
+
+            let finalBgColor = staticStyle.bgColor;
+            let finalIconColor = staticStyle.iconColor;
+            let finalColorClass = staticStyle.colorClass;
+            let finalBorderColor = staticStyle.borderColor;
+
+            if (isTrustpilot) {
+              finalBgColor = "bg-[#00B67A]/10";
+              finalIconColor = "text-[#00B67A]";
+              finalColorClass = "from-[#00B67A] to-[#00d08c]";
+              finalBorderColor = "hover:border-[#00B67A]/30";
+            }
+
             return (
               <motion.div 
                 key={idx} 
                 variants={cardVariants}
-                whileHover={{ y: -10, scale: 1.05 }}
-                className={`bg-white border border-slate-100 rounded-[20px] p-6 md:p-8 min-h-[200px] shadow-[0_8px_30px_rgb(0,0,0,0.02)] hover:shadow-[0_12px_40px_rgba(0,82,204,0.06)] transition-all duration-300 flex flex-col items-center justify-center text-center cursor-pointer ${stat.borderColor}`}
+                className="w-full h-full"
               >
+                <CardComponent
+                  {...cardProps}
+                  className={`bg-white border border-slate-100 rounded-[20px] p-3 xs:p-4 md:p-8 h-full min-h-[160px] md:min-h-[200px] transition-all duration-500 flex flex-col items-center justify-center text-center cursor-pointer no-underline ${finalBorderColor} shadow-[0_12px_40px_rgba(0,82,204,0.06)] -translate-y-2 scale-[1.05] md:shadow-[0_8px_30px_rgb(0,0,0,0.02)] md:translate-y-0 md:scale-100 md:hover:shadow-[0_12px_40px_rgba(0,82,204,0.06)] md:hover:-translate-y-2 md:hover:scale-[1.05]`}
+                >
                 {/* Icon Container */}
-                <div className={`w-12 h-12 rounded-2xl ${stat.bgColor} ${stat.iconColor} flex items-center justify-center mb-5 shadow-inner`}>
-                  <IconComponent size={24} className="stroke-[2.2]" />
+                <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl ${finalBgColor} ${finalIconColor} flex items-center justify-center mb-3 md:mb-5 shadow-inner`}>
+                  {isGoogle ? (
+                    <GoogleIcon className="w-5 h-5 md:w-6 md:h-6" />
+                  ) : isTrustpilot ? (
+                    <TrustpilotIcon className="w-5 h-5 md:w-6 md:h-6" />
+                  ) : (
+                    <IconComponent className="w-5 h-5 md:w-6 md:h-6 stroke-[2.2]" />
+                  )}
                 </div>
 
-                {/* Animated Counter */}
-                <AnimatedCounter
-                  endValue={stat.endValue}
-                  suffix={stat.suffix}
-                  isFloat={stat.isFloat}
-                  className={`text-3xl md:text-4xl font-extrabold mb-2 font-sans tracking-tight bg-gradient-to-r ${stat.colorClass} bg-clip-text text-transparent`}
-                />
+                {/* Display Value & Suffix from CMS */}
+                <div className={`flex flex-col items-center justify-center leading-none tracking-tight bg-gradient-to-r ${finalColorClass} bg-clip-text text-transparent mb-1.5 md:mb-2`}>
+                  <div className="flex items-baseline justify-center text-3xl md:text-4xl font-extrabold font-sans tabular-nums min-h-[36px] md:min-h-[40px]">
+                    <span>{formatValue(numPart)}</span>
+                    {textPart && !isAlphabetic && (
+                      <span className="ml-0.5">{textPart}</span>
+                    )}
+                    {!isTextSuffix && <span>{trimmedSuffix}</span>}
+                  </div>
+                  {(textPart && isAlphabetic) && (
+                    <span className="text-[10px] md:text-sm font-black uppercase tracking-wider mt-0.5 text-slate-400">
+                      {textPart}
+                    </span>
+                  )}
+                  {isTextSuffix && (
+                    <span className={`text-[11px] sm:text-[15px] font-bold mt-1 bg-gradient-to-r ${finalColorClass} bg-clip-text text-transparent block`}>
+                      {trimmedSuffix}
+                    </span>
+                  )}
+                </div>
 
                 {/* Label */}
-                <span className="text-[10px] md:text-xs font-black text-slate-400 tracking-widest uppercase leading-tight max-w-[160px]">
+                <span className="text-[9px] md:text-xs font-black text-slate-400 tracking-widest uppercase leading-tight max-w-[160px]">
                   {stat.label}
                 </span>
+                </CardComponent>
               </motion.div>
             );
           })}

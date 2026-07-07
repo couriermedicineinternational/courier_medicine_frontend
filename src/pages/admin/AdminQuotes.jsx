@@ -14,6 +14,7 @@ import {
   PackagePlus,
   Trash2
 } from "lucide-react";
+import { COUNTRY_CALLING_CODES } from "../../constants/countryCodes";
 import api from "../../utils/api";
 
 export default function AdminQuotes() {
@@ -30,6 +31,8 @@ export default function AdminQuotes() {
   const [orderForm, setOrderForm] = useState({});
   const [saveError, setSaveError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [senderCountryCode, setSenderCountryCode] = useState("+91");
+  const [receiverCountryCode, setReceiverCountryCode] = useState("+91");
 
   // Fetch quotes list
   const fetchQuotes = async () => {
@@ -66,12 +69,24 @@ export default function AdminQuotes() {
   // Open "Convert to Order" Wizard
   const openConvertWizard = (quote) => {
     setSelectedQuote(quote);
+    
+    let sCode = "+91", sPhone = quote.mobile || "";
+    if (sPhone && sPhone.includes(' ')) {
+      const parts = sPhone.split(' ');
+      if (parts[0].startsWith('+')) {
+        sCode = parts[0];
+        sPhone = parts.slice(1).join(' ');
+      }
+    }
+    setSenderCountryCode(sCode);
+    setReceiverCountryCode("+91");
+
     setOrderForm({
       quoteRequest: quote._id,
-      bookingRef: "",
+      bookingRef: quote.bookingRef || "",
       // Sender
       senderName: "",
-      senderPhone: quote.mobile || "",
+      senderPhone: sPhone,
       senderEmail: "",
       senderPickupDate: "",
       senderPickupAddress: "",
@@ -108,13 +123,21 @@ export default function AdminQuotes() {
     setIsConvertModalOpen(true);
   };
 
-  // Submit Converted Order
   const handleCreateOrder = async (e) => {
     e.preventDefault();
     setSaveError("");
     setIsSaving(true);
     try {
-      const res = await api.post("/orders", orderForm);
+      const payload = { ...orderForm };
+      
+      const formattedSenderPhone = `${senderCountryCode} ${orderForm.senderPhone}`;
+      const formattedReceiverPhone = `${receiverCountryCode} ${orderForm.receiverPhone}`;
+      
+      payload.customerPhone = formattedSenderPhone;
+      payload.destinationAddress = `Name: ${orderForm.receiverName}\nPhone: ${formattedReceiverPhone}\nEmail: ${orderForm.receiverEmail || "N/A"}\nAddress: ${orderForm.receiverDeliveryAddress}`;
+      payload.notes = `Medicine used for: ${orderForm.medicineUsedFor}${payload.notes ? '\n' + payload.notes : ''}`;
+
+      const res = await api.post("/orders", payload);
       if (res.data && res.data.success) {
         setIsConvertModalOpen(false);
         fetchQuotes(); // Refresh quote statuses (will show as confirmed)
@@ -225,7 +248,7 @@ export default function AdminQuotes() {
                     <td className="px-6 py-4">
                       <div className="flex flex-col">
                         <span className="font-extrabold text-slate-900">{quote.mobile || "N/A"}</span>
-                        <span className="text-[10px] text-slate-400 mt-0.5">📦 {quote.countryName || quote.country || "—"}</span>
+                        <span className="text-[10px] text-slate-400 mt-0.5">{quote.countryName || quote.country || "—"}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -363,39 +386,50 @@ export default function AdminQuotes() {
                  <div>
                    <h4 className="text-sm font-black text-slate-800 uppercase tracking-wider mb-4 pb-2 border-b border-slate-200">Sender Details</h4>
                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                     <div className="space-y-1">
-                       <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Name *</label>
-                       <input
-                         type="text"
-                         placeholder="Your Full Name"
-                         value={orderForm.senderName}
-                         onChange={(e) => setOrderForm({ ...orderForm, senderName: e.target.value, customerName: e.target.value })}
-                         className="w-full bg-slate-50 border border-slate-200/80 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold"
-                         required
-                       />
-                     </div>
-                     <div className="space-y-1">
-                       <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Contact Number *</label>
-                       <input
-                         type="text"
-                         placeholder="10 Digit Mobile No"
-                         value={orderForm.senderPhone}
-                         onChange={(e) => setOrderForm({ ...orderForm, senderPhone: e.target.value, customerPhone: e.target.value })}
-                         className="w-full bg-slate-50 border border-slate-200/80 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold"
-                         required
-                       />
-                     </div>
-                     <div className="space-y-1">
-                       <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Email Address</label>
-                       <input
-                         type="email"
-                         placeholder="Email address"
-                         value={orderForm.senderEmail}
-                         onChange={(e) => setOrderForm({ ...orderForm, senderEmail: e.target.value, customerEmail: e.target.value })}
-                         className="w-full bg-slate-50 border border-slate-200/80 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold"
-                       />
-                     </div>
-                   </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Name *</label>
+                        <input
+                          type="text"
+                          placeholder="Your Full Name"
+                          value={orderForm.senderName}
+                          onChange={(e) => setOrderForm({ ...orderForm, senderName: e.target.value, customerName: e.target.value })}
+                          className="w-full bg-slate-50 border border-slate-200/80 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Contact Number *</label>
+                        <div className="flex bg-slate-50 border border-slate-200/80 rounded-xl focus-within:border-primary focus-within:ring-1 focus-within:ring-primary overflow-hidden transition-all">
+                          <select 
+                            value={senderCountryCode}
+                            onChange={(e) => setSenderCountryCode(e.target.value)}
+                            className="w-[85px] px-2 py-2.5 bg-slate-100/50 border-r border-slate-200 text-xs font-semibold text-slate-800 focus:outline-none cursor-pointer"
+                          >
+                            {COUNTRY_CALLING_CODES.map(c => (
+                              <option key={c.iso} value={c.code}>{c.iso} {c.code}</option>
+                            ))}
+                          </select>
+                          <input
+                            type="text"
+                            placeholder="10 Digit Mobile No"
+                            value={orderForm.senderPhone}
+                            onChange={(e) => setOrderForm({ ...orderForm, senderPhone: e.target.value, customerPhone: e.target.value })}
+                            className="w-full bg-transparent focus:outline-none px-3 py-2.5 text-xs font-semibold"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Email Address</label>
+                        <input
+                          type="email"
+                          placeholder="Email address"
+                          value={orderForm.senderEmail}
+                          onChange={(e) => setOrderForm({ ...orderForm, senderEmail: e.target.value, customerEmail: e.target.value })}
+                          className="w-full bg-slate-50 border border-slate-200/80 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold"
+                        />
+                      </div>
+                    </div>
                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                      <div className="space-y-1">
                        <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Pick Up Date *</label>
@@ -437,16 +471,27 @@ export default function AdminQuotes() {
                        />
                      </div>
                      <div className="space-y-1">
-                       <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Contact Number *</label>
-                       <input
-                         type="text"
-                         placeholder="10 Digit Mobile No"
-                         value={orderForm.receiverPhone}
-                         onChange={(e) => setOrderForm({ ...orderForm, receiverPhone: e.target.value })}
-                         className="w-full bg-slate-50 border border-slate-200/80 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold"
-                         required
-                       />
-                     </div>
+                        <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Contact Number *</label>
+                        <div className="flex bg-slate-50 border border-slate-200/80 rounded-xl focus-within:border-primary focus-within:ring-1 focus-within:ring-primary overflow-hidden transition-all">
+                          <select 
+                            value={receiverCountryCode}
+                            onChange={(e) => setReceiverCountryCode(e.target.value)}
+                            className="w-[85px] px-2 py-2.5 bg-slate-100/50 border-r border-slate-200 text-xs font-semibold text-slate-800 focus:outline-none cursor-pointer"
+                          >
+                            {COUNTRY_CALLING_CODES.map(c => (
+                              <option key={c.iso} value={c.code}>{c.iso} {c.code}</option>
+                            ))}
+                          </select>
+                          <input
+                            type="text"
+                            placeholder="10 Digit Mobile No"
+                            value={orderForm.receiverPhone}
+                            onChange={(e) => setOrderForm({ ...orderForm, receiverPhone: e.target.value })}
+                            className="w-full bg-transparent focus:outline-none px-3 py-2.5 text-xs font-semibold"
+                            required
+                          />
+                        </div>
+                      </div>
                      <div className="space-y-1">
                        <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Email Address</label>
                        <input
@@ -572,3 +617,4 @@ export default function AdminQuotes() {
     </div>
   );
 }
+

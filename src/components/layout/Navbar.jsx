@@ -4,31 +4,47 @@ import { Menu, X, ChevronDown, ArrowUpRight, Globe, MapPin } from "lucide-react"
 import { NAVIGATION } from "../../constants";
 import Logo from "./Logo";
 import { motion, AnimatePresence } from "motion/react";
-import { ALL_COUNTRIES, ALL_LOCATIONS } from "../../constants";
-
-// Build unique city list for locations dropdown
-const getLocationItems = () => {
-  const seen = new Set();
-  const items = [];
-  for (const l of ALL_LOCATIONS) {
-    if (!seen.has(l.city) && items.length < 8) {
-      seen.add(l.city);
-      // pick first location for this city as representative link
-      items.push({ city: l.city, id: l.id, name: l.name });
-    }
-  }
-  return items;
-};
-
-const COUNTRY_ITEMS = ALL_COUNTRIES.slice(0, 9); // show 9 countries in dropdown
-const LOCATION_ITEMS = ALL_LOCATIONS.slice(0, 8); // show 8 locations with full names
+import { ALL_COUNTRIES } from "../../constants";
+import api from "../../utils/api";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
+  const [locationItems, setLocationItems] = useState([]);
+  const [uniqueCityItems, setUniqueCityItems] = useState([]);
+  const [countryItems, setCountryItems] = useState(ALL_COUNTRIES.slice(0, 9));
   const location = useLocation();
   const navigate = useNavigate();
   const navRef = useRef(null);
+
+  useEffect(() => {
+    api.get('/countries')
+      .then(res => {
+        if (res.data && res.data.data) {
+          setCountryItems(res.data.data.slice(0, 9));
+        }
+      })
+      .catch(err => console.error("Error fetching countries in navbar:", err));
+
+    api.get('/locations')
+      .then(res => {
+        if (res.data && res.data.data) {
+          const locs = res.data.data;
+          setLocationItems(locs.slice(0, 8)); // Top 8 locations
+          
+          const seen = new Set();
+          const items = [];
+          for (const l of locs) {
+            if (!seen.has(l.city) && items.length < 8) {
+              seen.add(l.city);
+              items.push({ city: l.city, slug: l.slug, name: l.name });
+            }
+          }
+          setUniqueCityItems(items);
+        }
+      })
+      .catch(err => console.error("Error fetching locations in navbar:", err));
+  }, []);
 
   // Close everything on route change
   useEffect(() => {
@@ -112,7 +128,7 @@ export default function Navbar() {
                       <Globe size={11} /> Destination Countries
                     </p>
                     <div className="grid grid-cols-2 gap-2 mb-3">
-                      {COUNTRY_ITEMS.map((country) => (
+                      {countryItems.map((country) => (
                         <Link
                           key={country.code}
                           to={`/${country.slug}`}
@@ -139,9 +155,9 @@ export default function Navbar() {
                       <MapPin size={11} /> Medicine Courier Locations
                     </p>
                     <div className="grid grid-cols-2 gap-2 mb-3">
-                      {LOCATION_ITEMS.map((loc) => (
+                      {locationItems.map((loc) => (
                         <Link
-                          key={loc.id}
+                          key={loc._id}
                           to={`/${loc.slug}`}
                           className="flex items-center justify-between px-3 py-2.5 bg-slate-50 hover:bg-gradient-to-r hover:from-[#0052CC] hover:to-[#03ADA4] border border-slate-100 hover:border-transparent rounded-xl group/card transition-all duration-200"
                         >
@@ -270,7 +286,7 @@ export default function Navbar() {
                         >
                           <div className="mt-1.5 ml-3 mr-1 mb-1">
                             <div className="grid grid-cols-1 gap-1.5 p-3 bg-slate-50 rounded-xl border border-slate-100">
-                              {COUNTRY_ITEMS.map((country) => (
+                              {countryItems.map((country) => (
                                 <Link
                                   key={country.code}
                                   to={`/${country.slug}`}
@@ -309,9 +325,9 @@ export default function Navbar() {
                         >
                           <div className="mt-1.5 ml-3 mr-1 mb-1">
                             <div className="grid grid-cols-1 gap-1.5 p-3 bg-slate-50 rounded-xl border border-slate-100">
-                              {LOCATION_ITEMS.map((loc) => (
+                              {locationItems.map((loc) => (
                                 <Link
-                                  key={loc.id}
+                                  key={loc._id}
                                   to={`/${loc.slug}`}
                                   onClick={closeAll}
                                   className="flex items-center justify-between px-3 py-2.5 bg-white hover:bg-gradient-to-r hover:from-[#0052CC] hover:to-[#03ADA4] border border-slate-100 hover:border-transparent rounded-lg group/card transition-all duration-200"

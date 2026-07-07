@@ -204,43 +204,45 @@ export default function ServiceProvider() {
       ) : (
         <>
           {/* Service Provider Cards Grid */}
-          <div ref={cardsRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div ref={cardsRef} className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 mt-6 md:mt-8 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-8">
             {providersList.map((p, idx) => (
               <div 
                 key={idx}
-                className="bg-white border border-slate-200/80 rounded-3xl p-6 flex flex-col items-center text-center shadow-xs hover:shadow-md hover:scale-[1.015] transition-all duration-300"
+                className="bg-white border border-slate-200/80 rounded-2xl md:rounded-3xl p-3 xs:p-4 md:p-6 flex flex-col items-center text-center shadow-xs hover:shadow-md hover:scale-[1.015] transition-all duration-300 h-full justify-between"
                 style={{ opacity: 0 }}
               >
-                {/* Logo wrapper */}
-                <div className="h-20 flex items-center justify-center mb-4">
-                  {renderProviderLogo(p.keyName)}
-                </div>
+                <div className="w-full flex flex-col items-center flex-1">
+                  {/* Logo wrapper */}
+                  <div className="h-12 md:h-20 flex items-center justify-center mb-2 md:mb-4 w-full px-2">
+                    {renderProviderLogo(p.keyName)}
+                  </div>
 
-                <div className="w-full border-t border-slate-100 my-2" />
+                  <div className="w-full border-t border-slate-100 my-1 md:my-2" />
 
-                {/* Price block */}
-                <div className="my-3">
-                  <span className="text-[11px] text-slate-400 font-semibold block mb-0.5 uppercase tracking-wide">Courier Charges</span>
-                  <span className="text-lg font-black text-slate-800 border-b border-[#03ADA4]/30 pb-0.5 px-2 inline-block">
-                    Rs. {p.price}
-                  </span>
-                </div>
+                  {/* Price block */}
+                  <div className="my-2 md:my-3">
+                    <span className="text-[9px] md:text-[11px] text-slate-400 font-semibold block mb-0.5 uppercase tracking-wide">Courier Charges</span>
+                    <span className="text-sm md:text-lg font-black text-slate-800 border-b border-[#03ADA4]/30 pb-0.5 px-1 md:px-2 inline-block">
+                      Rs. {p.price}
+                    </span>
+                  </div>
 
-                {/* Estimated delivery timeline */}
-                <div className="my-3">
-                  <span className="text-[11px] text-slate-400 font-semibold block mb-0.5 uppercase tracking-wide">Estimated Delivery</span>
-                  <span className="text-sm font-black text-slate-800 border-b border-[#03ADA4]/30 pb-0.5 px-2 inline-block">
-                    {p.timeline}
-                  </span>
-                  <span className="text-[10px] font-black text-[#0052CC] block mt-1 uppercase tracking-wider">
-                    Once Intransit
-                  </span>
+                  {/* Estimated delivery timeline */}
+                  <div className="my-2 md:my-3">
+                    <span className="text-[9px] md:text-[11px] text-slate-400 font-semibold block mb-0.5 uppercase tracking-wide">Estimated Delivery</span>
+                    <span className="text-xs md:text-sm font-black text-slate-800 border-b border-[#03ADA4]/30 pb-0.5 px-1 md:px-2 inline-block">
+                      {p.timeline}
+                    </span>
+                    <span className="text-[8px] md:text-[10px] font-black text-[#0052CC] block mt-1 uppercase tracking-wider">
+                      Once Intransit
+                    </span>
+                  </div>
                 </div>
 
                 {/* Click to Book Button - routes to booking.php */}
                 <button
                   onClick={() => navigate("/booking.php", { state: { calculatedQuote, selectedProvider: p } })}
-                  className="w-full text-center py-2.5 rounded-xl bg-[#0052CC] hover:bg-blue-700 text-white font-extrabold text-xs select-none shadow-xs transition-colors mt-5 cursor-pointer focus:outline-none"
+                  className="w-full text-center py-2 md:py-2.5 rounded-lg md:rounded-xl bg-[#0052CC] hover:bg-blue-700 text-white font-extrabold text-[10px] md:text-xs select-none shadow-xs transition-colors mt-3 md:mt-5 cursor-pointer focus:outline-none shrink-0"
                 >
                   Click to Book
                 </button>

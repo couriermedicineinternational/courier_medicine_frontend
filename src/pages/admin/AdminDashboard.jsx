@@ -87,7 +87,7 @@ export default function AdminDashboard() {
     <div id="admin-dashboard-page" className="flex flex-col min-h-[calc(100vh-10rem)] font-sans gap-5">
       
       {/* 1. Metric Cards Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
         {/* Total Orders Card */}
         <div className="bg-white border border-slate-200/60 rounded-2xl p-4 sm:p-5 flex items-center justify-between shadow-sm hover:shadow-md transition-shadow">
@@ -101,19 +101,7 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Public Bookings Card */}
-        <div className="bg-white border border-slate-200/60 rounded-2xl p-4 sm:p-5 flex items-center justify-between shadow-sm hover:shadow-md transition-shadow">
-          <div className="space-y-1">
-            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Public Bookings</span>
-            <span className="text-2xl font-black text-slate-800 block">{summary.publicOrders || 0}</span>
-            <span className="text-[10px] text-slate-400 font-bold block">Direct Checkout Hits</span>
-          </div>
-          <div className="w-12 h-12 bg-emerald-50 text-emerald-600 flex items-center justify-center rounded-xl shrink-0">
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-            </svg>
-          </div>
-        </div>
+
 
         {/* Total Visitors Card */}
         <div className="bg-white border border-slate-200/60 rounded-2xl p-4 sm:p-5 flex items-center justify-between shadow-sm hover:shadow-md transition-shadow">

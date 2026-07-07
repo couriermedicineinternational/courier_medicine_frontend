@@ -13,7 +13,9 @@ import {
   Twitter, 
   Info,
   CheckCircle,
-  Save
+  Save,
+  Eye,
+  EyeOff
 } from "lucide-react";
 import api from "../../utils/api";
 
@@ -38,6 +40,18 @@ export default function AdminSettings() {
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState("");
+
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: ""
+  });
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [passwordMessage, setPasswordMessage] = useState({ type: "", text: "" });
+
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Fetch settings
   const fetchSettings = async () => {
@@ -91,6 +105,42 @@ export default function AdminSettings() {
       setSaveError(err.response?.data?.message || "Failed to save site settings.");
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+    setPasswordMessage({ type: "", text: "" });
+
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setPasswordMessage({ type: "error", text: "New passwords do not match." });
+      return;
+    }
+
+    if (passwordForm.newPassword.length < 6) {
+      setPasswordMessage({ type: "error", text: "Password must be at least 6 characters long." });
+      return;
+    }
+
+    setIsChangingPassword(true);
+    try {
+      const res = await api.put("/auth/update-password", {
+        currentPassword: passwordForm.currentPassword,
+        newPassword: passwordForm.newPassword
+      });
+
+      if (res.data && res.data.success) {
+        setPasswordMessage({ type: "success", text: "Password updated successfully!" });
+        setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+      }
+    } catch (err) {
+      console.error("Error updating password:", err);
+      setPasswordMessage({
+        type: "error",
+        text: err.response?.data?.message || "Failed to update password."
+      });
+    } finally {
+      setIsChangingPassword(false);
     }
   };
 
@@ -317,6 +367,91 @@ export default function AdminSettings() {
             </button>
           </div>
 
+        </form>
+      </div>
+
+      {/* Change Password Card */}
+      <div className="bg-white border border-slate-200/60 rounded-3xl shadow-sm overflow-hidden mt-6">
+        <div className="h-16 border-b border-slate-100 flex items-center px-6 bg-slate-50/50">
+          <h3 className="text-sm font-extrabold text-slate-900 uppercase tracking-wider">Change Admin Password</h3>
+        </div>
+
+        <form onSubmit={handlePasswordChange} className="p-6 space-y-4">
+          {passwordMessage.text && (
+            <div className={`p-4 rounded-xl text-xs font-bold ${passwordMessage.type === 'success' ? 'bg-emerald-50 border border-emerald-200 text-emerald-700' : 'bg-rose-50 border border-rose-200 text-rose-600'}`}>
+              {passwordMessage.text}
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="space-y-1">
+              <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Current Password</label>
+              <div className="relative">
+                <input
+                  type={showCurrentPassword ? "text" : "password"}
+                  value={passwordForm.currentPassword}
+                  onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
+                  className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none pl-3 pr-10 py-2 rounded-xl text-xs font-semibold text-slate-700 animate-none"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  {showCurrentPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+                </button>
+              </div>
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">New Password</label>
+              <div className="relative">
+                <input
+                  type={showNewPassword ? "text" : "password"}
+                  value={passwordForm.newPassword}
+                  onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                  className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none pl-3 pr-10 py-2 rounded-xl text-xs font-semibold text-slate-700 animate-none"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  {showNewPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+                </button>
+              </div>
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Confirm New Password</label>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={passwordForm.confirmPassword}
+                  onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                  className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none pl-3 pr-10 py-2 rounded-xl text-xs font-semibold text-slate-700 animate-none"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  {showConfirmPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-4 flex justify-end">
+            <button
+              type="submit"
+              disabled={isChangingPassword}
+              className="px-5 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-extrabold shadow hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-50"
+            >
+              {isChangingPassword ? "Updating Password..." : "Update Password"}
+            </button>
+          </div>
         </form>
       </div>
 
