@@ -488,7 +488,7 @@ export default function CountryDetail() {
 
               style={{ 
 
-                backgroundImage: `url(${settings?.countryHeroImage || 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1600&q=80'})` 
+                backgroundImage: `url(${settings?.countryHeroImage || '/global_network_banner_v3.png'})` 
 
               }}
 

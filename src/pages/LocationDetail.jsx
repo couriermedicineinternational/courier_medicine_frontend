@@ -237,11 +237,11 @@ export default function LocationDetail() {
           <p className="font-bold text-black">
             Reputed Online Pharmacy to Buy Medicines{' '}
             <span className="text-[#0052CC] font-normal ml-2 space-x-2">
-              <span className="cursor-pointer hover:underline">Tata 1mg</span>
-              <span className="cursor-pointer hover:underline">PharmEasy</span>
-              <span className="cursor-pointer hover:underline">Netmeds</span>
-              <span className="cursor-pointer hover:underline">Apollo Pharmacy</span>
-              <span className="cursor-pointer hover:underline">Amzaon Pharmacy</span>
+              <a href="https://www.1mg.com/" target="_blank" rel="noopener noreferrer" className="hover:underline">Tata 1mg</a>
+              <a href="https://pharmeasy.in/" target="_blank" rel="noopener noreferrer" className="hover:underline">PharmEasy</a>
+              <a href="https://www.netmeds.com/" target="_blank" rel="noopener noreferrer" className="hover:underline">Netmeds</a>
+              <a href="https://www.apollopharmacy.in/" target="_blank" rel="noopener noreferrer" className="hover:underline">Apollo Pharmacy</a>
+              <a href="https://www.amazon.in/pharmacy" target="_blank" rel="noopener noreferrer" className="hover:underline">Amazon Pharmacy</a>
             </span>
           </p>
         </motion.div>

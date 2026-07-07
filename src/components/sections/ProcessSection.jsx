@@ -98,7 +98,7 @@ export default function ProcessSection({ title, subtitle, content }) {
 
         <div 
           id="process-grid" 
-          className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 md:gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
         >
           {stepsToRender.map((item, idx) => {
             const IconComp = item.icon;
@@ -129,7 +129,7 @@ export default function ProcessSection({ title, subtitle, content }) {
                   scale: 1.015,
                   boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.04), 0 10px 10px -5px rgba(0, 0, 0, 0.01)"
                 }}
-                className="bg-[#F8FBFD] border border-slate-100/80 rounded-[24px] p-4 sm:p-6 flex flex-col justify-between relative group transition-colors duration-300 hover:bg-white hover:border-secondary/20 cursor-default h-auto min-h-[340px] xs:min-h-[400px] sm:min-h-[500px] md:min-h-[520px]"
+                className="bg-[#F8FBFD] border border-slate-100/80 rounded-[24px] p-5 sm:p-6 flex flex-col justify-between relative group transition-colors duration-300 hover:bg-white hover:border-secondary/20 cursor-default h-auto min-h-[320px] md:min-h-[460px]"
               >
                 <div>
                   {/* Top Row: Icon Container on Left, Step Indicator on Right */}
