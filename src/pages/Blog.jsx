@@ -17,16 +17,33 @@ export default function Blog() {
   const [posts, setPosts] = useState([]);
   const [pagination, setPagination] = useState({ page: 1, limit: 6, total: 0, pages: 1 });
   const [page, setPage] = useState(1);
+  const [headerData, setHeaderData] = useState({
+    title: BLOG_PAGE.title,
+    subtitle: BLOG_PAGE.subtitle,
+    tag: BLOG_PAGE.tag || "Regulations & Updates",
+    bgImage: BLOG_HERO_IMAGE
+  });
 
-  // Fetch blogs on mount & page change
+  // Fetch blogs & header on mount & page change
   useEffect(() => {
-    const fetchBlogs = async () => {
+    const fetchBlogsAndHeader = async () => {
       setIsLoading(true);
       try {
-        const res = await api.get(`/blogs?page=${page}&limit=6`);
-        if (res.data.success) {
-          setPosts(res.data.data);
-          setPagination(res.data.pagination);
+        const [blogsRes, headerRes] = await Promise.all([
+          api.get(`/blogs?page=${page}&limit=6`),
+          api.get("/blogs/header").catch(err => {
+            console.error("Failed to fetch blog header:", err);
+            return null;
+          })
+        ]);
+
+        if (blogsRes.data.success) {
+          setPosts(blogsRes.data.data);
+          setPagination(blogsRes.data.pagination);
+        }
+
+        if (headerRes && headerRes.data && headerRes.data.success) {
+          setHeaderData(headerRes.data.data);
         }
       } catch (err) {
         console.error("Failed to fetch blogs:", err);
@@ -34,7 +51,7 @@ export default function Blog() {
         setIsLoading(false);
       }
     };
-    fetchBlogs();
+    fetchBlogsAndHeader();
   }, [page]);
 
   // When opening/closing a post, scroll to top
@@ -198,74 +215,17 @@ export default function Blog() {
                         </span>
                       </motion.div>
 
-                      {/* Excerpt / Lead */}
-                      <motion.p
-                        initial={{ opacity: 0, y: 12 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.45, delay: 0.3 }}
-                        className="text-base md:text-lg font-bold text-slate-800 italic leading-relaxed mb-8 border-l-4 border-[#0052CC] pl-5"
-                      >
-                        {selectedPost.excerpt}
-                      </motion.p>
-
-                      {/* Intro paragraph */}
-                      <motion.div
-                        initial={{ opacity: 0, y: 12 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.45, delay: 0.35 }}
-                        className="text-sm md:text-base text-slate-600 leading-relaxed font-medium mb-10 prose prose-slate max-w-none"
-                        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(selectedPost.introParagraph || "Shipping medicine across international boundaries is governed by complex regulations because medicines fall under safety, health, and custom import-export checks. To make sure NRI families can receive their critical prescriptions easily, a structured procedural path must be followed.") }}
-                      />
-
                       {/* Full Content Body (Main Article Text) */}
-                      {selectedPost.content && selectedPost.content !== selectedPost.excerpt && (
+                      {selectedPost.content && (
                         <motion.div
                           initial={{ opacity: 0, y: 15 }}
                           animate={{ opacity: 1, y: 0 }}
-                          className="prose prose-sm max-w-none text-sm text-slate-600 leading-relaxed font-medium space-y-4 font-sans mb-8 whitespace-pre-line"
+                          className="prose prose-slate max-w-none text-sm md:text-base font-medium text-slate-650 leading-relaxed mb-8"
                           dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(selectedPost.content) }}
                         />
                       )}
 
-                      {/* Article Sections */}
-                      {(selectedPost.sections || []).map((section, i) => (
-                        <motion.div
-                          key={i}
-                          initial={{ opacity: 0, y: 20 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true, amount: 0.2 }}
-                          transition={{ duration: 0.5, delay: i * 0.08, ease: "easeOut" }}
-                          className="mb-7 p-6 bg-slate-50 border border-slate-100 rounded-2xl hover:bg-white hover:shadow-md hover:border-[#0052CC]/20 transition-all duration-300"
-                        >
-                          <h3 className="text-sm font-black text-[#0052CC] uppercase tracking-wider mb-3 flex items-center gap-2">
-                            <span className="w-6 h-6 rounded-full bg-[#0052CC] text-white flex items-center justify-center text-[10px] font-black flex-shrink-0">
-                              {i + 1}
-                            </span>
-                            {section.heading.replace(/^\d+\.\s*/, "")}
-                          </h3>
-                          <div 
-                            className="text-sm text-slate-600 leading-relaxed font-medium whitespace-pre-line prose prose-sm max-w-none"
-                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(section.body) }}
-                          />
-                        </motion.div>
-                      ))}
 
-                      {/* Pro Tip */}
-                      {selectedPost.tip && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 16 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true, amount: 0.3 }}
-                          transition={{ duration: 0.5, ease: "easeOut" }}
-                          className="mb-10 p-5 bg-[#03ADA4]/5 border border-[#03ADA4]/20 rounded-2xl flex gap-3"
-                        >
-                          <Lightbulb size={18} className="text-[#03ADA4] flex-shrink-0 mt-0.5" />
-                          <div>
-                            <p className="text-xs font-black text-[#03ADA4] uppercase tracking-wider mb-1">Pro Tip</p>
-                            <p className="text-sm text-slate-600 leading-relaxed font-medium">{selectedPost.tip}</p>
-                          </div>
-                        </motion.div>
-                      )}
 
                       {/* Next / Previous Article Navigation */}
                       <div className="flex items-center justify-between mt-10 pt-8 border-t border-slate-100 gap-4">
@@ -305,7 +265,7 @@ export default function Blog() {
                         <div className="text-white">
                           <p className="text-xs font-black uppercase tracking-wider opacity-75 mb-1">Have Questions About This Article?</p>
                           <p className="text-base font-black leading-tight">Talk to our logistics experts right now</p>
-                          <p className="text-xs opacity-75 mt-1">Available Mon–Sat, 9 AM to 7 PM (IST)</p>
+                          <p className="text-xs opacity-75 mt-1">Available Mon–Sat</p>
                         </div>
                         <a
                           href="https://wa.me/918882691919"
@@ -326,9 +286,9 @@ export default function Blog() {
                         initial={{ opacity: 0, x: 30 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.5, delay: 0.3 }}
-                        className="w-full h-52 rounded-2xl overflow-hidden shadow-md"
+                        className="w-full rounded-2xl overflow-hidden shadow-md"
                       >
-                        <img src={selectedPost.image} alt={selectedPost.title} className="w-full h-full object-cover" />
+                        <img src={selectedPost.image} alt={selectedPost.title} className="w-full h-auto block" />
                       </motion.div>
 
                       {/* Article Info card */}
@@ -407,7 +367,7 @@ export default function Blog() {
                       >
                         <p className="text-2xl mb-1">💬</p>
                         <p className="font-black text-sm mb-1">Need Help Shipping?</p>
-                        <p className="text-xs opacity-80 mb-3">Our experts Mon–Sat, 9–7 PM IST</p>
+                        <p className="text-xs opacity-80 mb-3">Our experts Mon–Sat</p>
                         <span className="bg-white text-[#0052CC] font-black text-xs px-5 py-2 rounded-xl inline-block">
                           WhatsApp Now
                         </span>
@@ -439,7 +399,7 @@ export default function Blog() {
                     animate={{ scale: 1.0, opacity: 1.0 }}
                     transition={{ duration: 1.4, ease: "easeOut" }}
                     className="absolute inset-0 bg-cover bg-center"
-                    style={{ backgroundImage: `url('${BLOG_HERO_IMAGE}')` }}
+                    style={{ backgroundImage: `url('${headerData.bgImage || BLOG_HERO_IMAGE}')` }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent pointer-events-none" />
                   <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-white z-10">
@@ -450,7 +410,7 @@ export default function Blog() {
                       className="space-y-2"
                     >
                       <h1 className="text-3xl md:text-5xl font-black tracking-tight font-display uppercase text-white drop-shadow-xs">
-                        Our Blog
+                        {headerData.title || "Our Blog"}
                       </h1>
                       <nav className="text-xs md:text-sm font-semibold tracking-wide font-sans flex items-center gap-2 text-white/80">
                         <Link to="/" className="hover:text-primary transition-colors text-white/90">Home</Link>
@@ -472,13 +432,13 @@ export default function Blog() {
                     className="text-center mb-12"
                   >
                     <span className="text-xs font-black uppercase tracking-widest text-[#03ADA4] bg-[#03ADA4]/10 px-3 py-1 rounded-full inline-block mb-3">
-                      Regulations &amp; Updates
+                      {headerData.tag || "Regulations & Updates"}
                     </span>
                     <h2 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight mb-3">
-                      {BLOG_PAGE.title}
+                      {headerData.title || "Our Blog"}
                     </h2>
                     <p className="max-w-xl mx-auto text-sm text-slate-500 leading-relaxed font-medium">
-                      {BLOG_PAGE.subtitle}
+                      {headerData.subtitle || "Regulations & Updates, shipping schedules, and critical logistics advisories..."}
                     </p>
                   </motion.div>
 
@@ -497,12 +457,12 @@ export default function Blog() {
                         onClick={() => openPost(post)}
                       >
                         {/* Image */}
-                        <div className="relative w-full h-48 overflow-hidden flex-shrink-0">
+                        <div className="relative w-full overflow-hidden flex-shrink-0">
                           <img
                             src={post.image}
                             alt={post.title}
                             loading="lazy"
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-600"
+                            className="w-full h-auto block group-hover:scale-102 transition-transform duration-600"
                           />
                           {/* Subtle gradient on image bottom */}
                           <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 to-transparent" />

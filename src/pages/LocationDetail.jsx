@@ -17,11 +17,20 @@ export default function LocationDetail() {
   const [route, setRoute] = useState(null);
   const [country, setCountry] = useState(null);
   const [activeFaq, setActiveFaq] = useState(null);
+  const [settings, setSettings] = useState(null);
 
   useEffect(() => {
     import('../utils/pricing').then(m => m.loadPricingData());
     window.scrollTo(0, 0);
     setIsLoading(true);
+
+    api.get("/settings")
+      .then(res => {
+        if (res.data && res.data.success) {
+          setSettings(res.data.data);
+        }
+      })
+      .catch(err => console.error("Error fetching settings in LocationDetail:", err));
 
     api.get(`/locations/${slug}`)
       .then(res => {
@@ -140,7 +149,26 @@ export default function LocationDetail() {
     show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
   };
 
-  const faqs = [
+  const parsedFaqs = (() => {
+    if (!route?.faq) return null;
+    try {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(route.faq, "text/html");
+      const listItems = doc.querySelectorAll('li');
+      if (listItems.length > 0) {
+        return Array.from(listItems).map(li => {
+          const q = li.querySelector('strong')?.textContent || '';
+          let a = li.innerHTML.replace(/<strong[^>]*>.*?<\/strong>/gi, '').replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '').trim();
+          return { q, a };
+        });
+      }
+    } catch (e) {
+      console.error("FAQ parsing error", e);
+    }
+    return null;
+  })();
+
+  const defaultFaqs = [
     { q: `How can I send medicine from ${originCity} to ${destCountry}?`, a: `To send medicine from ${originCity} to ${destCountry}, you need to share a copy of your doctor's prescription and purchase bill with us. We will arrange a free doorstep pickup at your address in ${originCity}, verify and pack the medicines, and ship them securely via priority carriers.` },
     { q: `Is it legal to courier medicines from ${originCity} to ${destCountry}?`, a: `Yes, it is completely legal to courier personal-use medications from ${originCity} to ${destCountry} under personal import rules. You must provide a valid medical prescription matching the receiver's name.` },
     { q: `What types of medicines can I send from ${originCity}?`, a: `We courier all types of medicines from ${originCity}: Allopathic, Homeopathic, Ayurvedic, liquid syrups, capsules, tablets, chronic disease care drugs, and temperature-controlled cold chain medicines.` },
@@ -152,6 +180,42 @@ export default function LocationDetail() {
     { q: `How can I track my medicine parcel from ${originCity} to ${destCountry}?`, a: `Once your parcel is dispatched from ${originCity}, we will provide you with a unique tracking number and a link. You can use this to monitor your shipment's status in real-time until it reaches ${destCountry}.` },
     { q: `What if I don't have a prescription?`, a: `A valid prescription is legally required for international medicine shipping. However, if you are facing difficulties, you can contact our expert team in ${originCity}, and we will assist and guide you on the necessary steps to proceed.` }
   ];
+
+  const faqsToRender = (() => {
+    // 1. Try to read new separate fields faq1Q to faq10Q
+    const list = [];
+    for (let i = 1; i <= 10; i++) {
+      const q = route?.[`faq${i}Q`] || "";
+      const a = route?.[`faq${i}A`] || "";
+      if (q.trim()) {
+        list.push({ q, a });
+      }
+    }
+
+    if (list.length > 0) {
+      const combined = [...list];
+      let i = 0;
+      while (combined.length < 10 && i < defaultFaqs.length) {
+        combined.push(defaultFaqs[i]);
+        i++;
+      }
+      return combined;
+    }
+
+    // 2. Fallback to old parsed HTML faq field if it has items
+    if (parsedFaqs && parsedFaqs.length > 0) {
+      const combined = [...parsedFaqs];
+      let i = 0;
+      while (combined.length < 10 && i < defaultFaqs.length) {
+        combined.push(defaultFaqs[i]);
+        i++;
+      }
+      return combined;
+    }
+
+    // 3. Fallback to all defaults
+    return defaultFaqs;
+  })();
 
   return (
     <div className="bg-[#fcfcfc] text-[#333] font-sans pb-0 overflow-x-hidden">
@@ -269,7 +333,7 @@ export default function LocationDetail() {
             </div>
             
             <div className="shrink-0 w-full max-w-[280px] flex justify-center md:justify-end">
-              <img src="/docs-image.png" alt="Documents Required for Courier" className="w-full max-w-[280px] h-auto object-contain drop-shadow-sm rounded-xl" />
+               <img src="/docs-image.png" alt="Documents Required for Courier" className="w-full max-w-[280px] h-auto object-contain drop-shadow-sm rounded-xl" />
             </div>
           </div>
         </motion.div>
@@ -359,7 +423,7 @@ export default function LocationDetail() {
         {/* FAQs Section */}
         <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.1 }} variants={sectionVariants}>
           <h2 className="text-[24px] md:text-[28px] font-bold text-slate-900 mb-8 text-center">
-            Frequently Asked Questions
+            {route?.faqHeading || 'Frequently Asked Questions'}
           </h2>
           
           <motion.div 
@@ -369,7 +433,7 @@ export default function LocationDetail() {
             viewport={{ once: true, amount: 0.1 }}
             className="space-y-4 max-w-4xl mx-auto"
           >
-            {faqs.map((item, idx) => {
+            {faqsToRender.map((item, idx) => {
               const isOpen = activeFaq === idx;
 
               return (
@@ -384,7 +448,7 @@ export default function LocationDetail() {
                     className="w-full flex items-center justify-between p-5 text-left transition-colors hover:bg-slate-50/50 cursor-pointer"
                   >
                     <div className="text-[15px] md:text-[16px] font-bold text-slate-800 leading-snug pr-4 flex-1">
-                      {item.q}
+                      {idx + 1}. {item.q}
                     </div>
                     <ChevronDown 
                       size={20} 

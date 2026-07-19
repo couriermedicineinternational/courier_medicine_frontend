@@ -115,7 +115,9 @@ export default function Footer() {
             </div>
             <a
               id="footer-email-link"
-              href={`mailto:${FOOTER.locateUs.email}`}
+              href={`https://mail.google.com/mail/?view=cm&fs=1&to=${FOOTER.locateUs.email}`}
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center gap-2.5 hover:text-secondary/20 transition-colors"
             >
               <Mail size={16} className="text-secondary/20 shrink-0" />

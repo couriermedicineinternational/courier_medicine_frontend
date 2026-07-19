@@ -191,7 +191,7 @@ export default function EasySection({ title, subtitle, content }) {
                 return (
                   <div
                     key={item.id || idx}
-                    className="w-[85%] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] shrink-0 h-[600px] sm:h-[580px] lg:h-[620px] relative snap-start"
+                    className="w-[85%] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] shrink-0 h-[600px] sm:h-[580px] lg:h-[620px] relative snap-start snap-always"
                   >
                     <motion.div
                       id={`easy-item-${item.id || idx}`}

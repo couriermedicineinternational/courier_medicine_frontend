@@ -100,9 +100,7 @@ export default function Faq() {
             </div>
           </div>
 
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 space-y-8">
-            {/* Search Bar Shimmer */}
-            <div className="shimmer-bg h-12 w-full max-w-lg mx-auto rounded-xl" />
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 space-y-8">
 
             {/* List Shimmer */}
             <div className="space-y-4">
@@ -161,31 +159,7 @@ export default function Faq() {
             </div>
           </div>
 
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
-            
-            {/* Intro & Search */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-10"
-            >
-              <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight mb-4">
-                {FAQ_PAGE.subtitle}
-              </h2>
-              
-              {/* Search Bar Input */}
-              <div className="relative max-w-lg mx-auto shadow-sm rounded-2xl overflow-hidden border border-slate-100 bg-white">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                <input
-                  type="text"
-                  placeholder="Search FAQ questions..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3.5 focus:outline-none focus:ring-1 focus:ring-primary text-sm font-semibold text-slate-800"
-                />
-              </div>
-            </motion.div>
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
 
             {/* Accordion Questions List */}
             <motion.div 
@@ -210,7 +184,7 @@ export default function Faq() {
                       className="w-full flex items-center justify-between p-5 text-left transition-colors hover:bg-slate-50/50 cursor-pointer"
                     >
                       <div className="text-sm md:text-base font-extrabold text-slate-800 leading-snug pr-4 flex-1">
-                        {item.q}
+                        {idx + 1}. {item.q}
                       </div>
                       <ChevronDown 
                         size={18} 

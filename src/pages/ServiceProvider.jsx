@@ -37,10 +37,12 @@ export default function ServiceProvider() {
       // Find all configured providers for this country from DB
       const dbProviders = getProvidersForCountry(calculatedQuote.country);
 
-      // Define standard providers to show
-      const standardProviders = ["UPS", "FedEx", "DHL", "ECONOMY POST"];
+      // If DB has custom providers configured, show only those. Otherwise use standard 4 fallbacks.
+      const providersToRender = dbProviders.length > 0 
+        ? dbProviders.map(p => p.provider) 
+        : ["UPS", "FedEx", "DHL", "ECONOMY POST"];
       
-      const resolved = standardProviders.map(provName => {
+      const resolved = providersToRender.map(provName => {
         // Check if provider has custom rates in DB
         const dbProv = dbProviders.find(p => p.provider.toUpperCase() === provName.toUpperCase());
         

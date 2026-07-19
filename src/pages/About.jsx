@@ -67,6 +67,7 @@ function RenderWelcomeSection({ title, subtitle, content }) {
   const desc1 = content?.description1 || "At Courier Medicines, we deliver your medicines anywhere in the world. Our team is highly experienced in international medicine delivery, so you can relax knowing your medications will arrive safely and quickly.";
   const desc2 = content?.description2 || "Courier medicine from India is legal and we make the process seamless for you by providing Express International medicine courier services from India to Abroad. We have expertise in Courier Different types of medicines be it Liquid or Tablets - allopathic medicine, ayurvedic, homeopathy, herbal, or cold storage / temperature control Medicine.";
   const desc3 = content?.description3 || "Courier Medicines helps in providing Free door pick up service all across India - Delhi Noida  Faridabad  Gurgaon  Bangalore  Hyderabad  Mumbai  Pune  Rajasthan  Gujarat  Kolkata  and others, with providing Door Delivery to all International countries – <a href='/india-to-united-states-usa-medicine-courier-charges.htm' class='text-emerald-600 hover:text-emerald-700 hover:underline font-bold transition-colors'>USA</a>  <a href='/india-to-canada-medicine-courier-charges.htm' class='text-emerald-600 hover:text-emerald-700 hover:underline font-bold transition-colors'>Canada</a>  <a href='/india-to-australia-medicine-courier-charges.htm' class='text-emerald-600 hover:text-emerald-700 hover:underline font-bold transition-colors'>Australia</a>  <a href='/india-to-new-zealand-medicine-courier-charges.htm' class='text-emerald-600 hover:text-emerald-700 hover:underline font-bold transition-colors'>New Zealand</a>  <a href='/india-to-united-kingdom-uk-medicine-courier-charges.htm' class='text-emerald-600 hover:text-emerald-700 hover:underline font-bold transition-colors'>United Kingdom</a>  <a href='/india-to-united-arab-emirates-uae-medicine-courier-charges.htm' class='text-emerald-600 hover:text-emerald-700 hover:underline font-bold transition-colors'>Dubai</a>  <a href='/india-to-philippines-medicine-courier-charges.htm' class='text-emerald-600 hover:text-emerald-700 hover:underline font-bold transition-colors'>Philippines</a>  <a href='/india-to-china-medicine-courier-charges.htm' class='text-emerald-600 hover:text-emerald-700 hover:underline font-bold transition-colors'>China</a>  <a href='/india-to-japan-medicine-courier-charges.htm' class='text-emerald-600 hover:text-emerald-700 hover:underline font-bold transition-colors'>Japan</a>  <a href='/india-to-malaysia-medicine-courier-charges.htm' class='text-emerald-600 hover:text-emerald-700 hover:underline font-bold transition-colors'>Malaysia</a>  <a href='/india-to-singapore-medicine-courier-charges.htm' class='text-emerald-600 hover:text-emerald-700 hover:underline font-bold transition-colors'>Singapore</a>  <a href='/india-to-hong-kong-medicine-courier-charges.htm' class='text-emerald-600 hover:text-emerald-700 hover:underline font-bold transition-colors'>Hongkong</a>  <a href='/india-to-kuwait-medicine-courier-charges.htm' class='text-emerald-600 hover:text-emerald-700 hover:underline font-bold transition-colors'>Kuwait</a>, <a href='/india-to-nigeria-medicine-courier-charges.htm' class='text-emerald-600 hover:text-emerald-700 hover:underline font-bold transition-colors'>Nigeria</a>  <a href='/india-to-oman-medicine-courier-charges.htm' class='text-emerald-600 hover:text-emerald-700 hover:underline font-bold transition-colors'>Oman</a>  <a href='/india-to-qatar-medicine-courier-charges.htm' class='text-emerald-600 hover:text-emerald-700 hover:underline font-bold transition-colors'>Qatar</a>  <a href='/india-to-sri-lanka-medicine-courier-charges.htm' class='text-emerald-600 hover:text-emerald-700 hover:underline font-bold transition-colors'>Sri Lanka</a>  <a href='/india-to-france-medicine-courier-charges.htm' class='text-emerald-600 hover:text-emerald-700 hover:underline font-bold transition-colors'>France</a> <a href='/india-to-germany-medicine-courier-charges.htm' class='text-emerald-600 hover:text-emerald-700 hover:underline font-bold transition-colors'>Germany</a>   <a href='/india-to-netherlands-medicine-courier-charges.htm' class='text-emerald-600 hover:text-emerald-700 hover:underline font-bold transition-colors'>Netherlands</a>  <a href='/india-to-portugal-medicine-courier-charges.htm' class='text-emerald-600 hover:text-emerald-700 hover:underline font-bold transition-colors'>Portugal</a> and Others.";
+  const freePickupTitle = content?.freePickupTitle || "FREE DOOR PICKUP & INTERNATIONAL DELIVERY";
   
   const buyTitle = content?.buyServiceTitle || "Service of Buying Prescription medicines";
   const buyDesc = content?.buyServiceDesc || "We provide the Service of Buying Prescription medicines on our customer's behalf from a reputed pharmacy to Ensure you Receive Genuine Medicines with the best and most convenient service. Our expert team makes it easy to get these Meds you need without searching for them yourself.";
@@ -126,24 +127,29 @@ function RenderWelcomeSection({ title, subtitle, content }) {
           <div className="w-16 h-1.5 bg-[#0052CC] rounded-full" />
           
           <div 
-            className="text-sm text-slate-600 leading-relaxed font-sans font-medium prose prose-sm max-w-none"
+            className="text-sm text-slate-600 leading-relaxed font-sans font-medium prose prose-sm max-w-none [&_*]:!bg-transparent"
             dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(desc1) }}
           />
           <div 
-            className="text-sm text-slate-600 leading-relaxed font-sans font-medium prose prose-sm max-w-none"
+            className="text-sm text-slate-600 leading-relaxed font-sans font-medium prose prose-sm max-w-none [&_*]:!bg-transparent"
             dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(desc2) }}
           />
-          <div 
-            className="text-sm text-slate-600 leading-relaxed font-sans font-medium prose prose-sm max-w-none"
-            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(desc3) }}
-          />
+          <div className="p-5 bg-[#0052CC]/5 border border-[#0052CC]/10 rounded-2xl space-y-2 hover:bg-white hover:shadow-md hover:border-[#0052CC]/25 transition-all duration-305 mt-2">
+            <h4 className="text-xs font-black uppercase text-[#0052CC] tracking-wider flex items-center gap-1.5">
+              <Lucide.Globe size={14} className="text-[#0052CC]" /> {freePickupTitle}
+            </h4>
+            <div 
+              className="text-[11px] text-slate-500 leading-relaxed font-medium prose prose-sm max-w-none [&_*]:!bg-transparent"
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(desc3) }}
+            />
+          </div>
 
           <div className="p-5 bg-[#0052CC]/5 border border-[#0052CC]/10 rounded-2xl space-y-2 hover:bg-white hover:shadow-md hover:border-[#0052CC]/25 transition-all duration-305">
             <h4 className="text-xs font-black uppercase text-[#0052CC] tracking-wider flex items-center gap-1.5">
               <Landmark size={14} className="text-[#0052CC]" /> {buyTitle}
             </h4>
             <div 
-              className="text-[11px] text-slate-500 leading-relaxed font-medium prose prose-sm max-w-none"
+              className="text-[11px] text-slate-500 leading-relaxed font-medium prose prose-sm max-w-none [&_*]:!bg-transparent"
               dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(buyDesc) }}
             />
           </div>

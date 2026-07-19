@@ -25,7 +25,18 @@ export default function AdminLocationEdit() {
     servicesWeOffer: '',
     process1: '',
     process2: '',
-    faq: ''
+    faq: '',
+    faqHeading: '',
+    faq1Q: '', faq1A: '',
+    faq2Q: '', faq2A: '',
+    faq3Q: '', faq3A: '',
+    faq4Q: '', faq4A: '',
+    faq5Q: '', faq5A: '',
+    faq6Q: '', faq6A: '',
+    faq7Q: '', faq7A: '',
+    faq8Q: '', faq8A: '',
+    faq9Q: '', faq9A: '',
+    faq10Q: '', faq10A: ''
   });
 
 
@@ -88,21 +99,45 @@ export default function AdminLocationEdit() {
 
         const defaultFAQ = `<ul><li><strong>How can I send medicine from ${origin} to ${dest}?</strong><br/>To send medicine from ${origin} to ${dest}, you need to share a copy of your doctor's prescription and purchase bill with us. We will arrange a free doorstep pickup at your address in ${origin}, verify and pack the medicines, and ship them securely via priority carriers.</li><li><strong>Is it legal to courier medicines from ${origin} to ${dest}?</strong><br/>Yes, it is completely legal to courier personal-use medications from ${origin} to ${dest} under personal import rules. You must provide a valid medical prescription matching the receiver's name.</li><li><strong>What types of medicines can I send from ${origin}?</strong><br/>We courier all types of medicines from ${origin}: Allopathic, Homeopathic, Ayurvedic, liquid syrups, capsules, tablets, chronic disease care drugs, and temperature-controlled cold chain medicines.</li><li><strong>How long does it take for the package to reach ${dest} from ${origin}?</strong><br/>Typical transit delivery timeline from ${origin} to ${dest} is 4 to 6 Business days via express global cargo carriers. Delays in customs clearance are excluded from transit times.</li></ul>`;
 
+        const defaultFaqs = [
+          { q: `How can I send medicine from ${origin} to ${dest}?`, a: `<p>To send medicine from ${origin} to ${dest}, you need to share a copy of your doctor's prescription and purchase bill with us. We will arrange a free doorstep pickup at your address in ${origin}, verify and pack the medicines, and ship them securely via priority carriers.</p>` },
+          { q: `Is it legal to courier medicines from ${origin} to ${dest}?`, a: `<p>Yes, it is completely legal to courier personal-use medications from ${origin} to ${dest} under personal import rules. You must provide a valid medical prescription matching the receiver's name.</p>` },
+          { q: `What types of medicines can I send from ${origin}?`, a: `<p>We courier all types of medicines from ${origin}: Allopathic, Homeopathic, Ayurvedic, liquid syrups, capsules, tablets, chronic disease care drugs, and temperature-controlled cold chain medicines.</p>` },
+          { q: `How long does it take for the package to reach ${dest} from ${origin}?`, a: `<p>Typical transit delivery timeline from ${origin} to ${dest} is 4 to 6 Business days via express global cargo carriers. Delays in customs clearance are excluded from transit times.</p>` },
+          { q: `Do I need to pay customs duty for medicines sent from ${origin} to ${dest}?`, a: `<p>Customs duties or taxes depend on the destination country's regulations. Generally, personal use medicines are exempt or have minimal duties, but if any customs charges are levied by ${dest}, they must be paid by the receiver.</p>` },
+          { q: `Can you help procure medicines in ${origin} if I live in ${dest}?`, a: `<p>Yes! We offer a Medicine Procurement Service. Just share your prescription and we will purchase the medicines from reputed pharmacies in ${origin} on your behalf and deliver them to your address in ${dest}.</p>` },
+          { q: `How do I pack the medicines securely for international shipping?`, a: `<p>You don't have to worry about packing. When we pick up your medicines from ${origin}, our expert team uses international standard packaging, including bubble wraps and secure boxes, to ensure your medicines arrive safely in ${dest}.</p>` },
+          { q: `Is there a weight limit for sending medicines from ${origin}?`, a: `<p>While you can send medicines according to your prescribed dosage, typical personal use shipments range from 0.5 KG to 2 KG. Our team will guide you on the permissible limits based on your prescription and ${dest}'s regulations.</p>` },
+          { q: `How can I track my medicine parcel from ${origin} to ${dest}?`, a: `<p>Once your parcel is dispatched from ${origin}, we will provide you with a unique tracking number and a link. You can use this to monitor your shipment's status in real-time until it reaches ${dest}.</p>` },
+          { q: `What if I don't have a prescription?`, a: `<p>A valid prescription is legally required for international medicine shipping. However, if you are facing difficulties, you can contact our expert team in ${origin}, and we will assist and guide you on the necessary steps to proceed.</p>` }
+        ];
+
         setFormData({
           name: loc.name || '',
           city: loc.city || '',
           country: loc.country || '',
           locationId: loc.locationId || '',
           slug: loc.slug || '',
-          metaViewTitle: loc.metaViewTitle || '',
-          metaKeywords: loc.metaKeywords || '',
-          metaDescription: loc.metaDescription || '',
+          metaViewTitle: loc.metaViewTitle || `Medicine Courier Service from ${origin} to ${dest}`,
+          metaKeywords: loc.metaKeywords || `medicine courier, ${origin} to ${dest}, international courier`,
+          metaDescription: loc.metaDescription || `Best medicine courier from ${origin} to ${dest}.`,
           medicineCourierServices: loc.medicineCourierServices || defaultSEO,
           documentsNeeded: loc.documentsNeeded || defaultDocs,
           servicesWeOffer: loc.servicesWeOffer || defaultServices,
           process1: loc.process1 || defaultProcess1,
           process2: loc.process2 || defaultProcess2,
-          faq: loc.faq || defaultFAQ
+          faq: loc.faq || defaultFAQ,
+          faqHeading: loc.faqHeading || 'Frequently Asked Questions',
+          faq1Q: loc.faq1Q || defaultFaqs[0].q, faq1A: loc.faq1A || defaultFaqs[0].a,
+          faq2Q: loc.faq2Q || defaultFaqs[1].q, faq2A: loc.faq2A || defaultFaqs[1].a,
+          faq3Q: loc.faq3Q || defaultFaqs[2].q, faq3A: loc.faq3A || defaultFaqs[2].a,
+          faq4Q: loc.faq4Q || defaultFaqs[3].q, faq4A: loc.faq4A || defaultFaqs[3].a,
+          faq5Q: loc.faq5Q || defaultFaqs[4].q, faq5A: loc.faq5A || defaultFaqs[4].a,
+          faq6Q: loc.faq6Q || defaultFaqs[5].q, faq6A: loc.faq6A || defaultFaqs[5].a,
+          faq7Q: loc.faq7Q || defaultFaqs[6].q, faq7A: loc.faq7A || defaultFaqs[6].a,
+          faq8Q: loc.faq8Q || defaultFaqs[7].q, faq8A: loc.faq8A || defaultFaqs[7].a,
+          faq9Q: loc.faq9Q || defaultFaqs[8].q, faq9A: loc.faq9A || defaultFaqs[8].a,
+          faq10Q: loc.faq10Q || defaultFaqs[9].q, faq10A: loc.faq10A || defaultFaqs[9].a
         });
         
       }
@@ -147,7 +182,11 @@ export default function AdminLocationEdit() {
       const submitData = new FormData();
       
       Object.keys(formData).forEach(key => {
-        submitData.append(key, formData[key]);
+        if (key === 'pricingMatrix') {
+          submitData.append(key, JSON.stringify(formData[key]));
+        } else {
+          submitData.append(key, formData[key]);
+        }
       });
       
 
@@ -261,8 +300,37 @@ export default function AdminLocationEdit() {
             <JoditEditor value={formData.process2} config={editorConfig} onBlur={newContent => handleEditorChange('process2', newContent)} />
           </div>
           <div>
-            <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">FAQ</label>
-            <JoditEditor value={formData.faq} config={editorConfig} onBlur={newContent => handleEditorChange('faq', newContent)} />
+            <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5 block">FAQ Heading</label>
+            <input type="text" name="faqHeading" value={formData.faqHeading} onChange={handleInputChange} className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700" placeholder="e.g. FREQUENTLY ASKED QUESTIONS" />
+          </div>
+
+          <div className="space-y-4">
+            <h3 className="text-sm font-bold text-slate-800 mb-4">FAQ Items (10 FAQs)</h3>
+            
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(idx => (
+              <div key={idx} className="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                <h4 className="text-xs font-bold text-slate-700 mb-3">FAQ {idx}</h4>
+                <div className="mb-3">
+                  <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5 block">Question</label>
+                  <input 
+                    type="text" 
+                    name={`faq${idx}Q`} 
+                    value={formData[`faq${idx}Q`] || ''} 
+                    onChange={handleInputChange} 
+                    className="w-full bg-white border border-slate-200 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700" 
+                    placeholder="Enter FAQ question..." 
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Answer</label>
+                  <JoditEditor 
+                    value={formData[`faq${idx}A`] || ''} 
+                    config={editorConfig} 
+                    onBlur={newContent => handleEditorChange(`faq${idx}A`, newContent)} 
+                  />
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 

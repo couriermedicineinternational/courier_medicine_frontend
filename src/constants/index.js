@@ -15,7 +15,7 @@ export const TOP_BAR = {
   email: {
     label: "Email Us:",
     address: "couriermedicines@gmail.com",
-    href: "mailto:couriermedicines@gmail.com"
+    href: "https://mail.google.com/mail/?view=cm&fs=1&to=couriermedicines@gmail.com"
   },
   workingHours: {
     label: "Working Hours:",

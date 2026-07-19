@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import api from "../../utils/api";
 import { useNavigate } from "react-router-dom";
+import ImageUpload from "../../components/ui/ImageUpload";
 
 export default function AdminLocations() {
   const navigate = useNavigate();
@@ -21,14 +22,7 @@ export default function AdminLocations() {
   const [isLoading, setIsLoading] = useState(true);
 
   // Global images state
-  const [globalImages, setGlobalImages] = useState({
-    processImage1: null,
-    processImage2: null,
-    processImage3: null,
-    processImage4: null,
-    processImage5: null,
-    documentImage: null
-  });
+  const [documentImage, setDocumentImage] = useState("");
   const [isSavingImages, setIsSavingImages] = useState(false);
 
   const [saveError, setSaveError] = useState("");
@@ -52,10 +46,10 @@ export default function AdminLocations() {
 
   const fetchSettings = async () => {
     try {
-      // Assuming GET /settings returns the settings object (not implemented in the UI yet, but exists in API)
       const res = await api.get("/settings");
-      // Actually we don't strictly need to fetch them to show in the file input (file inputs are unmanaged),
-      // but it's good practice. We'll just leave them null until new ones are selected.
+      if (res.data && res.data.success && res.data.data) {
+        setDocumentImage(res.data.data.documentImage || "");
+      }
     } catch (err) {
       console.error("Error fetching settings:", err);
     }
@@ -66,45 +60,14 @@ export default function AdminLocations() {
     fetchSettings();
   }, []);
 
-  const handleGlobalFileChange = (e) => {
-    setGlobalImages({ ...globalImages, [e.target.name]: e.target.files[0] });
-  };
-
   const handleSaveGlobalImages = async () => {
     setIsSavingImages(true);
     try {
-      const submitData = new FormData();
-      let hasFiles = false;
-      Object.keys(globalImages).forEach(key => {
-        if (globalImages[key]) {
-          submitData.append(key, globalImages[key]);
-          hasFiles = true;
-        }
-      });
-      
-      if (!hasFiles) {
-        alert("Please select at least one image to upload.");
-        setIsSavingImages(false);
-        return;
-      }
-
-      await api.put("/settings", submitData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-      alert("Global images updated successfully!");
-      // Reset the file inputs by resetting state
-      setGlobalImages({
-        processImage1: null,
-        processImage2: null,
-        processImage3: null,
-        processImage4: null,
-        processImage5: null,
-        documentImage: null
-      });
-      // Optionally re-fetch settings
+      await api.put("/settings", { documentImage });
+      alert("Global document image updated successfully!");
     } catch (err) {
       console.error("Error saving global images:", err);
-      alert("Failed to save global images.");
+      alert("Failed to save global image.");
     } finally {
       setIsSavingImages(false);
     }
@@ -175,28 +138,24 @@ export default function AdminLocations() {
       {/* Global Images Panel */}
       <div className="bg-white border border-slate-200/60 rounded-3xl p-5 md:p-6 shadow-sm">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-sm font-bold text-slate-800">Global Process & Document Images</h2>
+          <div>
+            <h2 className="text-sm font-bold text-slate-800">Locations Page Banner</h2>
+            <p className="text-[10px] text-slate-400 mt-0.5">Upload a banner image to Cloudinary to update the main Locations page cover banner.</p>
+          </div>
           <button
             onClick={handleSaveGlobalImages}
             disabled={isSavingImages}
             className="px-4 py-2 bg-[#0052CC] text-white text-xs font-bold rounded-xl shadow-sm hover:bg-[#0052CC]/90 transition-colors disabled:opacity-50"
           >
-            {isSavingImages ? "Saving..." : "Update Images"}
+            {isSavingImages ? "Saving..." : "Save Image Link"}
           </button>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {['processImage1', 'documentImage', 'processImage2', 'processImage3', 'processImage4', 'processImage5'].map(imgKey => (
-            <div key={imgKey} className="bg-slate-50 p-4 border border-slate-200 rounded-xl shadow-sm">
-              <label className="block text-xs font-semibold text-slate-700 mb-2 capitalize">{imgKey.replace(/([A-Z])/g, ' $1')}</label>
-              <input 
-                type="file" 
-                name={imgKey} 
-                onChange={handleGlobalFileChange} 
-                className="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" 
-                accept="image/*" 
-              />
-            </div>
-          ))}
+        <div className="bg-slate-50/50 border border-slate-200/60 rounded-2xl p-4">
+          <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-2">Cover Banner Image</label>
+          <ImageUpload 
+            defaultUrl={documentImage}
+            onUploadSuccess={(url) => setDocumentImage(url)}
+          />
         </div>
       </div>
 

@@ -185,7 +185,9 @@ export default function WhatMedicinesSection({ title, subtitle, content }) {
                 Call / WhatsApp Support
               </a>
               <a
-                href="mailto:couriermedicines@gmail.com"
+                href="https://mail.google.com/mail/?view=cm&fs=1&to=couriermedicines@gmail.com"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs border border-slate-200 shadow-sm hover:scale-[1.01] active:scale-[0.99] transition-all whitespace-nowrap"
               >
                 <Send size={14} />
@@ -214,10 +216,10 @@ export default function WhatMedicinesSection({ title, subtitle, content }) {
                     scale: 1.02,
                     boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02)"
                   }}
-                  className="group relative overflow-hidden border border-slate-100 bg-white rounded-[20px] shadow-[0_4px_20px_rgba(0,0,0,0.01)] flex flex-col cursor-pointer h-[215px] xs:h-[235px] sm:h-[300px]"
+                  className="group relative overflow-hidden border border-slate-100 bg-white rounded-[20px] shadow-[0_4px_20px_rgba(0,0,0,0.01)] flex flex-col cursor-pointer h-[172px] xs:h-[188px] sm:h-[240px]"
                 >
                   {/* Top Image Container */}
-                  <div className="w-full h-24 xs:h-28 sm:h-44 overflow-hidden relative shrink-0">
+                  <div className="w-full h-20 xs:h-[90px] sm:h-[140px] overflow-hidden relative shrink-0">
                     <img 
                       src={cat.img} 
                       alt={cat.title} 

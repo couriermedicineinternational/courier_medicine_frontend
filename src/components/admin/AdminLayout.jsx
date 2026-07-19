@@ -51,6 +51,8 @@ export default function AdminLayout({ children }) {
         { name: "FAQs", path: "/admin/faqs", icon: HelpCircle },
         { name: "Homepage CMS", path: "/admin/homepage", icon: Layers },
         { name: "About Page CMS", path: "/admin/about", icon: Layers },
+        { name: "Refund Policy CMS", path: "/admin/refund-policy", icon: Layers },
+        { name: "Privacy Policy CMS", path: "/admin/privacy-policy", icon: Layers },
         { name: "Contact Page CMS", path: "/admin/contacts?mode=cms", icon: Mail },
       ]
     },

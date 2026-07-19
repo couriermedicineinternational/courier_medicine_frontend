@@ -208,9 +208,11 @@ export default function CountryDetail() {
 
 
     
-    api.get("/settings").then(res => {
-      if (res.data && res.data.success) setSettings(res.data.data);
-    });
+    api.get("/settings")
+      .then(res => {
+        if (res.data && res.data.success) setSettings(res.data.data);
+      })
+      .catch(err => console.error("Failed to fetch settings:", err));
 
     api.get(`/countries/${slug}`)
 
@@ -332,6 +334,28 @@ export default function CountryDetail() {
   ];
 
   const faqsToRender = (() => {
+    // 1. Try to read new separate fields faq1Q to faq10Q
+    const list = [];
+    for (let i = 1; i <= 10; i++) {
+      const q = country?.[`faq${i}Q`] || "";
+      const a = country?.[`faq${i}A`] || "";
+      if (q.trim()) {
+        list.push({ q, a });
+      }
+    }
+
+    if (list.length > 0) {
+      // Fill the rest with default FAQs up to 10
+      const combined = [...list];
+      let i = 0;
+      while (combined.length < 10 && i < defaultFaqs.length) {
+        combined.push(defaultFaqs[i]);
+        i++;
+      }
+      return combined;
+    }
+
+    // 2. Fallback to old parsed HTML faq field if it has items
     if (parsedFaqs && parsedFaqs.length > 0) {
       const combined = [...parsedFaqs];
       let i = 0;
@@ -341,7 +365,9 @@ export default function CountryDetail() {
       }
       return combined;
     }
-    return country?.faq ? null : defaultFaqs;
+
+    // 3. Fallback to all defaults
+    return defaultFaqs;
   })();
 
   return (
@@ -469,79 +495,42 @@ export default function CountryDetail() {
           {/* 1. Hero Banner Section with Parallax Zoom */}
 
           <div 
-
             id="detail-banner"
-
-            className="relative h-[350px] md:h-[450px] flex items-center justify-center overflow-hidden bg-slate-950"
-
+            className="relative h-[220px] md:h-[450px] flex items-end pb-4 md:pb-12 overflow-hidden bg-slate-950"
           >
-
             <motion.div 
-
               initial={{ scale: 1.15, opacity: 0.5 }}
-
               animate={{ scale: 1.0, opacity: 0.6 }}
-
               transition={{ duration: 1.5, ease: "easeOut" }}
-
-              className="absolute inset-0 bg-cover bg-center"
-
+              className="absolute inset-0 bg-[length:100%_100%] bg-no-repeat"
               style={{ 
-
                 backgroundImage: `url(${settings?.countryHeroImage || '/global_network_banner_v3.png'})` 
-
               }}
-
             />
+            
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent pointer-events-none" />
 
-            {/* No Overlay (Removed per user request) */}
-
-
-
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center text-white relative z-20 mt-12">
-
+            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-white z-10">
               <motion.div
-
                 initial={{ opacity: 0, y: 30 }}
-
                 animate={{ opacity: 1, y: 0 }}
-
                 transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
-
-                className="space-y-4 max-w-4xl mx-auto"
-
+                className="space-y-2 max-w-4xl"
               >
-
-
-
                 
-
-                <h1 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tight mb-4 font-display uppercase drop-shadow-lg leading-tight">
-
+                <h1 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tight mb-2 font-display uppercase drop-shadow-lg leading-tight">
                   {country?.heroTitle || `International Medicine Courier Service To ${countryName}`}
-
                 </h1>
-
                 
-
-                <nav className="text-xs md:text-sm font-semibold tracking-wide font-sans flex items-center justify-center gap-2 text-white/80 mt-6">
-
+                <nav className="text-xs md:text-sm font-semibold tracking-wide font-sans flex items-center gap-2 text-white/80">
                   <Link to="/" className="hover:text-secondary transition-colors text-white/95">Home</Link>
-
                   <span className="text-white/40">»</span>
-
                   <Link to="/countries.php" className="hover:text-secondary transition-colors text-white/95">Countries</Link>
-
                   <span className="text-white/40">»</span>
-
                   <span className="text-secondary font-bold">India to {countryName} charges</span>
-
                 </nav>
-
               </motion.div>
-
             </div>
-
           </div>
 
 
@@ -885,15 +874,15 @@ export default function CountryDetail() {
                   <div className="space-y-6">
 
                     <p className="text-slate-600 font-medium leading-relaxed">
-                      <strong className="text-slate-900">1. Prescription Required:</strong> To courier medicines, an original or soft copy of the prescription is necessary. If you’re unable to provide the prescription, <strong className="text-slate-800">We Can Help You With This</strong>. Call / WhatsApp our medicine expert team.
+                      <strong className="text-slate-900">{country?.doc1Title || '1. Prescription Required:'}</strong> {country?.doc1Content ? <span dangerouslySetInnerHTML={{ __html: country.doc1Content }} /> : `To courier medicines, an original or soft copy of the prescription is necessary. If you’re unable to provide the prescription, We Can Help You With This. Call / WhatsApp our medicine expert team.`}
                     </p>
 
                     <p className="text-slate-600 font-medium leading-relaxed">
-                      <strong className="text-slate-900">2. Medicine Purchase Bill required:</strong> An original or soft copy of Medicine bill is required, with detailing about the medicines. If you don't have, <strong className="text-slate-800">We Can Help You With This</strong>. Call / WhatsApp our medicine Expert Team.
+                      <strong className="text-slate-900">{country?.doc2Title || '2. Medicine Purchase Bill required:'}</strong> {country?.doc2Content ? <span dangerouslySetInnerHTML={{ __html: country.doc2Content }} /> : `An original or soft copy of Medicine bill is required, with detailing about the medicines. If you don't have, We Can Help You With This. Call / WhatsApp our medicine Expert Team.`}
                     </p>
 
                     <p className="text-slate-600 font-medium leading-relaxed">
-                      <strong className="text-slate-900">3. Receiver ID Required:</strong> We require a valid identification document for the Patient / Receiver as this is important for customs clearance in {countryName} and helps guarantee safe Delivery of your medication.
+                      <strong className="text-slate-900">{country?.doc3Title || '3. Receiver ID Required:'}</strong> {country?.doc3Content ? <span dangerouslySetInnerHTML={{ __html: country.doc3Content }} /> : `We require a valid identification document for the Patient / Receiver as this is important for customs clearance in ${countryName} and helps guarantee safe Delivery of your medication.`}
                     </p>
 
                     <p className="text-slate-600 font-medium leading-relaxed mt-2">
@@ -1378,17 +1367,11 @@ export default function CountryDetail() {
 
                 </motion.div>
 
-                <div className="space-y-2">
-
-                  <span className="font-extrabold text-[#0D9488] block uppercase tracking-wider text-[11px] md:text-xs">
-
-                    Import Regulatory Framework:
-
-                  </span>
+                <div className="flex-1">
 
                   <p className="text-[#0F766E] leading-relaxed font-semibold">
 
-                    {country.advice} Personal imports of pharmaceutical products require complete batch validation, structured commercial MSDS shipping manifests, and validation invoice checklists. Any import tax or local tariff levied at destination borders is governed by destination state custom authorities.
+                    {country?.advice || `Customs Regulations and Duties for shipping medicine to ${countryName} is now easy and hassle-free. Exporting or importing personal shipments of medicine usually doesn't require extensive customs clearance. However, if more information is needed, our experienced team will work on your behalf with customs authorities to quickly resolve any issues. If customs ask the receiver for documentation or payment of duties, our team will help coordinate to ensure smooth communication, ensuring your parcel is delivered quickly.`} Personal imports of pharmaceutical products require complete batch validation, structured commercial MSDS shipping manifests, and validation invoice checklists. Any import tax or local tariff levied at destination borders is governed by destination state custom authorities.
 
                   </p>
 

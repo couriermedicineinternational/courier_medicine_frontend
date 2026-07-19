@@ -161,6 +161,28 @@ export default function AdminAbout() {
             </div>
 
             <div className="bg-slate-50/50 border border-slate-200/50 rounded-2xl p-4 space-y-3">
+              <span className="text-[9px] font-mono font-black text-slate-400">FREE DOOR PICKUP BANNER</span>
+              <div className="space-y-1">
+                <label className="text-[9px] font-extrabold text-slate-500 uppercase">Banner Headline</label>
+                <input
+                  type="text"
+                  value={content.freePickupTitle || ""}
+                  onChange={(e) => updateContentField("freePickupTitle", e.target.value)}
+                  className="w-full bg-white border border-slate-200 focus:border-primary focus:outline-none px-3 py-2 rounded-xl text-xs font-bold text-slate-800"
+                  required
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[9px] font-extrabold text-slate-500 uppercase">Banner Description</label>
+                <RichTextEditor
+                  value={content.description3 || ""}
+                  onChange={(newContent) => updateContentField("description3", newContent)}
+                  height={200}
+                />
+              </div>
+            </div>
+
+            <div className="bg-slate-50/50 border border-slate-200/50 rounded-2xl p-4 space-y-3">
               <span className="text-[9px] font-mono font-black text-slate-400">PRESCRIPTION BUYING SERVICE BANNER</span>
               <div className="space-y-1">
                 <label className="text-[9px] font-extrabold text-slate-500 uppercase">Banner Headline</label>

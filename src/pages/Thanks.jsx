@@ -122,7 +122,7 @@ export default function Thanks() {
         >
           <div>
             <p className="text-sm text-slate-800 font-extrabold tracking-tight">
-              Please Note Your Booking ID : <span className="text-[#0052CC] font-black text-base">{successData.bookingRef}</span>
+              Please Note Your Booking ID : <span className="text-[#0052CC] font-black text-base whitespace-nowrap">{successData.bookingRef}</span>
             </p>
             <p className="text-slate-600 font-bold text-xs mt-1">Our Team will Contact you</p>
           </div>
@@ -148,18 +148,17 @@ export default function Thanks() {
           </div>
         </div>
 
-        {/* Informative message */}
         <p 
           ref={descRef}
           className="text-[11px] text-slate-500 leading-relaxed font-semibold px-2"
         >
-          Thank you for booking with Courier Medicines. Our logistics coordination team will contact you shortly on your number <span className="text-slate-800 font-extrabold font-semibold">+{successData.customerPhone}</span> to schedule your free doorstep pickup.
+          Thank you for booking with Courier Medicines.
         </p>
 
         {/* Buttons Actions */}
         <div ref={buttonsRef} className="flex flex-col gap-2 pt-1">
           <a
-            href={`https://wa.me/918882691919?text=Hi! I have placed a medicine courier booking to ${successData.destinationCountry} via ${selectedProvider.name}. My Booking Code is: ${successData.bookingRef}. Estimate: Rs. ${totalAmount}. Please schedule my pickup!`}
+            href={`https://wa.me/918882691919?text=Hi! I have placed a medicine courier booking to ${successData.destinationCountry}`}
             target="_blank"
             rel="noopener noreferrer"
             className="w-full text-center py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-xs select-none shadow-sm transition-all hover:scale-[1.01] duration-200 cursor-pointer"

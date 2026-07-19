@@ -11,8 +11,15 @@ export default function PopularCountries() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [countries, setCountries] = useState(ALL_COUNTRIES || []);
+  const [settings, setSettings] = useState(null);
 
   useEffect(() => {
+    api.get("/settings")
+      .then(res => {
+        if (res.data && res.data.success) setSettings(res.data.data);
+      })
+      .catch(err => console.error("Error fetching settings:", err));
+
     api.get('/countries')
       .then(res => {
         if (res.data && res.data.data && res.data.data.length > 0) {
@@ -92,9 +99,9 @@ export default function PopularCountries() {
       {/* 1. Page Header Banner (Matches the screenshot layout) */}
       <div 
         id="countries-banner"
-        className="relative h-[280px] md:h-[380px] bg-cover bg-center flex items-end pb-8 md:pb-12 bg-slate-950"
+        className="relative h-[180px] md:h-[380px] bg-[length:100%_100%] bg-no-repeat flex items-end pb-4 md:pb-12 bg-slate-950"
         style={{ 
-          backgroundImage: `url('/global_network_banner_v3.png')` 
+          backgroundImage: `url(${settings?.countryHeroImage || '/global_network_banner_v3.png'})` 
         }}
       >
         {/* Scrim Gradient Overlay */}

@@ -38,14 +38,10 @@ export default function AdminBlogs() {
     author: "Admin", 
     category: "Courier Guidelines", 
     readTime: "3 min read",
-    excerpt: "",
     content: "",
     imageUrl: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=600&q=80",
     tags: ["medicine courier", "international delivery"],
-    isPublished: true,
-    introParagraph: "",
-    sections: [],
-    tip: ""
+    isPublished: true
   });
   const [tagsInput, setTagsInput] = useState("medicine courier, international delivery");
   const [imageMode, setImageMode] = useState("url"); // "upload" or "url"
@@ -153,18 +149,10 @@ export default function AdminBlogs() {
         author: blogObj.author || "Admin",
         category: blogObj.category || "Courier Guidelines",
         readTime: blogObj.readTime || "3 min read",
-        excerpt: blogObj.excerpt || blogObj.summary || "",
         content: blogObj.content || "",
         imageUrl: blogObj.imageUrl || blogObj.image || "", // map both model fields just in case
         tags: blogObj.tags || [],
-        isPublished: blogObj.isPublished !== undefined ? blogObj.isPublished : true,
-        introParagraph: blogObj.introParagraph || "",
-        sections: (blogObj.sections || []).map(s => ({
-          id: s.id || s._id || (Math.random().toString() + Date.now()),
-          heading: s.heading || "",
-          body: s.body || ""
-        })),
-        tip: blogObj.tip || ""
+        isPublished: blogObj.isPublished !== undefined ? blogObj.isPublished : true
       });
       setTagsInput((blogObj.tags || []).join(", "));
       if ((blogObj.imageUrl || blogObj.image) && !(blogObj.imageUrl || blogObj.image).includes("cloudinary")) {
@@ -179,14 +167,10 @@ export default function AdminBlogs() {
         author: "Admin", 
         category: "Courier Guidelines", 
         readTime: "3 min read",
-        excerpt: "",
         content: "",
         imageUrl: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=600&q=80",
         tags: ["medicine courier", "international delivery"],
-        isPublished: true,
-        introParagraph: "",
-        sections: [],
-        tip: ""
+        isPublished: true
       });
       setTagsInput("medicine courier, international delivery");
       setImageMode("url");
@@ -201,24 +185,24 @@ export default function AdminBlogs() {
     setSaveError("");
     setIsSaving(true);
     
+    // Auto-generate excerpt by stripping HTML tags from content
+    const cleanText = (form.content || "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+    const autoExcerpt = cleanText.substring(0, 150) + (cleanText.length > 150 ? "..." : "");
+
     // Parse tags input
     const parsedTags = tagsInput.split(",")
       .map(t => t.trim())
       .filter(t => t.length > 0);
 
-    // Strip temporary UI id keys from sections before saving
-    const cleanedSections = (form.sections || []).map(({ heading, body }) => ({ heading, body }));
-
     const dataToSave = {
       ...form,
-      sections: cleanedSections,
+      image: form.imageUrl,
+      excerpt: autoExcerpt || "Blog post update details.",
+      introParagraph: "",
+      sections: [],
+      tip: "",
       tags: parsedTags
     };
-
-    // If content is empty or was identical to the previous excerpt, sync it with new excerpt
-    if (!dataToSave.content || (selectedBlog && dataToSave.content === selectedBlog.excerpt)) {
-      dataToSave.content = dataToSave.excerpt;
-    }
 
     try {
       if (selectedBlog) {
@@ -607,26 +591,7 @@ export default function AdminBlogs() {
                   />
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Summary / Intro Paragraph</label>
-                  <textarea
-                    value={form.excerpt}
-                    onChange={(e) => setForm(prev => ({ ...prev, excerpt: e.target.value }))}
-                    placeholder="Write a brief overview of the post..."
-                    className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold min-h-[100px]"
-                    required
-                  />
-                </div>
 
-                 {/* Body Intro Paragraph */}
-                 <div className="space-y-1">
-                   <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Introductory Paragraph (Body Intro)</label>
-                   <RichTextEditor
-                     value={form.introParagraph}
-                     onChange={(newContent) => setForm(prev => ({ ...prev, introParagraph: newContent }))}
-                     placeholder="Write the introduction paragraph that appears before the numbered sections..."
-                   />
-                 </div>
 
                  {/* Article Body Content (Main Text) */}
                  <div className="space-y-1">
@@ -638,90 +603,9 @@ export default function AdminBlogs() {
                    />
                  </div>
 
-                  {/* Pro Tip Input */}
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Pro Tip Banner Text (Optional)</label>
-                    <input
-                      type="text"
-                      value={form.tip}
-                      onChange={(e) => setForm(prev => ({ ...prev, tip: e.target.value }))}
-                      className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold"
-                      placeholder="e.g. Always retain copies of all documents submitted..."
-                    />
-                  </div>
 
-                  {/* Dynamic Numbered Card Sections */}
-                  <div className="space-y-3 border border-slate-100 rounded-2xl p-4 bg-slate-50/50">
-                    <div className="flex items-center justify-between">
-                      <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Numbered Card Sections</label>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setForm(prev => {
-                            const updatedSections = [...prev.sections, { id: Math.random().toString() + Date.now(), heading: "", body: "" }];
-                            return { ...prev, sections: updatedSections };
-                          });
-                        }}
-                        className="text-[10px] font-black text-primary uppercase hover:underline"
-                      >
-                        + Add Section
-                      </button>
-                    </div>
-                    
-                    {form.sections.length === 0 ? (
-                      <p className="text-[11px] text-slate-400 font-semibold italic">No custom sections defined. Will use default fallback data.</p>
-                    ) : (
-                      <div className="space-y-4">
-                        {form.sections.map((sect, index) => (
-                          <div key={sect.id || index} className="bg-white border border-slate-200/60 rounded-xl p-3 space-y-2 relative">
-                            <div className="flex items-center justify-between">
-                              <span className="text-[10px] font-black text-slate-800 uppercase tracking-wider">Card Section #{index + 1}</span>
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setForm(prev => {
-                                    const updatedSections = prev.sections.filter((_, i) => i !== index);
-                                    return { ...prev, sections: updatedSections };
-                                  });
-                                }}
-                                className="text-[10px] font-black text-red-500 uppercase hover:underline"
-                              >
-                                Remove
-                              </button>
-                            </div>
-                            <div className="space-y-1.5">
-                              <input
-                                type="text"
-                                placeholder={`Section Heading (e.g. Why Liquid Medicines Are High-Risk)`}
-                                value={sect.heading}
-                                onChange={(e) => {
-                                  const val = e.target.value;
-                                  setForm(prev => {
-                                    const updatedSections = [...prev.sections];
-                                    updatedSections[index] = { ...updatedSections[index], heading: val };
-                                    return { ...prev, sections: updatedSections };
-                                  });
-                                }}
-                                className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none px-2.5 py-1.5 rounded-lg text-xs font-semibold"
-                                required
-                              />
-                              <RichTextEditor
-                                value={sect.body}
-                                onChange={(newContent) => {
-                                  setForm(prev => {
-                                    const updatedSections = [...prev.sections];
-                                    updatedSections[index] = { ...updatedSections[index], body: newContent };
-                                    return { ...prev, sections: updatedSections };
-                                  });
-                                }}
-                                placeholder="Section Body text..."
-                              />
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+
+
 
                  <div className="flex items-center gap-2 pt-2">
                    <input

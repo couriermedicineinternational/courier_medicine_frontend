@@ -10,8 +10,17 @@ export default function PopularLocations() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [locations, setLocations] = useState([]);
+  const [settings, setSettings] = useState(null);
 
   useEffect(() => {
+    api.get("/settings")
+      .then(res => {
+        if (res.data && res.data.success) {
+          setSettings(res.data.data);
+        }
+      })
+      .catch(err => console.error("Error fetching settings in PopularLocations:", err));
+
     api.get('/locations')
       .then(res => {
         if (res.data && res.data.data && res.data.data.length > 0) {
@@ -92,19 +101,22 @@ export default function PopularLocations() {
       {/* 1. Page Header Banner */}
       <div 
         id="locations-banner"
-        className="relative h-[220px] md:h-[280px] bg-cover bg-center flex items-end pb-8 md:pb-12"
+        className="relative h-[180px] md:h-[380px] bg-[length:100%_100%] bg-no-repeat flex items-end pb-4 md:pb-12 bg-slate-950"
         style={{ 
-          backgroundImage: `url('https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=1600&q=80')` 
+          backgroundImage: `url(${settings?.documentImage || 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=1600&q=80'})` 
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-white drop-shadow-md">
-          <h1 className="text-3xl md:text-5xl font-black tracking-tight mb-2 font-display">
+        {/* Scrim Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent pointer-events-none" />
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-white z-10">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tight mb-2 font-display uppercase drop-shadow-lg leading-tight">
             Locations
           </h1>
-          <nav className="text-xs md:text-sm font-semibold tracking-wide opacity-90 font-sans">
-            <Link to="/" className="hover:text-primary transition-colors">Home</Link>
-            <span className="mx-2 text-slate-300">»</span>
-            <span className="text-primary font-bold">Locations</span>
+          <nav className="text-xs md:text-sm font-semibold tracking-wide font-sans flex items-center gap-2 text-white/80">
+            <Link to="/" className="hover:text-secondary transition-colors text-white/95">Home</Link>
+            <span className="text-white/40">»</span>
+            <span className="text-secondary font-bold">Locations</span>
           </nav>
         </div>
       </div>

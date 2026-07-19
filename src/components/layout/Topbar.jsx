@@ -48,6 +48,8 @@ export default function Topbar() {
           <a
             id="topbar-email-link"
             href={TOP_BAR.email.href}
+            target="_blank"
+            rel="noopener noreferrer"
             className="group flex items-center h-9 bg-[#0052CC]/5 hover:bg-[#0052CC]/10 border border-[#0052CC]/10 hover:border-[#0052CC]/30 rounded-full px-2.5 transition-all duration-300 ease-out shadow-xs hover:shadow-sm"
           >
             <span className="flex items-center justify-center shrink-0 w-5 h-5">

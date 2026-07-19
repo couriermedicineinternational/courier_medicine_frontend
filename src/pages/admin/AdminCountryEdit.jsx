@@ -41,7 +41,12 @@ export default function AdminCountryEdit() {
     faq2Q: '', faq2A: '',
     faq3Q: '', faq3A: '',
     faq4Q: '', faq4A: '',
-    faq5Q: '', faq5A: ''
+    faq5Q: '', faq5A: '',
+    faq6Q: '', faq6A: '',
+    faq7Q: '', faq7A: '',
+    faq8Q: '', faq8A: '',
+    faq9Q: '', faq9A: '',
+    faq10Q: '', faq10A: ''
   });
 
 
@@ -98,7 +103,7 @@ export default function AdminCountryEdit() {
           code: country.code || '',
           slug: country.slug || '',
           basePrice: country.basePrice || 3000,
-          advice: country.advice || '',
+          advice: country.advice || `Customs Regulations and Duties for shipping medicine to ${dest} is now easy and hassle-free. Exporting or importing personal shipments of medicine usually doesn't require extensive customs clearance. However, if more information is needed, our experienced team will work on your behalf with customs authorities to quickly resolve any issues. If customs ask the receiver for documentation or payment of duties, our team will help coordinate to ensure smooth communication, ensuring your parcel is delivered quickly.`,
           isActive: country.isActive !== undefined ? country.isActive : true,
           heroTitle: country.heroTitle || '',
           introHeading: country.introHeading || '',
@@ -110,22 +115,44 @@ export default function AdminCountryEdit() {
           servicesWeOffer: country.servicesWeOffer || defaultServices,
           process1: country.process1 || defaultProcess1,
           process2: country.process2 || defaultProcess2,
-          serviceHeading: country.serviceHeading || '',
-          service1Title: country.service1Title || '', service1Content: country.service1Content || '',
-          service2Title: country.service2Title || '', service2Content: country.service2Content || '',
-          service3Title: country.service3Title || '', service3Content: country.service3Content || '',
-          service4Title: country.service4Title || '', service4Content: country.service4Content || '',
-          docHeading: country.docHeading || '',
-          doc1Title: country.doc1Title || '', doc1Content: country.doc1Content || '',
-          doc2Title: country.doc2Title || '', doc2Content: country.doc2Content || '',
-          doc3Title: country.doc3Title || '', doc3Content: country.doc3Content || '',
+          serviceHeading: country.serviceHeading || 'Our Premium Services',
+          service1Title: country.service1Title || 'Pickup Service', 
+          service1Content: country.service1Content || `<p>If you already have medicine with you, than We Offer a Free Pick-Up Service Across India, including Delhi, Noida, Faridabad, Gurgaon Hyderabad, Mumbai, Pune, Chennai, Coimbatore, Telangana Bangalore, for seamless Delivery to Any Place In ${dest}.</p>`,
+          service2Title: country.service2Title || 'Medicine Purchase', 
+          service2Content: country.service2Content || `<p>Courier Medicines can purchase all type of medicine on your behalf, Including Allopathy, Homeopathy, Ayurvedic, and Patanjali products. As we have partnered with all the reputable pharmacies, you'll receive genuine with high-quality medications on Good Discounted Price.</p><p>Do you also Need a specific medicine? Whether You Have a Prescription or Don’t Have Prescription, we can help you purchase the necessary medicine on your behalf. T&C apply. Call / WhatsApp our medicine expert team at +91-8882691919</p>`,
+          service3Title: country.service3Title || 'Tracking Available', 
+          service3Content: country.service3Content || `<p>We share live tracking for all shipments. Once your order is dispatched, you'll receive a tracking link to monitor your package in real-time, from pick-up to delivery. Stay informed every step of the way !</p>`,
+          service4Title: country.service4Title || 'Payment Options', 
+          service4Content: country.service4Content || `<p>We support a range of secure payment options for your convenience. You can pay via online bank transfer, UPI, credit/debit cards, or other popular payment gateways. Get seamless billing details.</p>`,
+          docHeading: country.docHeading || 'Document Required to Send Medicines',
+          doc1Title: country.doc1Title || '1. Prescription Required:', 
+          doc1Content: country.doc1Content || `<p>To courier medicines, an original or soft copy of the prescription is necessary. If you’re unable to provide the prescription, We Can Help You With This. Call / WhatsApp our medicine expert team.</p>`,
+          doc2Title: country.doc2Title || '2. Medicine Purchase Bill required:', 
+          doc2Content: country.doc2Content || `<p>An original or soft copy of Medicine bill is required, with detailing about the medicines. If you don't have, We Can Help You With This. Call / WhatsApp our medicine Expert Team.</p>`,
+          doc3Title: country.doc3Title || '3. Receiver ID Required:', 
+          doc3Content: country.doc3Content || `<p>We require a valid identification document for the Patient / Receiver as this is important for customs clearance in ${dest} and helps guarantee safe Delivery of your medication.</p>`,
           faq: country.faq || defaultFAQ,
-          faqHeading: country.faqHeading || '',
-          faq1Q: country.faq1Q || '', faq1A: country.faq1A || '',
-          faq2Q: country.faq2Q || '', faq2A: country.faq2A || '',
-          faq3Q: country.faq3Q || '', faq3A: country.faq3A || '',
-          faq4Q: country.faq4Q || '', faq4A: country.faq4A || '',
-          faq5Q: country.faq5Q || '', faq5A: country.faq5A || '',
+          faqHeading: country.faqHeading || 'Frequently Asked Questions',
+          faq1Q: country.faq1Q || `What are the medicine courier charges from India to ${dest}?`,
+          faq1A: country.faq1A || `<p>Medicine courier charges from India to ${dest} start at ₹${(country.basePrice || 3500).toLocaleString("en-IN")} for the first 0.5 Kg. Incremental charges are added per 0.5 Kg. You can check rates directly using the interactive weight slider table above.</p>`,
+          faq2Q: country.faq2Q || `What documents are required to courier medicines to ${dest}?`,
+          faq2A: country.faq2A || `<p>To ship medicines, you require: (1) A valid prescription issued by a registered medical practitioner, (2) Retail purchase bill from a licensed pharmacy store, and (3) Receiver ID identity proof to clear customs on arrival.</p>`,
+          faq3Q: country.faq3Q || `How much time does it take to courier medicines to ${dest}?`,
+          faq3A: country.faq3A || `<p>Typically, standard express air courier shipments are delivered to ${dest} within 4 to 6 working days, backed by priority air routes.</p>`,
+          faq4Q: country.faq4Q || `Is there any hidden customs fee or duty?`,
+          faq4A: country.faq4A || `<p>Our estimate includes documentation support, packaging, and custom invoice preparations. If any local import customs duty or tariff is levied by the destination custom department, the receiver is responsible to clear it.</p>`,
+          faq5Q: country.faq5Q || `Can you courier liquid medicines?`,
+          faq5A: country.faq5A || `<p>Yes, we courier all types of medicines including liquid formulations, tablets, ayurvedic oils, homeopathic dilutions, and herbal care formulations with structured packaging.</p>`,
+          faq6Q: country.faq6Q || `How can I track my medicine parcel to ${dest}?`,
+          faq6A: country.faq6A || `<p>Once your package is dispatched, we provide a unique tracking AWB number. You can use this number on our website or the respective carrier's portal to track your medicine shipment live until it reaches ${dest}.</p>`,
+          faq7Q: country.faq7Q || `Do you provide temperature-controlled packaging?`,
+          faq7A: country.faq7A || `<p>Yes, for medicines requiring cold chain maintenance (like insulin or specific drops), we use specialized temperature-controlled packaging with dry ice or gel packs to ensure their efficacy during transit to ${dest}.</p>`,
+          faq8Q: country.faq8Q || `Is doorstep pickup available across India?`,
+          faq8A: country.faq8A || `<p>Absolutely! We offer free doorstep pickup services from major cities and towns across India. Our executive will safely collect the medicines along with the necessary documentation directly from your home.</p>`,
+          faq9Q: country.faq9Q || `Can I send homeopathic or ayurvedic medicines?`,
+          faq9A: country.faq9A || `<p>Yes, you can courier Allopathic, Homeopathic, Ayurvedic, and Unani medicines. Just ensure you have a valid prescription and the original pharmacy purchase bill for smooth customs clearance.</p>`,
+          faq10Q: country.faq10Q || `What happens if my package is held at customs in ${dest}?`,
+          faq10A: country.faq10A || `<p>Our logistics team ensures all paperwork is perfectly compliant before shipping. In the rare event of a customs hold, our clearance experts coordinate with the local authorities in ${dest} to resolve queries and expedite release.</p>`
         });
         
       }
@@ -177,7 +204,11 @@ export default function AdminCountryEdit() {
       const submitData = new FormData();
       
       Object.keys(formData).forEach(key => {
-        submitData.append(key, formData[key]);
+        if (key === 'pricingMatrix') {
+          submitData.append(key, JSON.stringify(formData[key]));
+        } else {
+          submitData.append(key, formData[key]);
+        }
       });
       
 
@@ -490,6 +521,71 @@ export default function AdminCountryEdit() {
                 <div>
                   <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Answer</label>
                   <JoditEditor value={formData.faq5A} config={editorConfig} onBlur={newContent => handleEditorChange('faq5A', newContent)} />
+                </div>
+              </div>
+
+              {/* FAQ 6 */}
+              <div className="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                <h4 className="text-xs font-bold text-slate-700 mb-3">FAQ 6</h4>
+                <div className="mb-3">
+                  <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5 block">Question</label>
+                  <input type="text" name="faq6Q" value={formData.faq6Q} onChange={handleInputChange} className="w-full bg-white border border-slate-200 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700" placeholder="e.g. How can I track my medicine parcel?" />
+                </div>
+                <div>
+                  <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Answer</label>
+                  <JoditEditor value={formData.faq6A} config={editorConfig} onBlur={newContent => handleEditorChange('faq6A', newContent)} />
+                </div>
+              </div>
+
+              {/* FAQ 7 */}
+              <div className="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                <h4 className="text-xs font-bold text-slate-700 mb-3">FAQ 7</h4>
+                <div className="mb-3">
+                  <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5 block">Question</label>
+                  <input type="text" name="faq7Q" value={formData.faq7Q} onChange={handleInputChange} className="w-full bg-white border border-slate-200 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700" placeholder="e.g. Do you provide temperature-controlled packaging?" />
+                </div>
+                <div>
+                  <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Answer</label>
+                  <JoditEditor value={formData.faq7A} config={editorConfig} onBlur={newContent => handleEditorChange('faq7A', newContent)} />
+                </div>
+              </div>
+
+              {/* FAQ 8 */}
+              <div className="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                <h4 className="text-xs font-bold text-slate-700 mb-3">FAQ 8</h4>
+                <div className="mb-3">
+                  <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5 block">Question</label>
+                  <input type="text" name="faq8Q" value={formData.faq8Q} onChange={handleInputChange} className="w-full bg-white border border-slate-200 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700" placeholder="e.g. Is doorstep pickup available across India?" />
+                </div>
+                <div>
+                  <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Answer</label>
+                  <JoditEditor value={formData.faq8A} config={editorConfig} onBlur={newContent => handleEditorChange('faq8A', newContent)} />
+                </div>
+              </div>
+
+              {/* FAQ 9 */}
+              <div className="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                <h4 className="text-xs font-bold text-slate-700 mb-3">FAQ 9</h4>
+                <div className="mb-3">
+                  <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5 block">Question</label>
+                  <input type="text" name="faq9Q" value={formData.faq9Q} onChange={handleInputChange} className="w-full bg-white border border-slate-200 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700" placeholder="e.g. Can I send homeopathic or ayurvedic medicines?" />
+                </div>
+                <div>
+                  <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Answer</label>
+                  <JoditEditor value={formData.faq9A} config={editorConfig} onBlur={newContent => handleEditorChange('faq9A', newContent)} />
+                </div>
+              </div>
+
+              {/* FAQ 10 */}
+              <div className="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                <h4 className="text-xs font-bold text-slate-700 mb-3">FAQ 10</h4>
+                <div className="mb-3">
+                  <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5 block">Question</label>
+                  <input type="text" name="faq10Q" value={formData.faq10Q} onChange={handleInputChange} className="w-full bg-white border border-slate-200 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700" placeholder="e.g. What happens if my package is held at customs?" />
+                </div>
+                <div>
+                  <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Answer</label>
+                  <JoditEditor value={formData.faq10A} config={editorConfig} onBlur={newContent => handleEditorChange('faq10A', newContent)} />
                 </div>
               </div>
             </div>

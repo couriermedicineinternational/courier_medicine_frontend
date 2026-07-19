@@ -22,6 +22,8 @@ const Thanks = lazy(() => import("./pages/Thanks"));
 const SpecialRates = lazy(() => import("./pages/SpecialRates"));
 const CalculatorPage = lazy(() => import("./pages/CalculatorPage"));
 const SlugResolver = lazy(() => import("./pages/SlugResolver"));
+const RefundPolicy = lazy(() => import("./pages/RefundPolicy"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 
 // Admin Pages (Lazy Loaded)
 const AdminLogin = lazy(() => import("./pages/admin/AdminLogin"));
@@ -43,6 +45,8 @@ const AdminTestimonials = lazy(() => import("./pages/admin/AdminTestimonials"));
 const AdminHomepage = lazy(() => import("./pages/admin/AdminHomepage"));
 const AdminAbout = lazy(() => import("./pages/admin/AdminAbout"));
 const AdminPricing = lazy(() => import("./pages/admin/AdminPricing"));
+const AdminRefundPolicy = lazy(() => import("./pages/admin/AdminRefundPolicy"));
+const AdminPrivacyPolicy = lazy(() => import("./pages/admin/AdminPrivacyPolicy"));
 
 // Helper component to scroll window to top on route navigation change
 function ScrollToTop() {
@@ -138,6 +142,8 @@ export default function App() {
               <Route path="/thanks.php" element={<Thanks />} />
               <Route path="/special-rates.php" element={<SpecialRates />} />
               <Route path="/calculator.php" element={<CalculatorPage />} />
+              <Route path="/refund-policy" element={<RefundPolicy />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               
               {/* Admin Routes */}
               <Route path="/admin/login" element={<AdminLogin />} />
@@ -156,6 +162,8 @@ export default function App() {
               <Route path="/admin/about" element={<AdminLayout><AdminAbout /></AdminLayout>} />
               <Route path="/admin/pricing" element={<AdminLayout><AdminPricing /></AdminLayout>} />
               <Route path="/admin/settings" element={<AdminLayout><AdminSettings /></AdminLayout>} />
+              <Route path="/admin/refund-policy" element={<AdminLayout><AdminRefundPolicy /></AdminLayout>} />
+              <Route path="/admin/privacy-policy" element={<AdminLayout><AdminPrivacyPolicy /></AdminLayout>} />
               <Route path="/admin" element={<AdminLayout><AdminDashboard /></AdminLayout>} />
 
               {/* Root-level dynamic routes should be placed last before catch-all */}
