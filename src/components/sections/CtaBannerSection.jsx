@@ -37,7 +37,7 @@ export default function CtaBannerSection({ title, subtitle, content }) {
           {!content?.bgImage && (
             <div className="absolute right-0 top-0 h-full w-full lg:w-2/3 pointer-events-none select-none z-0 opacity-10">
               <img 
-                src="https://res.cloudinary.com/dib6l7ocv/image/upload/v1781865141/courier-medicine-static/bright-bg.jpg" 
+                src="https://res.cloudinary.com/dib6l7ocv/image/upload/f_auto,q_auto/v1781865141/courier-medicine-static/bright-bg.jpg" 
                 alt="World Map Graphic" 
                 className="w-full h-full object-cover object-center mix-blend-multiply"
               />

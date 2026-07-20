@@ -9,7 +9,7 @@ import {
   ChevronDown
 } from "lucide-react";
 
-import { motion, AnimatePresence } from "motion/react";
+
 import { HERO, ALL_COUNTRIES } from "../../constants";
 import { calculatePrice, getDefaultProvider, getProvidersForCountry, getProviderImage, getProviderUI } from "../../utils/pricing";
 import Button from "../ui/Button";
@@ -239,7 +239,7 @@ export default function HeroSection({ title, subtitle, content }) {
         {/* Background Layer */}
         <div className="absolute inset-0 z-0 overflow-hidden bg-white">
           <img 
-            src="https://res.cloudinary.com/dib6l7ocv/image/upload/v1781865141/courier-medicine-static/bright-bg.jpg" 
+            src="https://res.cloudinary.com/dib6l7ocv/image/upload/f_auto,q_auto/v1781865141/courier-medicine-static/bright-bg.jpg" 
             alt="Medical Abstract Background" 
             width={1920}
             height={1080}
@@ -255,18 +255,15 @@ export default function HeroSection({ title, subtitle, content }) {
           <div id="hero-grid" className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch pt-0">
           
           {/* Left Hero: Picture Column with Text Overlay */}
-          <motion.div 
+          <div 
             id="hero-left-col" 
-            className="lg:col-span-7 flex flex-col justify-start relative rounded-2xl overflow-hidden shadow-2xl pt-6 px-6 pb-2.5 md:pt-8 md:px-8 md:pb-3.5 lg:pt-10 lg:px-10 lg:pb-4.5 border border-slate-700/50"
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1.0, ease: "easeOut" }}
+            className="lg:col-span-7 flex flex-col justify-start relative rounded-2xl overflow-hidden shadow-2xl pt-6 px-6 pb-2.5 md:pt-8 md:px-8 md:pb-3.5 lg:pt-10 lg:px-10 lg:pb-4.5 border border-slate-700/50 animate-[fadeInLeft_0.8s_ease-out_forwards]"
           >
             
             {/* Background Image Layer for Left Column */}
             <div className="absolute inset-0 z-0">
               <img 
-                src="https://res.cloudinary.com/dib6l7ocv/image/upload/v1781865151/courier-medicine-static/delivery_guy_hero_new.jpg" 
+                src="https://res.cloudinary.com/dib6l7ocv/image/upload/f_auto,q_auto,w_800/v1781865151/courier-medicine-static/delivery_guy_hero_new.jpg" 
                 alt="Medical Courier Agent" 
                 width={800}
                 height={533}
@@ -305,18 +302,15 @@ export default function HeroSection({ title, subtitle, content }) {
               </div>
             </div>
 
-          </motion.div>
+          </div>
 
           {/* Right Hero: Calculator Form */}
-          <motion.div 
+          <div 
             id="hero-right-col" 
-            className="hidden lg:block lg:col-span-5"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1.0, ease: "easeOut", delay: 0.2 }}
+            className="hidden lg:block lg:col-span-5 animate-[fadeInRight_0.8s_ease-out_0.2s_forwards] opacity-0"
           >
             <CalculatorForm />
-          </motion.div>
+          </div>
 
           </div>
         </div>

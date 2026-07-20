@@ -12,8 +12,22 @@ const PORT = process.env.PORT || 8080;
 // Enable gzip/deflate compression for fast asset transfers
 app.use(compression());
 
-// Serve static files from the React dist directory
-app.use(express.static(path.join(__dirname, 'dist')));
+// Serve hashed static assets (JS, CSS) with aggressive long-term caching (1 year)
+app.use('/assets', express.static(path.join(__dirname, 'dist', 'assets'), {
+  maxAge: '1y',
+  immutable: true
+}));
+
+// Serve other static files (favicon, images) with moderate caching
+app.use(express.static(path.join(__dirname, 'dist'), {
+  maxAge: '1h',
+  setHeaders: (res, filePath) => {
+    // index.html should not be cached long-term to pick up new deployments
+    if (filePath.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-cache');
+    }
+  }
+}));
 
 // Handle React Router SPA routing fallback
 app.get('*', (req, res) => {

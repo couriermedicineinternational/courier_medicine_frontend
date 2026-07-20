@@ -4,8 +4,6 @@
   --color-primary: #03ADA4;
   --color-secondary: #0052CC;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Space Grotesk", sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 }
 
 /* Custom fine-grained scroll behavior and styling focus adjustments */
@@ -15,7 +13,7 @@ html {
 }
 
 h1, h2, h3, .font-display {
-  font-family: var(--font-display), var(--font-sans);
+  font-family: var(--font-sans);
 }
 
 code, pre, .font-mono {
@@ -211,4 +209,13 @@ code, pre, .font-mono {
   padding-right: 0 !important;
 }
 
+/* CSS keyframe animations to replace motion.js in LCP hero section */
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
 
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
