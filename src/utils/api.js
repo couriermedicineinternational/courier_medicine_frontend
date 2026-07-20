@@ -34,4 +34,19 @@ api.interceptors.request.use(
   }
 );
 
+// Response interceptor to handle token expiration/401 Unauthorized response
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem('token');
+      // Only redirect if not already on the login page to avoid loops
+      if (!window.location.pathname.startsWith('/admin/login')) {
+        window.location.href = '/admin/login';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default api;
