@@ -27,26 +27,34 @@ const componentMap = {
   "testimonials": TestimonialsSection
 };
 
+const DEFAULT_SECTIONS = [
+  { key: "hero" },
+  { key: "stats" },
+  { key: "what-medicines" },
+  { key: "easy-courier" },
+  { key: "flags" },
+  { key: "documents" },
+  { key: "cta-banner" },
+  { key: "process" },
+  { key: "testimonials" }
+];
+
 export default function Home() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [sections, setSections] = useState([]);
+  const [isLoading, setIsLoading] = useState(false); // Render content instantly
+  const [sections, setSections] = useState(DEFAULT_SECTIONS);
   const [hasError, setHasError] = useState(false);
 
-  // Fetch dynamic sections configuration from API
+  // Fetch dynamic sections configuration from API silently in the background
   useEffect(() => {
     const loadHomepageData = async () => {
       try {
         const res = await api.get("/homepage");
         if (res.data && res.data.success && res.data.data && res.data.data.length > 0) {
           setSections(res.data.data);
-        } else {
-          setHasError(true);
         }
       } catch (err) {
-        console.error("Failed to load dynamic homepage configuration:", err);
-        setHasError(true);
-      } finally {
-        setIsLoading(false);
+        console.error("Failed to load dynamic homepage configuration in background:", err);
+        // Do not block the page with an error if we already have the default fallback layout!
       }
     };
     

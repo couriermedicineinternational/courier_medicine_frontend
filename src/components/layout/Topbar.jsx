@@ -13,6 +13,7 @@ export default function Topbar() {
           <a
             id="topbar-phone-link"
             href={TOP_BAR.phone.href}
+            aria-label="Call Customer Support"
             className="group flex items-center h-9 bg-[#0052CC]/5 hover:bg-[#0052CC]/10 border border-[#0052CC]/10 hover:border-[#0052CC]/30 rounded-full px-2.5 transition-all duration-300 ease-out shadow-xs hover:shadow-sm"
           >
             <span className="flex items-center justify-center shrink-0 w-5 h-5">
@@ -30,6 +31,7 @@ export default function Topbar() {
             href={TOP_BAR.whatsapp.href}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Chat on WhatsApp"
             className="group flex items-center h-9 bg-[#03ADA4]/5 hover:bg-[#03ADA4]/10 border border-[#03ADA4]/15 hover:border-[#03ADA4]/35 rounded-full px-2.5 transition-all duration-300 ease-out shadow-xs hover:shadow-sm"
           >
             <span className="flex items-center justify-center shrink-0 w-5 h-5">
@@ -50,6 +52,7 @@ export default function Topbar() {
             href={TOP_BAR.email.href}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Email Customer Support"
             className="group flex items-center h-9 bg-[#0052CC]/5 hover:bg-[#0052CC]/10 border border-[#0052CC]/10 hover:border-[#0052CC]/30 rounded-full px-2.5 transition-all duration-300 ease-out shadow-xs hover:shadow-sm"
           >
             <span className="flex items-center justify-center shrink-0 w-5 h-5">

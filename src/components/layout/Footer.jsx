@@ -29,7 +29,8 @@ export default function Footer() {
               href="https://facebook.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-secondary/20 hover:bg-slate-750 flex items-center justify-center transition-all duration-200"
+              aria-label="Visit our Facebook page"
+              className="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-[#03ADA4] hover:bg-slate-750 flex items-center justify-center transition-all duration-200"
             >
               <Facebook size={16} />
             </a>
@@ -38,6 +39,7 @@ export default function Footer() {
               href="https://instagram.com"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Visit our Instagram profile"
               className="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-pink-500 hover:bg-slate-750 flex items-center justify-center transition-all duration-200"
             >
               <Instagram size={16} />
@@ -47,6 +49,7 @@ export default function Footer() {
               href="https://youtube.com"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Visit our YouTube channel"
               className="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-red-500 hover:bg-slate-750 flex items-center justify-center transition-all duration-200"
             >
               <Youtube size={16} />
@@ -56,7 +59,8 @@ export default function Footer() {
               href="https://x.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-secondary/20 hover:bg-slate-750 flex items-center justify-center transition-all duration-200"
+              aria-label="Visit our X (Twitter) profile"
+              className="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-750 flex items-center justify-center transition-all duration-200"
             >
               <Twitter size={15} />
             </a>
@@ -74,7 +78,7 @@ export default function Footer() {
                 <Link
                   id={`footer-info-link-${idx}`}
                   to={link.path}
-                  className="hover:text-secondary/20 hover:underline transition-all text-slate-400 block"
+                  className="hover:text-[#03ADA4] hover:underline transition-all text-slate-400 block"
                 >
                   {link.label}
                 </Link>
@@ -94,7 +98,7 @@ export default function Footer() {
                 <Link
                   id={`footer-quick-link-${idx}`}
                   to={link.path}
-                  className="hover:text-secondary/20 hover:underline transition-all text-slate-400 block truncate"
+                  className="hover:text-[#03ADA4] hover:underline transition-all text-slate-400 block truncate"
                 >
                   {link.label}
                 </Link>
@@ -118,7 +122,7 @@ export default function Footer() {
               href={`https://mail.google.com/mail/?view=cm&fs=1&to=${FOOTER.locateUs.email}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2.5 hover:text-secondary/20 transition-colors"
+              className="flex items-center gap-2.5 hover:text-[#03ADA4] transition-colors"
             >
               <Mail size={16} className="text-secondary/20 shrink-0" />
               <span id="footer-email-text">{FOOTER.locateUs.email}</span>
@@ -126,7 +130,7 @@ export default function Footer() {
             <a
               id="footer-phone-link"
               href={`tel:${FOOTER.locateUs.phone.replace(/[^0-9+]/g, '')}`}
-              className="flex items-center gap-2.5 hover:text-secondary/20 transition-colors"
+              className="flex items-center gap-2.5 hover:text-[#03ADA4] transition-colors"
             >
               <Phone size={16} className="text-secondary/20 shrink-0" />
               <span id="footer-phone-text">{FOOTER.locateUs.phone}</span>
