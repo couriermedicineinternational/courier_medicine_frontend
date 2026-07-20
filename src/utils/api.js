@@ -1,12 +1,23 @@
 import axios from 'axios';
 
 const getBaseUrl = () => {
-  const envUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-  // If envUrl uses localhost but we are accessing via an IP address (like on a phone)
-  if (envUrl.includes('localhost') && window.location.hostname !== 'localhost') {
-    return envUrl.replace('localhost', window.location.hostname);
+  const isLocal = typeof window !== 'undefined' && 
+    (window.location.hostname === 'localhost' || 
+     window.location.hostname === '127.0.0.1' || 
+     window.location.hostname.startsWith('192.168.'));
+
+  if (isLocal) {
+    return 'http://localhost:5000/api';
   }
-  return envUrl;
+
+  // If running on Cloud Run default frontend URL, replace 'frontend' with 'backend'
+  if (typeof window !== 'undefined' && window.location.hostname.includes('courier-medicine-frontend')) {
+    const backendHostname = window.location.hostname.replace('courier-medicine-frontend', 'courier-medicine-backend');
+    return `https://${backendHostname}/api`;
+  }
+
+  // Secure fallback for custom domains in production pointing to the deployed Cloud Run backend
+  return 'https://courier-medicine-backend-249329877539.asia-south1.run.app/api';
 };
 
 const api = axios.create({
