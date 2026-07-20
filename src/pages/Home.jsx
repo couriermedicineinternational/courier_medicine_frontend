@@ -82,20 +82,35 @@ export default function Home() {
           </button>
         </div>
       ) : (
-        <Suspense fallback={null}>
+        <>
           {sections.map((section) => {
             const Component = componentMap[section.key];
             if (!Component) return null;
+            
+            // HeroSection is eagerly imported — render it directly without Suspense
+            if (section.key === "hero") {
+              return (
+                <Component 
+                  key={section.key} 
+                  title={section.title} 
+                  subtitle={section.subtitle} 
+                  content={section.content} 
+                />
+              );
+            }
+            
+            // All other sections are lazy — wrap each in its own Suspense
             return (
-              <Component 
-                key={section.key} 
-                title={section.title} 
-                subtitle={section.subtitle} 
-                content={section.content} 
-              />
+              <Suspense key={section.key} fallback={null}>
+                <Component 
+                  title={section.title} 
+                  subtitle={section.subtitle} 
+                  content={section.content} 
+                />
+              </Suspense>
             );
           })}
-        </Suspense>
+        </>
       )}
     </div>
   );
