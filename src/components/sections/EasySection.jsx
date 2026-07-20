@@ -1,7 +1,7 @@
 import React from "react";
 import { motion, animate } from "motion/react";
 import { Truck, Tag, ShoppingBag, Package, Clock, PhoneCall, CreditCard, ChevronLeft, ChevronRight } from "lucide-react";
-import * as Lucide from "lucide-react";
+import * as Lucide from "../../utils/icons";
 import DOMPurify from "dompurify";
 import { WE_MADE_EASY } from "../../constants";
 

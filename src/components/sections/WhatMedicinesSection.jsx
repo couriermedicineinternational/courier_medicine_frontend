@@ -8,7 +8,7 @@ import {
   PhoneCall, 
   Send 
 } from "lucide-react";
-import * as Lucide from "lucide-react";
+import * as Lucide from "../../utils/icons";
 
 const categoryDesigns = [
   {

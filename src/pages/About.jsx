@@ -17,7 +17,7 @@ import {
   Activity,
   ArrowRightCircle
 } from "lucide-react";
-import * as Lucide from "lucide-react";
+import * as Lucide from "../utils/icons";
 import DOMPurify from "dompurify";
 import StatsSection from "../components/sections/StatsSection";
 import api from "../utils/api";

@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "motion/react";
 import { FileText, Receipt, ClipboardCheck, Globe } from "lucide-react";
 import DOMPurify from "dompurify";
-import * as Lucide from "lucide-react";
+import * as Lucide from "../../utils/icons";
 import { DOCUMENTATION } from "../../constants";
 
 export default function DocSection({ title, subtitle, content }) {

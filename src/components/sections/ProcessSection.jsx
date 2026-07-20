@@ -8,7 +8,7 @@ import {
   Archive, 
   Send 
 } from "lucide-react";
-import * as Lucide from "lucide-react";
+import * as Lucide from "../../utils/icons";
 import { PROCESS_STEPS } from "../../constants";
 
 export default function ProcessSection({ title, subtitle, content }) {
