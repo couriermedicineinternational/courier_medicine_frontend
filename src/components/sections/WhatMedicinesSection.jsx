@@ -130,6 +130,8 @@ export default function WhatMedicinesSection({ title, subtitle, content }) {
         <img 
           src="https://res.cloudinary.com/dib6l7ocv/image/upload/v1781865141/courier-medicine-static/bright-bg.jpg" 
           alt="Background Pattern" 
+          width={1920}
+          height={1080}
           className="w-full h-full object-cover object-center opacity-70"
           loading="lazy"
         />
@@ -223,6 +225,9 @@ export default function WhatMedicinesSection({ title, subtitle, content }) {
                     <img 
                       src={cat.img} 
                       alt={cat.title} 
+                      width={280}
+                      height={180}
+                      loading="lazy"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
                     />
                     {/* Small Icon Badge Overlay */}

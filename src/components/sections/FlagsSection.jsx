@@ -47,6 +47,8 @@ function FlagCard({ code, name }) {
       <img
         src={`https://flagcdn.com/w160/${code.toLowerCase()}.png`}
         alt={name}
+        width={136}
+        height={85}
         className="w-full aspect-[1.6] object-cover rounded-lg border border-slate-100/50 shrink-0"
         loading="lazy"
       />

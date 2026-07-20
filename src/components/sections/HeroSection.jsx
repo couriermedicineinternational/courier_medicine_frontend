@@ -241,6 +241,9 @@ export default function HeroSection({ title, subtitle, content }) {
           <img 
             src="https://res.cloudinary.com/dib6l7ocv/image/upload/v1781865141/courier-medicine-static/bright-bg.jpg" 
             alt="Medical Abstract Background" 
+            width={1920}
+            height={1080}
+            loading="lazy"
             className="w-full h-full object-cover object-center opacity-80"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-white/80 to-white"></div>
@@ -265,6 +268,10 @@ export default function HeroSection({ title, subtitle, content }) {
               <img 
                 src="https://res.cloudinary.com/dib6l7ocv/image/upload/v1781865151/courier-medicine-static/delivery_guy_hero_new.jpg" 
                 alt="Medical Courier Agent" 
+                width={800}
+                height={533}
+                fetchpriority="high"
+                loading="eager"
                 className="w-full h-full object-cover object-top"
               />
               <div className="absolute inset-0 bg-gradient-to-tr from-slate-950/85 via-slate-900/60 to-slate-900/25"></div>
