@@ -140,7 +140,7 @@ export default function EasySection({ title, subtitle, content }) {
             <button
               type="button"
               onClick={prevSlide}
-              className="absolute left-[-18px] lg:left-[-26px] top-[165px] -translate-y-1/2 w-[52px] h-[52px] rounded-full bg-white/95 hover:bg-white text-slate-800 border border-slate-200/80 shadow-md hover:shadow-lg hidden md:flex items-center justify-center transition-all z-[60] hover:scale-105 active:scale-95 cursor-pointer"
+              className="absolute left-[-18px] lg:left-[-26px] top-[256px] sm:top-[248px] lg:top-[264px] -translate-y-1/2 w-[52px] h-[52px] rounded-full bg-white/95 hover:bg-white text-slate-800 border border-slate-200/80 shadow-md hover:shadow-lg hidden md:flex items-center justify-center transition-all z-[60] hover:scale-105 active:scale-95 cursor-pointer"
             >
               <ChevronLeft size={26} className="stroke-[2.5]" />
             </button>
@@ -151,7 +151,7 @@ export default function EasySection({ title, subtitle, content }) {
             <button
               type="button"
               onClick={nextSlide}
-              className="absolute right-[-18px] lg:right-[-26px] top-[165px] -translate-y-1/2 w-[52px] h-[52px] rounded-full bg-white/95 hover:bg-white text-slate-800 border border-slate-200/80 shadow-md hover:shadow-lg hidden md:flex items-center justify-center transition-all z-[60] hover:scale-105 active:scale-95 cursor-pointer"
+              className="absolute right-[-18px] lg:right-[-26px] top-[256px] sm:top-[248px] lg:top-[264px] -translate-y-1/2 w-[52px] h-[52px] rounded-full bg-white/95 hover:bg-white text-slate-800 border border-slate-200/80 shadow-md hover:shadow-lg hidden md:flex items-center justify-center transition-all z-[60] hover:scale-105 active:scale-95 cursor-pointer"
             >
               <ChevronRight size={26} className="stroke-[2.5]" />
             </button>
@@ -159,7 +159,7 @@ export default function EasySection({ title, subtitle, content }) {
 
           {/* Mobile Swipe Nudge Indicator */}
           {currentIndex < maxIndex && (
-            <div className="md:hidden absolute right-0 top-[240px] -translate-y-1/2 z-[60] pointer-events-none drop-shadow-md">
+            <div className="md:hidden absolute right-0 top-[256px] -translate-y-1/2 z-[60] pointer-events-none drop-shadow-md">
               <motion.div
                 animate={{ x: [0, 8, 0] }}
                 transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
