@@ -1,11 +1,19 @@
 import { Link, useLocation } from "react-router-dom";
 import { Home, Banknote, Phone } from "lucide-react";
 
-export default function MobileBottomNav() {
+export default function MobileBottomNav({ settings }) {
   const location = useLocation();
   const currentPath = location.pathname;
 
   const isActive = (path) => currentPath === path;
+
+  const whatsappHref = settings?.whatsapp 
+    ? `https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, "")}` 
+    : "https://wa.me/918882691919";
+
+  const phoneHref = settings?.phone 
+    ? `tel:${settings.phone.replace(/[^0-9+]/g, "")}` 
+    : "tel:+918882691919";
 
   return (
     <div className="lg:hidden md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#eaeaea] border-t border-slate-300/80 py-2 px-1 flex items-center justify-around shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
@@ -38,7 +46,7 @@ export default function MobileBottomNav() {
 
       {/* Whatsapp */}
       <a 
-        href="https://wa.me/918882691919" 
+        href={whatsappHref} 
         target="_blank" 
         rel="noopener noreferrer" 
         className="flex flex-col items-center gap-1 text-center px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 transition-all duration-200"
@@ -51,7 +59,7 @@ export default function MobileBottomNav() {
 
       {/* Call Us */}
       <a 
-        href="tel:+918882691919" 
+        href={phoneHref} 
         className="flex flex-col items-center gap-1 text-center px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 transition-all duration-200"
       >
         <Phone size={18} className="text-slate-600 stroke-[2px]" />

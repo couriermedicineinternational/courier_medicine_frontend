@@ -3,7 +3,18 @@ import { Facebook, Instagram, Youtube, Twitter, MapPin, Mail, Phone } from "luci
 import { FOOTER } from "../../constants";
 import Logo from "./Logo";
 
-export default function Footer() {
+export default function Footer({ settings }) {
+  // Format dynamic links and texts
+  const aboutTextVal = settings?.aboutText || FOOTER.about.text;
+  const addressVal = settings?.address || FOOTER.locateUs.address;
+  const emailVal = settings?.email || FOOTER.locateUs.email;
+  const phoneVal = settings?.phone || FOOTER.locateUs.phone;
+
+  const facebookHref = settings?.socialLinks?.facebook || "https://facebook.com";
+  const instagramHref = settings?.socialLinks?.instagram || "https://instagram.com";
+  const youtubeHref = settings?.socialLinks?.youtube || "https://youtube.com";
+  const twitterHref = settings?.socialLinks?.twitter || "https://x.com";
+
   return (
     <footer id="footer-container" className="bg-slate-900 text-slate-300">
       
@@ -21,12 +32,12 @@ export default function Footer() {
             About Company
           </h3>
           <p id="footer-about-text" className="text-[14.5px] text-slate-400 font-sans leading-relaxed">
-            {FOOTER.about.text}
+            {aboutTextVal}
           </p>
           <div id="footer-socials" className="flex items-center gap-3 pt-2">
             <a
               id="social-fb"
-              href="https://facebook.com"
+              href={facebookHref}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Visit our Facebook page"
@@ -36,7 +47,7 @@ export default function Footer() {
             </a>
             <a
               id="social-ig"
-              href="https://instagram.com"
+              href={instagramHref}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Visit our Instagram profile"
@@ -46,7 +57,7 @@ export default function Footer() {
             </a>
             <a
               id="social-yt"
-              href="https://youtube.com"
+              href={youtubeHref}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Visit our YouTube channel"
@@ -56,7 +67,7 @@ export default function Footer() {
             </a>
             <a
               id="social-x"
-              href="https://x.com"
+              href={twitterHref}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Visit our X (Twitter) profile"
@@ -66,7 +77,7 @@ export default function Footer() {
             </a>
           </div>
         </div>
-
+ 
         {/* Informative Pages */}
         <div id="footer-col-informative" className="space-y-4">
           <h3 id="footer-info-title" className="text-white font-bold text-base tracking-wider border-b border-slate-800 pb-2">
@@ -115,25 +126,25 @@ export default function Footer() {
           <div id="footer-locate-details" className="space-y-3.5 text-sm text-slate-400">
             <div id="footer-address" className="flex items-start gap-2.5">
               <MapPin size={18} className="text-secondary/20 shrink-0 mt-0.5" />
-              <span id="footer-address-text" className="leading-relaxed">{FOOTER.locateUs.address}</span>
+              <span id="footer-address-text" className="leading-relaxed">{addressVal}</span>
             </div>
             <a
               id="footer-email-link"
-              href={`https://mail.google.com/mail/?view=cm&fs=1&to=${FOOTER.locateUs.email}`}
+              href={settings?.email ? `https://mail.google.com/mail/?view=cm&fs=1&to=${settings.email}` : `https://mail.google.com/mail/?view=cm&fs=1&to=${FOOTER.locateUs.email}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2.5 hover:text-[#03ADA4] transition-colors"
             >
               <Mail size={16} className="text-secondary/20 shrink-0" />
-              <span id="footer-email-text">{FOOTER.locateUs.email}</span>
+              <span id="footer-email-text">{emailVal}</span>
             </a>
             <a
               id="footer-phone-link"
-              href={`tel:${FOOTER.locateUs.phone.replace(/[^0-9+]/g, '')}`}
+              href={`tel:${phoneVal.replace(/[^0-9+]/g, '')}`}
               className="flex items-center gap-2.5 hover:text-[#03ADA4] transition-colors"
             >
               <Phone size={16} className="text-secondary/20 shrink-0" />
-              <span id="footer-phone-text">{FOOTER.locateUs.phone}</span>
+              <span id="footer-phone-text">{phoneVal}</span>
             </a>
           </div>
         </div>

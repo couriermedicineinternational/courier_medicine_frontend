@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef, lazy, Suspense } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
+import api from "./utils/api";
 
 // Layout components
 import Topbar from "./components/layout/Topbar";
@@ -61,6 +62,7 @@ function ScrollToTop() {
 
 export default function App() {
   const [showHeader, setShowHeader] = useState(true);
+  const [settings, setSettings] = useState(null);
   const lastScrollY = useRef(0);
   const location = useLocation();
 
@@ -69,6 +71,15 @@ export default function App() {
   useEffect(() => {
     // Load pricing data globally when the application boots
     import("./utils/pricing").then((m) => m.loadPricingData());
+
+    // Fetch site settings from backend API
+    api.get("/settings")
+      .then(res => {
+        if (res.data && res.data.success) {
+          setSettings(res.data.data);
+        }
+      })
+      .catch(err => console.error("Error loading site settings globally:", err));
   }, []);
 
   useEffect(() => {
@@ -116,7 +127,7 @@ export default function App() {
             }`}
           >
             {/* Information bar */}
-            <Topbar />
+            <Topbar settings={settings} />
             {/* Desktop/Mobile Navigation */}
             <Navbar />
           </div>
@@ -175,8 +186,8 @@ export default function App() {
         </main>
 
         {/* Shared footer section */}
-        {!isAdminRoute && <Footer />}
-        {!isAdminRoute && <MobileBottomNav />}
+        {!isAdminRoute && <Footer settings={settings} />}
+        {!isAdminRoute && <MobileBottomNav settings={settings} />}
         {!isAdminRoute && <ScrollToTopButton />}
       </div>
     </>

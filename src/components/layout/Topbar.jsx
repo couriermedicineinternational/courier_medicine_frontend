@@ -2,7 +2,25 @@ import { Phone, MessageCircle, Mail, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { TOP_BAR } from "../../constants";
 
-export default function Topbar() {
+export default function Topbar({ settings }) {
+  // Format dynamic links
+  const phoneVal = settings?.phone || TOP_BAR.phone.number;
+  const phoneHref = settings?.phone 
+    ? `tel:${settings.phone.replace(/[^0-9+]/g, "")}` 
+    : TOP_BAR.phone.href;
+
+  const whatsappVal = settings?.whatsapp || TOP_BAR.whatsapp.number;
+  const whatsappHref = settings?.whatsapp 
+    ? `https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, "")}` 
+    : TOP_BAR.whatsapp.href;
+
+  const emailVal = settings?.email || TOP_BAR.email.address;
+  const emailHref = settings?.email 
+    ? `https://mail.google.com/mail/?view=cm&fs=1&to=${settings.email}` 
+    : TOP_BAR.email.href;
+
+  const workingHoursVal = settings?.workingHours || TOP_BAR.workingHours.hours;
+
   return (
     <div id="topbar-container" className="hidden sm:block bg-white text-xs pt-3 pb-0.5 px-4">
       <div id="topbar-inner" className="max-w-7xl mx-auto flex items-center justify-between text-slate-600 font-sans">
@@ -12,7 +30,7 @@ export default function Topbar() {
           {/* Call Us */}
           <a
             id="topbar-phone-link"
-            href={TOP_BAR.phone.href}
+            href={phoneHref}
             aria-label="Call Customer Support"
             className="group flex items-center h-9 bg-[#0052CC]/5 hover:bg-[#0052CC]/10 border border-[#0052CC]/10 hover:border-[#0052CC]/30 rounded-full px-2.5 transition-all duration-300 ease-out shadow-xs hover:shadow-sm"
           >
@@ -21,14 +39,14 @@ export default function Topbar() {
             </span>
             <span className="flex items-center gap-1 max-w-0 opacity-0 group-hover:max-w-[200px] group-hover:opacity-100 group-hover:ml-2 transition-all duration-300 ease-out overflow-hidden whitespace-nowrap">
               <span id="topbar-phone-label" className="font-semibold text-slate-600">{TOP_BAR.phone.label}</span>
-              <span id="topbar-phone-value" className="text-secondary font-bold">{TOP_BAR.phone.number}</span>
+              <span id="topbar-phone-value" className="text-secondary font-bold">{phoneVal}</span>
             </span>
           </a>
 
           {/* Whatsapp */}
           <a
             id="topbar-whatsapp-link"
-            href={TOP_BAR.whatsapp.href}
+            href={whatsappHref}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Chat on WhatsApp"
@@ -39,7 +57,7 @@ export default function Topbar() {
             </span>
             <span className="flex items-center gap-1 max-w-0 opacity-0 group-hover:max-w-[200px] group-hover:opacity-100 group-hover:ml-2 transition-all duration-300 ease-out overflow-hidden whitespace-nowrap">
               <span id="topbar-whatsapp-label" className="font-semibold text-slate-600">{TOP_BAR.whatsapp.label}</span>
-              <span id="topbar-whatsapp-value" className="text-primary font-bold">{TOP_BAR.whatsapp.number}</span>
+              <span id="topbar-whatsapp-value" className="text-primary font-bold">{whatsappVal}</span>
             </span>
           </a>
         </div>
@@ -49,7 +67,7 @@ export default function Topbar() {
           {/* Email */}
           <a
             id="topbar-email-link"
-            href={TOP_BAR.email.href}
+            href={emailHref}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Email Customer Support"
@@ -60,7 +78,7 @@ export default function Topbar() {
             </span>
             <span className="flex items-center gap-1 max-w-0 opacity-0 group-hover:max-w-[300px] group-hover:opacity-100 group-hover:ml-2 transition-all duration-300 ease-out overflow-hidden whitespace-nowrap">
               <span id="topbar-email-label" className="font-semibold text-slate-600">{TOP_BAR.email.label}</span>
-              <span id="topbar-email-value" className="text-primary font-bold">{TOP_BAR.email.address}</span>
+              <span id="topbar-email-value" className="text-primary font-bold">{emailVal}</span>
             </span>
           </a>
 
@@ -74,7 +92,7 @@ export default function Topbar() {
             </span>
             <span className="flex items-center gap-1 max-w-0 opacity-0 group-hover:max-w-[300px] group-hover:opacity-100 group-hover:ml-2 transition-all duration-300 ease-out overflow-hidden whitespace-nowrap">
               <span id="topbar-hours-label" className="font-semibold text-slate-600">{TOP_BAR.workingHours.label}</span>
-              <span id="topbar-hours-value" className="text-secondary font-bold">{TOP_BAR.workingHours.hours}</span>
+              <span id="topbar-hours-value" className="text-secondary font-bold">{workingHoursVal}</span>
             </span>
           </div>
         </div>
