@@ -9,6 +9,7 @@ export default function Footer({ settings }) {
   const addressVal = settings?.address || FOOTER.locateUs.address;
   const emailVal = settings?.email || FOOTER.locateUs.email;
   const phoneVal = settings?.phone || FOOTER.locateUs.phone;
+  const copyrightVal = settings?.copyright || FOOTER.copyright;
 
   const facebookHref = settings?.socialLinks?.facebook || "https://facebook.com";
   const instagramHref = settings?.socialLinks?.instagram || "https://instagram.com";
@@ -148,6 +149,23 @@ export default function Footer({ settings }) {
             </a>
           </div>
         </div>
+      </div>
+
+      {/* Bottom copyright bar */}
+      <div id="footer-bottom-copyright" className="border-t border-slate-800/80 py-6 text-center md:text-left text-xs text-slate-500 font-sans max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row md:items-center gap-2 md:gap-3">
+        <span>{copyrightVal}</span>
+        <span className="hidden md:inline text-slate-700">|</span>
+        <span>
+          Developed by{" "}
+          <a 
+            href="https://sociallyconnect.in/" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="text-slate-450 hover:text-[#03ADA4] hover:underline transition-colors font-medium"
+          >
+            Socially Connect
+          </a>
+        </span>
       </div>
 
     </footer>
