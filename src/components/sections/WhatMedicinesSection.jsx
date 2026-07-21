@@ -218,10 +218,10 @@ export default function WhatMedicinesSection({ title, subtitle, content }) {
                     scale: 1.02,
                     boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02)"
                   }}
-                  className="group relative overflow-hidden border border-slate-100 bg-white rounded-[20px] shadow-[0_4px_20px_rgba(0,0,0,0.01)] flex flex-col cursor-pointer h-[172px] xs:h-[188px] sm:h-[240px]"
+                  className="group relative overflow-hidden border border-slate-100 bg-white rounded-[20px] shadow-[0_4px_20px_rgba(0,0,0,0.01)] flex flex-col cursor-pointer"
                 >
                   {/* Top Image Container */}
-                  <div className="w-full h-20 xs:h-[90px] sm:h-[140px] overflow-hidden relative shrink-0">
+                  <div className="w-full h-24 xs:h-[100px] sm:h-[140px] overflow-hidden relative shrink-0">
                     <img 
                       src={cat.img} 
                       alt={cat.title} 
@@ -237,7 +237,7 @@ export default function WhatMedicinesSection({ title, subtitle, content }) {
                   </div>
 
                   {/* Details Container */}
-                  <div className="p-3 xs:p-4 sm:p-5 flex-1 flex flex-col justify-start space-y-1 sm:space-y-1.5 relative overflow-hidden">
+                  <div className="p-3 xs:p-4 sm:p-5 flex-1 flex flex-col justify-start space-y-1 sm:space-y-1.5 relative">
                     {/* Rising Gradient Background Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0052CC] to-[#03ADA4] translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out z-0 pointer-events-none" />
 
