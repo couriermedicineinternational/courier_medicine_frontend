@@ -10,9 +10,13 @@ const getBaseUrl = () => {
     return 'http://localhost:5000/api';
   }
 
-  // If running on Cloud Run default frontend URL, replace 'frontend' with 'backend'
+  // If running on Cloud Run default frontend URL, replace 'frontend' with 'backend' and force the region to 'asia-south1' (since backend is hosted in Mumbai)
   if (typeof window !== 'undefined' && window.location.hostname.includes('courier-medicine-frontend')) {
-    const backendHostname = window.location.hostname.replace('courier-medicine-frontend', 'courier-medicine-backend');
+    let backendHostname = window.location.hostname.replace('courier-medicine-frontend', 'courier-medicine-backend');
+    // Normalize region to asia-south1
+    backendHostname = backendHostname
+      .replace('.asia-south2.run.app', '.asia-south1.run.app')
+      .replace('.us-central1.run.app', '.asia-south1.run.app');
     return `https://${backendHostname}/api`;
   }
 
