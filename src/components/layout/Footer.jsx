@@ -161,7 +161,7 @@ export default function Footer({ settings }) {
             href="https://sociallyconnect.in/" 
             target="_blank" 
             rel="noopener noreferrer" 
-            className="text-slate-450 hover:text-[#03ADA4] hover:underline transition-colors font-medium"
+            className="text-[#03ADA4] underline font-medium"
           >
             Socially Connect
           </a>
