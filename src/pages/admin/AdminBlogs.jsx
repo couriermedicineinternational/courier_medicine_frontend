@@ -54,7 +54,7 @@ export default function AdminBlogs() {
     try {
       setIsLoading(true);
       // Fetch all including inactive for admin management panel
-      const res = await api.get("/blogs", { params: { all: "true" } });
+      const res = await api.get("/blogs", { params: { all: "true", limit: 1000 } });
       if (res.data && res.data.success) {
         setBlogs(res.data.data || []);
       }
