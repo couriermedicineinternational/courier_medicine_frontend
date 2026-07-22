@@ -1,49 +1,17 @@
 import React from "react";
-import { Phone, ArrowUpRight } from "lucide-react";
+import { Phone } from "lucide-react";
 
-export default function CtaBannerSection({ title, subtitle, content }) {
-  const handleGetQuoteClick = () => {
-    const heroSection = document.getElementById("hero-section");
-    if (heroSection) {
-      heroSection.scrollIntoView({ behavior: "smooth" });
-      setTimeout(() => {
-        const countrySelect = document.getElementById("form-country");
-        if (countrySelect) countrySelect.focus();
-      }, 850);
-    }
-  };
-
-  const displayTitle = title || "Easy Tracking and Express Door to Door Timely Delivery";
-
-  const cardStyle = content?.bgImage 
-    ? {
-        backgroundImage: `linear-gradient(to right, rgba(255, 255, 255, 0.95), rgba(240, 246, 255, 0.85)), url(${content.bgImage})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }
-    : {};
+export default function CtaBannerSection({ title, subtitle }) {
+  const displayTitle = title || "Ready to Ship Your Essential Medicines?";
 
   return (
     <section id="cta-banner-section" className="py-10 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Main Frosted Card Container */}
+        {/* Main Banner Container */}
         <div 
-          style={cardStyle}
-          className="bg-gradient-to-br from-slate-50 to-[#0052CC]/5 border border-slate-100 rounded-[2.2rem] p-8 md:p-10 lg:p-12 relative overflow-hidden shadow-[0_12px_35px_rgba(0,82,204,0.015)] flex flex-col lg:flex-row items-center justify-between gap-8"
+          className="bg-[#F8F9FC] border border-slate-200/60 rounded-[2.2rem] p-8 md:p-10 lg:p-12 relative overflow-hidden shadow-xs flex flex-col lg:flex-row items-center justify-between gap-8"
         >
-          
-          {/* World Map Watermark Overlay */}
-          {!content?.bgImage && (
-            <div className="absolute right-0 top-0 h-full w-full lg:w-2/3 pointer-events-none select-none z-0 opacity-10">
-              <img 
-                src="https://res.cloudinary.com/dib6l7ocv/image/upload/f_auto,q_auto/v1781865141/courier-medicine-static/bright-bg.jpg" 
-                alt="World Map Graphic" 
-                className="w-full h-full object-cover object-center mix-blend-multiply"
-              />
-            </div>
-          )}
-
           {/* Left Text Column */}
           <div className="relative z-10 space-y-3.5 text-center lg:text-left flex flex-col items-center lg:items-start">
             <span className="text-[10px] font-black uppercase tracking-widest text-[#0052CC] bg-[#0052CC]/10 px-3.5 py-1.5 rounded-full inline-block leading-none">
@@ -57,10 +25,8 @@ export default function CtaBannerSection({ title, subtitle, content }) {
                 {subtitle}
               </p>
             ) : (
-              <p className="text-[11px] text-slate-400 font-sans font-semibold tracking-wide flex flex-wrap items-center justify-center lg:justify-start gap-1.5">
-                <span>🚚 Free doorstep collection across India</span>
-                <span className="text-slate-300">|</span>
-                <span>✈ Guaranteed international air corridor cargo</span>
+              <p className="text-xs text-slate-500 font-sans font-semibold tracking-wide">
+                Get a customized quote or talk to our live logistics specialists on WhatsApp now.
               </p>
             )}
           </div>
@@ -68,8 +34,7 @@ export default function CtaBannerSection({ title, subtitle, content }) {
           {/* Right Buttons Column */}
           <div className="relative z-10 flex flex-col sm:flex-row items-center gap-3.5 w-full lg:w-auto">
 
-
-            {/* Button 2: Call Us */}
+            {/* Button 1: Call Us */}
             <a
               href="tel:+918882691919"
               className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-white border border-slate-200 text-slate-700 font-bold text-xs shadow-xs hover:bg-slate-50 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer leading-none"
@@ -78,7 +43,7 @@ export default function CtaBannerSection({ title, subtitle, content }) {
               <span>+91-8882691919</span>
             </a>
 
-            {/* Button 3: WhatsApp Support */}
+            {/* Button 2: WhatsApp Support */}
             <a
               href="https://wa.me/918882691919"
               target="_blank"
