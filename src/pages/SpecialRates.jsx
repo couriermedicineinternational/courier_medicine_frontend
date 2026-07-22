@@ -92,7 +92,7 @@ export default function SpecialRates() {
           </div>
 
           <button 
-            onClick={() => navigate("/calculator.php", { state: { calculatedQuote } })}
+            onClick={() => navigate("/calculator.htm", { state: { calculatedQuote } })}
             className="px-5 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-extrabold text-xs shadow-3xs hover:scale-[1.01] active:scale-[0.99] transition-all select-none cursor-pointer"
           >
             Modify Search

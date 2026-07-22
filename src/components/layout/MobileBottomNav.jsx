@@ -32,16 +32,16 @@ export default function MobileBottomNav({ settings }) {
 
       {/* Courier Charges */}
       <Link 
-        to="/calculator.php" 
+        to="/calculator.htm" 
         state={location.state}
         className={`flex flex-col items-center gap-1 text-center px-3 py-1.5 rounded-xl transition-all duration-200 ${
-          isActive("/calculator.php") 
+          isActive("/calculator.htm") || isActive("/calculator.php")
             ? "bg-[#0052cc]/10 text-[#0052cc]" 
             : "text-slate-600 hover:text-slate-900"
         }`}
       >
-        <Banknote size={18} className={`${isActive("/calculator.php") ? "text-[#0052cc]" : "text-slate-600"} stroke-[2.5px]`} />
-        <span className={`text-[10px] font-extrabold tracking-wide mt-0.5 ${isActive("/calculator.php") ? "text-[#0052cc]" : "text-slate-700"}`}>Courier Charges</span>
+        <Banknote size={18} className={`${isActive("/calculator.htm") || isActive("/calculator.php") ? "text-[#0052cc]" : "text-slate-600"} stroke-[2.5px]`} />
+        <span className={`text-[10px] font-extrabold tracking-wide mt-0.5 ${isActive("/calculator.htm") || isActive("/calculator.php") ? "text-[#0052cc]" : "text-slate-700"}`}>Courier Charges</span>
       </Link>
 
       {/* Whatsapp */}

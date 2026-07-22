@@ -1200,7 +1200,7 @@ export default function CountryDetail() {
 
                           } else {
 
-                            navigate("/calculator.php", { 
+                            navigate("/calculator.htm", { 
 
                               state: { 
 

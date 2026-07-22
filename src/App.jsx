@@ -146,12 +146,14 @@ export default function App() {
               <Route path="/countries.php" element={<PopularCountries />} />
               <Route path="/location.php" element={<PopularLocations />} />
               <Route path="/blog.htm" element={<Blog />} />
+              <Route path="/blog-details.php" element={<Blog />} />
               <Route path="/faq.htm" element={<Faq />} />
               <Route path="/contact.htm" element={<Contact />} />
               <Route path="/service-provider.php" element={<ServiceProvider />} />
               <Route path="/booking.php" element={<Booking />} />
               <Route path="/thanks.php" element={<Thanks />} />
               <Route path="/special-rates.php" element={<SpecialRates />} />
+              <Route path="/calculator.htm" element={<CalculatorPage />} />
               <Route path="/calculator.php" element={<CalculatorPage />} />
               <Route path="/refund-policy" element={<RefundPolicy />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />

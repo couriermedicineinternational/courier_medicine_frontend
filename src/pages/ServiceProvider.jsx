@@ -191,7 +191,7 @@ export default function ServiceProvider() {
           </div>
           
           <button
-            onClick={() => navigate("/calculator.php", { state: { calculatedQuote } })}
+            onClick={() => navigate("/calculator.htm", { state: { calculatedQuote } })}
             className="bg-[#0052CC] hover:bg-blue-700 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl shadow-xs transition-colors whitespace-nowrap"
           >
             Modify Search

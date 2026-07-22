@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import DOMPurify from "dompurify";
 import api from "../utils/api";
 import { BLOG_PAGE } from "../constants";
@@ -12,6 +12,10 @@ const BLOG_HERO_IMAGE = "https://images.unsplash.com/photo-1521791136064-7986c29
 export default function Blog() {
   const [selectedPost, setSelectedPost] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  const blogIdFromUrl = searchParams.get("id") || searchParams.get("slug");
 
   // Pagination & Data states
   const [posts, setPosts] = useState([]);
@@ -24,11 +28,24 @@ export default function Blog() {
     bgImage: BLOG_HERO_IMAGE
   });
 
-  // Fetch blogs & header on mount & page change
+  // Fetch blogs & header on mount & page change & url change
   useEffect(() => {
     const fetchBlogsAndHeader = async () => {
       setIsLoading(true);
       try {
+        if (blogIdFromUrl) {
+          try {
+            const detailRes = await api.get(`/blogs/${blogIdFromUrl}`);
+            if (detailRes.data && detailRes.data.success) {
+              setSelectedPost(detailRes.data.data);
+            }
+          } catch (err) {
+            console.error("Failed to fetch blog detail:", err);
+          }
+        } else {
+          setSelectedPost(null);
+        }
+
         const [blogsRes, headerRes] = await Promise.all([
           api.get(`/blogs?page=${page}&limit=6`),
           api.get("/blogs/header").catch(err => {
@@ -52,16 +69,18 @@ export default function Blog() {
       }
     };
     fetchBlogsAndHeader();
-  }, [page]);
+  }, [page, blogIdFromUrl]);
 
-  // When opening/closing a post, scroll to top
+  // When opening/closing a post, scroll to top & update URL
   const openPost = async (post) => {
     setSelectedPost(post);
     window.scrollTo({ top: 0, behavior: "smooth" });
+    const identifier = post._id || post.slug;
+    navigate(`/blog-details.php?id=${identifier}`);
 
-    // Hit the backend by slug to increment the view count
+    // Hit the backend by slug/id to increment the view count
     try {
-      const res = await api.get(`/blogs/${post.slug}`);
+      const res = await api.get(`/blogs/${post.slug || post._id}`);
       if (res.data && res.data.success) {
         const updatedPost = res.data.data;
         // Update the detail view with fresh data (including new views)
@@ -73,8 +92,10 @@ export default function Blog() {
       console.error("Failed to increment blog views:", err);
     }
   };
+
   const closePost = () => {
     setSelectedPost(null);
+    navigate("/blog.htm");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
