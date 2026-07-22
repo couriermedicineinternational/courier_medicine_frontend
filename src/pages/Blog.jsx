@@ -75,12 +75,12 @@ export default function Blog() {
   const openPost = async (post) => {
     setSelectedPost(post);
     window.scrollTo({ top: 0, behavior: "smooth" });
-    const identifier = post._id || post.slug;
+    const identifier = post.blogId || post.id || post._id || post.slug;
     navigate(`/blog-details.php?id=${identifier}`);
 
-    // Hit the backend by slug/id to increment the view count
+    // Hit the backend by serial blogId/slug/id to increment the view count
     try {
-      const res = await api.get(`/blogs/${post.slug || post._id}`);
+      const res = await api.get(`/blogs/${identifier}`);
       if (res.data && res.data.success) {
         const updatedPost = res.data.data;
         // Update the detail view with fresh data (including new views)

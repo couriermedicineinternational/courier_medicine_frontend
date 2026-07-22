@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, lazy, Suspense } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import api from "./utils/api";
 
 // Layout components
@@ -154,7 +154,7 @@ export default function App() {
               <Route path="/thanks.php" element={<Thanks />} />
               <Route path="/special-rates.php" element={<SpecialRates />} />
               <Route path="/calculator.htm" element={<CalculatorPage />} />
-              <Route path="/calculator.php" element={<CalculatorPage />} />
+              <Route path="/calculator.php" element={<Navigate to="/calculator.htm" replace />} />
               <Route path="/refund-policy" element={<RefundPolicy />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/refund.htm" element={<RefundPolicy />} />
