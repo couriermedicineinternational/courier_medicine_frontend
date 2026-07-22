@@ -849,10 +849,10 @@ export const FOOTER = {
     title: "Quick Links",
     links: [
       { label: "Popular Countries", path: "/countries.php" },
-      { label: "India To Australia Medicine Courier Charges", path: "/countries.php?country=AU" },
-      { label: "India To USA Medicine Courier Charges", path: "/countries.php?country=US" },
-      { label: "India To Germany Medicine Courier Charges", path: "/countries.php?country=DE" },
-      { label: "India To Hong Kong Medicine Courier Charges", path: "/countries.php?country=HK" },
+      { label: "India To Australia Medicine Courier Charges", path: "/india-to-australia-medicine-courier-charges.htm" },
+      { label: "India To USA Medicine Courier Charges", path: "/india-to-united-states-usa-medicine-courier-charges.htm" },
+      { label: "India To Germany Medicine Courier Charges", path: "/india-to-germany-medicine-courier-charges.htm" },
+      { label: "India To Hong Kong Medicine Courier Charges", path: "/india-to-hong-kong-medicine-courier-charges.htm" },
       { label: "more..", path: "/countries.php" }
     ]
   },

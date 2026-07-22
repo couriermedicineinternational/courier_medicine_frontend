@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { Globe, ArrowUpRight, Search, X, ArrowUp } from "lucide-react";
 import { ALL_COUNTRIES } from "../constants";
@@ -7,6 +7,9 @@ import api from "../utils/api";
 
 export default function PopularCountries() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const targetCountryCode = searchParams.get("country");
+
   const [searchQuery, setSearchQuery] = useState("");
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -32,6 +35,15 @@ export default function PopularCountries() {
             };
           });
           setCountries(formatted);
+
+          // Auto-redirect if URL contains ?country=CODE query param
+          if (targetCountryCode) {
+            const matched = formatted.find(c => c.code?.toUpperCase() === targetCountryCode.toUpperCase());
+            if (matched && matched.slug) {
+              navigate(`/${matched.slug}`, { replace: true });
+              return;
+            }
+          }
         }
         setIsLoading(false);
       })
