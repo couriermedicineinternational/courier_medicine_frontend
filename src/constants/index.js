@@ -840,8 +840,8 @@ export const FOOTER = {
       { label: "About Us", path: "/about.htm" },
       { label: "Faq", path: "/faq.htm" },
       { label: "Blog", path: "/blog.htm" },
-      { label: "Privacy Policy", path: "/privacy-policy" },
-      { label: "Refund Policy", path: "/refund-policy" },
+      { label: "Privacy Policy", path: "/privacy.htm" },
+      { label: "Refund Policy", path: "/refund.htm" },
       { label: "Contact", path: "/contact.htm" }
     ]
   },

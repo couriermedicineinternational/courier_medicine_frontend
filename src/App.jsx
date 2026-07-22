@@ -155,6 +155,8 @@ export default function App() {
               <Route path="/calculator.php" element={<CalculatorPage />} />
               <Route path="/refund-policy" element={<RefundPolicy />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/refund.htm" element={<RefundPolicy />} />
+              <Route path="/privacy.htm" element={<PrivacyPolicy />} />
               
               {/* Admin Routes */}
               <Route path="/admin/login" element={<AdminLogin />} />
