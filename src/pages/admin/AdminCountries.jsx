@@ -25,16 +25,21 @@ export default function AdminCountries() {
   const [isSavingHero, setIsSavingHero] = useState(false);
   const [heroSaveSuccess, setHeroSaveSuccess] = useState(false);
 
+  const [documentImage, setDocumentImage] = useState("");
+  const [isSavingDoc, setIsSavingDoc] = useState(false);
+  const [docSaveSuccess, setDocSaveSuccess] = useState(false);
+
   // Fetch countries list
   const fetchCountries = async () => {
     try {
       setIsLoading(true);
       // Fetch all including inactive for admin management panel
       
-      // Fetch settings for global hero image
+      // Fetch settings for global hero image & document section image
       const settingsRes = await api.get("/settings");
-      if (settingsRes.data && settingsRes.data.success && settingsRes.data.data.countryHeroImage) {
-        setHeroImage(settingsRes.data.data.countryHeroImage);
+      if (settingsRes.data && settingsRes.data.success && settingsRes.data.data) {
+        setHeroImage(settingsRes.data.data.countryHeroImage || "");
+        setDocumentImage(settingsRes.data.data.documentImage || "");
       }
 
       const res = await api.get("/countries", { params: { all: "true" } });
@@ -68,6 +73,24 @@ export default function AdminCountries() {
       alert("Failed to save country hero image.");
     } finally {
       setIsSavingHero(false);
+    }
+  };
+
+  const handleSaveDoc = async (e) => {
+    e.preventDefault();
+    setIsSavingDoc(true);
+    setDocSaveSuccess(false);
+    try {
+      const res = await api.put("/settings", { documentImage: documentImage });
+      if (res.data && res.data.success) {
+        setDocSaveSuccess(true);
+        setTimeout(() => setDocSaveSuccess(false), 3000);
+      }
+    } catch (err) {
+      console.error("Error saving document image:", err);
+      alert("Failed to save global document section image.");
+    } finally {
+      setIsSavingDoc(false);
     }
   };
 
@@ -149,6 +172,39 @@ export default function AdminCountries() {
             >
               <Save size={13} />
               {isSavingHero ? "Saving..." : "Save Background Image"}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {/* Global Documents Required Image Settings */}
+      <div className="bg-white border border-slate-200/60 rounded-3xl p-6 shadow-sm">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-sm font-extrabold text-slate-900 tracking-tight uppercase">Global Documents Section Image</h3>
+            <p className="text-xs text-slate-400 mt-0.5">This image will appear in the Documents Required section across all country & location pages.</p>
+          </div>
+          {docSaveSuccess && (
+            <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100 flex items-center gap-1.5">
+              <CheckCircle2 size={12} />
+              Saved successfully!
+            </span>
+          )}
+        </div>
+        <form onSubmit={handleSaveDoc} className="space-y-4">
+          <ImageUpload 
+            key="global-doc-section-image"
+            defaultUrl={documentImage}
+            onUploadSuccess={(url) => setDocumentImage(url)}
+          />
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              disabled={isSavingDoc}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow-sm hover:scale-[1.01] active:scale-[0.99] transition-transform disabled:opacity-50"
+            >
+              <Save size={13} />
+              {isSavingDoc ? "Saving..." : "Save Documents Image"}
             </button>
           </div>
         </form>

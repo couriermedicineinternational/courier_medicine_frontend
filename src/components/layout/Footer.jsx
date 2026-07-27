@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Facebook, Instagram, Youtube, Twitter, MapPin, Mail, Phone } from "lucide-react";
+import { Instagram, Youtube, MapPin, Mail, Phone } from "lucide-react";
 import { FOOTER } from "../../constants";
 import Logo from "./Logo";
 
@@ -11,10 +11,8 @@ export default function Footer({ settings }) {
   const phoneVal = settings?.phone || FOOTER.locateUs.phone;
   const copyrightVal = settings?.copyright || FOOTER.copyright;
 
-  const facebookHref = settings?.socialLinks?.facebook || "https://facebook.com";
   const instagramHref = settings?.socialLinks?.instagram || "https://instagram.com";
   const youtubeHref = settings?.socialLinks?.youtube || "https://youtube.com";
-  const twitterHref = settings?.socialLinks?.twitter || "https://x.com";
 
   return (
     <footer id="footer-container" className="bg-slate-900 text-slate-300">
@@ -37,16 +35,6 @@ export default function Footer({ settings }) {
           </p>
           <div id="footer-socials" className="flex items-center gap-3 pt-2">
             <a
-              id="social-fb"
-              href={facebookHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Visit our Facebook page"
-              className="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-[#03ADA4] hover:bg-slate-750 flex items-center justify-center transition-all duration-200"
-            >
-              <Facebook size={16} />
-            </a>
-            <a
               id="social-ig"
               href={instagramHref}
               target="_blank"
@@ -65,16 +53,6 @@ export default function Footer({ settings }) {
               className="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-red-500 hover:bg-slate-750 flex items-center justify-center transition-all duration-200"
             >
               <Youtube size={16} />
-            </a>
-            <a
-              id="social-x"
-              href={twitterHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Visit our X (Twitter) profile"
-              className="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-750 flex items-center justify-center transition-all duration-200"
-            >
-              <Twitter size={15} />
             </a>
           </div>
         </div>

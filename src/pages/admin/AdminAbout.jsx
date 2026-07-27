@@ -6,7 +6,8 @@ import {
   Info,
   Layers,
   Eye,
-  EyeOff
+  EyeOff,
+  Search
 } from "lucide-react";
 import api from "../../utils/api";
 import ImageUpload from "../../components/ui/ImageUpload";
@@ -23,6 +24,11 @@ export default function AdminAbout() {
   const [sortOrder, setSortOrder] = useState(0);
   const [isActive, setIsActive] = useState(true);
   const [content, setContent] = useState(null);
+  
+  // SEO Meta States
+  const [metaViewTitle, setMetaViewTitle] = useState("");
+  const [metaKeywords, setMetaKeywords] = useState("");
+  const [metaDescription, setMetaDescription] = useState("");
   
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -58,6 +64,9 @@ export default function AdminAbout() {
       setSortOrder(section.sortOrder || 0);
       setIsActive(section.isActive !== undefined ? section.isActive : true);
       setContent(section.content || {});
+      setMetaViewTitle(section.metaViewTitle || "");
+      setMetaKeywords(section.metaKeywords || "");
+      setMetaDescription(section.metaDescription || "");
       setSaveSuccess(false);
       setSaveError("");
     }
@@ -94,7 +103,10 @@ export default function AdminAbout() {
         subtitle,
         sortOrder,
         isActive,
-        content
+        content,
+        metaViewTitle,
+        metaKeywords,
+        metaDescription
       };
       
       const res = await api.put(`/about/${activeSectionKey}`, payload);
@@ -537,6 +549,48 @@ export default function AdminAbout() {
                   <label htmlFor="section-is-active" className="text-xs font-bold text-slate-700">
                     Render this section dynamically on public about page
                   </label>
+                </div>
+
+                {/* Page SEO Meta Settings */}
+                <div className="p-4 space-y-3 bg-slate-50/70 rounded-2xl border border-slate-200/60 mt-3">
+                  <div className="flex items-center gap-2 pb-1 border-b border-slate-200/60">
+                    <Search size={14} className="text-primary" />
+                    <span className="text-[10px] font-black uppercase text-slate-600 tracking-wider">About Us Page SEO Meta Settings</span>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Meta Title (Browser Tab Heading)</label>
+                      <input
+                        type="text"
+                        value={metaViewTitle}
+                        onChange={(e) => setMetaViewTitle(e.target.value)}
+                        className="w-full bg-white border border-slate-200 focus:border-primary focus:outline-none px-3 py-2 rounded-xl text-xs font-bold text-slate-800"
+                        placeholder="e.g. About Us - Courier Medicine International"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Meta Description</label>
+                      <textarea
+                        value={metaDescription}
+                        onChange={(e) => setMetaDescription(e.target.value)}
+                        className="w-full bg-white border border-slate-200 focus:border-primary focus:outline-none px-3 py-2 rounded-xl text-xs font-medium text-slate-700 h-16 resize-none"
+                        placeholder="Enter meta description for about us page..."
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Meta Keywords (Comma Separated)</label>
+                      <input
+                        type="text"
+                        value={metaKeywords}
+                        onChange={(e) => setMetaKeywords(e.target.value)}
+                        className="w-full bg-white border border-slate-200 focus:border-primary focus:outline-none px-3 py-2 rounded-xl text-xs font-semibold text-slate-800"
+                        placeholder="e.g. about courier medicine, medicine export company India"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
 

@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
-import { MapPin, ArrowUpRight, Search, X, ArrowUp } from "lucide-react";
+import { MapPin, ArrowUpRight, Search, X, ArrowUp, ChevronLeft, ChevronRight } from "lucide-react";
 import api from "../utils/api";
 
 export default function PopularLocations() {
@@ -11,6 +11,8 @@ export default function PopularLocations() {
   const [isLoading, setIsLoading] = useState(true);
   const [locations, setLocations] = useState([]);
   const [settings, setSettings] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 25;
 
   useEffect(() => {
     api.get("/settings")
@@ -21,7 +23,7 @@ export default function PopularLocations() {
       })
       .catch(err => console.error("Error fetching settings in PopularLocations:", err));
 
-    api.get('/locations')
+    api.get('/locations', { params: { limit: 1000 } })
       .then(res => {
         if (res.data && res.data.data && res.data.data.length > 0) {
           const formatted = res.data.data.map(l => ({
@@ -58,24 +60,28 @@ export default function PopularLocations() {
   const filteredLocations = useMemo(() => {
     if (!searchQuery.trim()) return locations;
     return locations.filter(l => 
-      l.name.toLowerCase().includes(searchQuery.toLowerCase())
+      l.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      l.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      l.country.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [searchQuery, locations]);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.012, // snappy and quick cascade
-      }
-    }
-  };
+  // Reset page when search query changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
+
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredLocations.length / itemsPerPage) || 1;
+  const paginatedLocations = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return filteredLocations.slice(start, start + itemsPerPage);
+  }, [filteredLocations, currentPage, itemsPerPage]);
 
   const cardVariants = {
     hidden: { 
       opacity: 0, 
-      x: -40,
+      x: -30,
       scale: 0.98
     },
     show: { 
@@ -84,15 +90,21 @@ export default function PopularLocations() {
       scale: 1,
       transition: {
         type: "spring",
-        stiffness: 60,
+        stiffness: 70,
         damping: 18,
         mass: 0.8
       }
     }
   };
 
-  const handleLocationClick = (loc) => {
-    navigate(`/location.php/${loc.id.toLowerCase()}`);
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    const gridEl = document.getElementById("locations-grid-header");
+    if (gridEl) {
+      gridEl.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      window.scrollTo({ top: 300, behavior: "smooth" });
+    }
   };
 
   return (
@@ -122,7 +134,7 @@ export default function PopularLocations() {
       </div>
 
       {/* 2. Intro and Search section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 mb-8">
+      <div id="locations-grid-header" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 mb-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-slate-100 pb-6">
           <div className="max-w-xl">
             <span className="text-xs font-black uppercase tracking-widest text-secondary bg-secondary/10 px-3 py-1.5 rounded-full inline-block mb-3">
@@ -136,14 +148,14 @@ export default function PopularLocations() {
             </p>
           </div>
           
-          {/* Beautiful Search Bar */}
+          {/* Search Bar */}
           <div className="relative w-full md:w-80">
             <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
               <Search size={18} />
             </span>
             <input
               type="text"
-              placeholder="Search Destination"
+              placeholder="Search Destination or City..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary shadow-sm transition-all"
@@ -164,7 +176,7 @@ export default function PopularLocations() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimatePresence mode="wait">
           {isLoading ? (
-            /* Shimmer loading skeletons with exit fade */
+            /* Shimmer loading skeletons */
             <motion.div 
               key="shimmer-grid"
               initial={{ opacity: 1 }}
@@ -182,51 +194,117 @@ export default function PopularLocations() {
                 </div>
               ))}
             </motion.div>
-          ) : filteredLocations.length > 0 ? (
-            <motion.div 
-              key="locations-grid"
-              id="locations-grid" 
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5"
-            >
-              {filteredLocations.map((loc) => {
-                const displayTitle = `Medicine Courier from ${loc.name}`;
+          ) : paginatedLocations.length > 0 ? (
+            <div className="space-y-8">
+              <motion.div 
+                key={`locations-grid-page-${currentPage}`}
+                id="locations-grid" 
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5"
+              >
+                {paginatedLocations.map((loc) => {
+                  const displayTitle = `Medicine Courier from ${loc.name}`;
 
-                return (
-                  <motion.button
-                    id={`location-card-${loc.id}`}
-                    key={loc.id}
-                    variants={cardVariants}
-                    initial="hidden"
-                    whileInView="show"
-                    viewport={{ once: true, amount: 0.15 }}
-                    whileHover={{ 
-                      y: -4, 
-                      scale: 1.01,
-                      boxShadow: "0 10px 20px -5px rgba(3, 173, 164, 0.08), 0 8px 10px -6px rgba(3, 173, 164, 0.05)",
-                      borderColor: "rgba(3, 173, 164, 0.3)"
-                    }}
-                    whileTap={{ scale: 0.985 }}
-                    onClick={() => navigate(`/${loc.slug}`)}
-                    className="w-full text-left bg-gradient-to-br from-white via-white to-slate-50/30 border border-slate-200/80 rounded-xl p-4 md:p-5 font-bold text-xs md:text-sm relative overflow-hidden group cursor-pointer"
-                  >
-                    {/* Bottom accent highlight line on hover (Secondary theme color) */}
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary to-secondary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-350 origin-left" />
-                    
-                    <div className="flex items-center justify-between gap-4">
-                      <span className="text-[#0052CC] group-hover:text-secondary transition-colors duration-300 font-sans tracking-wide leading-snug">
-                        {displayTitle}
-                      </span>
-                      <span className="bg-slate-50 group-hover:bg-[#03ADA4]/10 text-slate-400 group-hover:text-secondary p-1.5 rounded-full transition-all duration-300 shrink-0">
-                        <ArrowUpRight 
-                          size={14} 
-                          className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" 
-                        />
-                      </span>
-                    </div>
-                  </motion.button>
-                );
-              })}
-            </motion.div>
+                  return (
+                    <Link
+                      id={`location-card-${loc.id}`}
+                      key={loc.id}
+                      to={`/${loc.slug}`}
+                      className="block w-full text-left bg-gradient-to-br from-white via-white to-slate-50/30 border border-slate-200/80 rounded-xl p-4 md:p-5 font-bold text-xs md:text-sm relative overflow-hidden group cursor-pointer"
+                    >
+                      <motion.div
+                        variants={cardVariants}
+                        initial="hidden"
+                        whileInView="show"
+                        viewport={{ once: true, amount: 0.15 }}
+                        whileHover={{ 
+                          y: -4, 
+                          scale: 1.01,
+                          boxShadow: "0 10px 20px -5px rgba(3, 173, 164, 0.08), 0 8px 10px -6px rgba(3, 173, 164, 0.05)",
+                          borderColor: "rgba(3, 173, 164, 0.3)"
+                        }}
+                        whileTap={{ scale: 0.985 }}
+                      >
+                        {/* Bottom accent highlight line */}
+                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary to-secondary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-350 origin-left" />
+                        
+                        <div className="flex items-center justify-between gap-4">
+                          <span className="text-[#0052CC] group-hover:text-secondary transition-colors duration-300 font-sans tracking-wide leading-snug">
+                            {displayTitle}
+                          </span>
+                          <span className="bg-slate-50 group-hover:bg-[#03ADA4]/10 text-slate-400 group-hover:text-secondary p-1.5 rounded-full transition-all duration-300 shrink-0">
+                            <ArrowUpRight 
+                              size={14} 
+                              className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" 
+                            />
+                          </span>
+                        </div>
+                      </motion.div>
+                    </Link>
+                  );
+                })}
+              </motion.div>
+
+              {/* 4. Pagination Controls Bar */}
+              {totalPages > 1 && (
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white border border-slate-200/80 p-4 md:p-5 rounded-2xl shadow-xs">
+                  <div className="text-xs font-semibold text-slate-500">
+                    Showing <span className="font-extrabold text-slate-800">{(currentPage - 1) * itemsPerPage + 1}</span> to <span className="font-extrabold text-slate-800">{Math.min(currentPage * itemsPerPage, filteredLocations.length)}</span> of <span className="font-extrabold text-slate-800">{filteredLocations.length}</span> Locations
+                  </div>
+
+                  <div className="flex items-center gap-1.5 flex-wrap justify-center">
+                    {/* Previous Button */}
+                    <button
+                      onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
+                      disabled={currentPage === 1}
+                      className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 hover:border-slate-300 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center gap-1 cursor-pointer"
+                    >
+                      <ChevronLeft size={14} />
+                      Prev
+                    </button>
+
+                    {/* Page Numbers */}
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => {
+                      // Smart pagination pills: show current, first, last, and adjacent pages
+                      if (
+                        pageNum === 1 || 
+                        pageNum === totalPages || 
+                        (pageNum >= currentPage - 2 && pageNum <= currentPage + 2)
+                      ) {
+                        return (
+                          <button
+                            key={pageNum}
+                            onClick={() => handlePageChange(pageNum)}
+                            className={`w-8.5 h-8.5 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center cursor-pointer ${
+                              currentPage === pageNum
+                                ? "bg-[#0052CC] text-white shadow-sm scale-105"
+                                : "bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100"
+                            }`}
+                          >
+                            {pageNum}
+                          </button>
+                        );
+                      } else if (
+                        (pageNum === 2 && currentPage > 4) ||
+                        (pageNum === totalPages - 1 && currentPage < totalPages - 3)
+                      ) {
+                        return <span key={pageNum} className="text-xs text-slate-400 font-bold px-1">...</span>;
+                      }
+                      return null;
+                    })}
+
+                    {/* Next Button */}
+                    <button
+                      onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}
+                      disabled={currentPage === totalPages}
+                      className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 hover:border-slate-300 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center gap-1 cursor-pointer"
+                    >
+                      Next
+                      <ChevronRight size={14} />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           ) : (
             <motion.div 
               key="no-results"

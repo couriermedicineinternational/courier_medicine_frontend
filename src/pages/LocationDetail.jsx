@@ -233,7 +233,7 @@ export default function LocationDetail() {
           initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.1 }} variants={sectionVariants}
           className="text-[22px] md:text-[28px] font-bold text-black mb-6 text-center"
         >
-          Medicine Courier From {originCity} To {destCountry}
+          {route?.introHeading || `Medicine Courier From ${originCity} To ${destCountry}`}
         </motion.h1>
 
         {/* SEO Text Section */}
@@ -280,40 +280,58 @@ export default function LocationDetail() {
           initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.1 }} variants={sectionVariants}
           className="mb-12 text-[14px] leading-[1.8] text-[#444]"
         >
-          <h3 className="text-[18px] md:text-[20px] font-bold text-black bg-[#fffee6] inline-block mb-3 px-1">Service 1. Free Pick-Up Service</h3>
-          <p className="mb-4">
-            Already have the medicines ready? <strong>We offer free doorstep pickup services across {originCity}</strong>, making the entire courier process smooth and stress-free for you.
-          </p>
-          <p className="mb-4 italic">
-            We provide pick up service all over {originCity} Including some major Places like, Sector 42, Sushant Lok Phase 1, MG Road, Golf Course Road, Sector 50 / Nirvana Country, Palam Vihar, Sector 31, Sohna Road, Ambience Island, or any other part of {originCity}—we'll come to you.
-          </p>
-          <p className="mb-10">
-            You'll Aslo receive {originCity} to {destCountry} Medicine Courier Tracking with real-time updates and notifications from the moment your parcel is picked up to the time it is delivered in {destCountry} and Our operations team ensures that all pickups happen on time, with zero delays, so you or your loved ones in {destCountry} get their medications when they need them.
-          </p>
+          <h3 className="text-[18px] md:text-[20px] font-bold text-black bg-[#fffee6] inline-block mb-3 px-1">
+            {route?.pickupServiceTitle || "Service 1. Free Pick-Up Service"}
+          </h3>
 
-          <h3 className="text-[18px] md:text-[20px] font-bold text-black bg-[#fffee6] inline-block mb-3 px-1">Service 2. Medicine Procurement Service</h3>
-          <p className="mb-4">
-            We understand—it's not always possible to get the right medicines when you need them, especially if you're trying to arrange it from abroad. That's where we step in.
-          </p>
-          <p className="mb-6 italic text-[#0000ee]">
-            Whether you need Allopathy, Ayurvedic, or Homeopathy. Liquid,Tablets,Pills or Injection we can purchase all the medicines on your behalf and get it Deliver in {destCountry} quickly and safely as We've partnered with verified and reputed pharmacies, so you'll always receive genuine, sealed medicines—and often at discounted prices too. You can reach us via <a href="https://wa.me/918882691919" className="underline font-medium">Call/WhatsApp at +91-8882691919 Or email us at couriermedicines@gmail.com</a> — we usually respond within Minutes.
-          </p>
-          <p className="font-bold text-black">
-            Reputed Online Pharmacy to Buy Medicines{' '}
-            <span className="text-[#0052CC] font-normal ml-2 space-x-2">
-              <a href="https://www.1mg.com/" target="_blank" rel="noopener noreferrer" className="hover:underline">Tata 1mg</a>
-              <a href="https://pharmeasy.in/" target="_blank" rel="noopener noreferrer" className="hover:underline">PharmEasy</a>
-              <a href="https://www.netmeds.com/" target="_blank" rel="noopener noreferrer" className="hover:underline">Netmeds</a>
-              <a href="https://www.apollopharmacy.in/" target="_blank" rel="noopener noreferrer" className="hover:underline">Apollo Pharmacy</a>
-              <a href="https://www.amazon.in/pharmacy" target="_blank" rel="noopener noreferrer" className="hover:underline">Amazon Pharmacy</a>
-            </span>
-          </p>
+          {route?.pickupServiceContent ? (
+            <div dangerouslySetInnerHTML={{ __html: route.pickupServiceContent }} className="prose max-w-none mb-8 text-[#444]" />
+          ) : (
+            <>
+              <p className="mb-4">
+                Already have the medicines ready? <strong>We offer free doorstep pickup services across {originCity}</strong>, making the entire courier process smooth and stress-free for you.
+              </p>
+              <p className="mb-4 italic">
+                We provide pick up service all over {originCity} Including some major Places like, Sector 42, Sushant Lok Phase 1, MG Road, Golf Course Road, Sector 50 / Nirvana Country, Palam Vihar, Sector 31, Sohna Road, Ambience Island, or any other part of {originCity}—we'll come to you.
+              </p>
+              <p className="mb-10">
+                You'll Aslo receive {originCity} to {destCountry} Medicine Courier Tracking with real-time updates and notifications from the moment your parcel is picked up to the time it is delivered in {destCountry} and Our operations team ensures that all pickups happen on time, with zero delays, so you or your loved ones in {destCountry} get their medications when they need them.
+              </p>
+            </>
+          )}
+
+          <h3 className="text-[18px] md:text-[20px] font-bold text-black bg-[#fffee6] inline-block mb-3 px-1">
+            {route?.procurementServiceTitle || "Service 2. Medicine Procurement Service"}
+          </h3>
+
+          {route?.procurementServiceContent ? (
+            <div dangerouslySetInnerHTML={{ __html: route.procurementServiceContent }} className="prose max-w-none text-[#444]" />
+          ) : (
+            <>
+              <p className="mb-4">
+                We understand—it's not always possible to get the right medicines when you need them, especially if you're trying to arrange it from abroad. That's where we step in.
+              </p>
+              <p className="mb-6 italic text-[#0000ee]">
+                Whether you need Allopathy, Ayurvedic, or Homeopathy. Liquid,Tablets,Pills or Injection we can purchase all the medicines on your behalf and get it Deliver in {destCountry} quickly and safely as We've partnered with verified and reputed pharmacies, so you'll always receive genuine, sealed medicines—and often at discounted prices too. You can reach us via <a href="https://wa.me/918882691919" className="underline font-medium">Call/WhatsApp at +91-8882691919 Or email us at couriermedicines@gmail.com</a> — we usually respond within Minutes.
+              </p>
+              <p className="font-bold text-black">
+                Reputed Online Pharmacy to Buy Medicines{' '}
+                <span className="text-[#0052CC] font-normal ml-2 space-x-2">
+                  <a href="https://www.1mg.com/" target="_blank" rel="noopener noreferrer" className="hover:underline">Tata 1mg</a>
+                  <a href="https://pharmeasy.in/" target="_blank" rel="noopener noreferrer" className="hover:underline">PharmEasy</a>
+                  <a href="https://www.netmeds.com/" target="_blank" rel="noopener noreferrer" className="hover:underline">Netmeds</a>
+                  <a href="https://www.apollopharmacy.in/" target="_blank" rel="noopener noreferrer" className="hover:underline">Apollo Pharmacy</a>
+                  <a href="https://www.amazon.in/pharmacy" target="_blank" rel="noopener noreferrer" className="hover:underline">Amazon Pharmacy</a>
+                </span>
+              </p>
+            </>
+          )}
         </motion.div>
 
         {/* Document Required Section */}
         <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.1 }} variants={sectionVariants}>
           <h2 className="text-[20px] md:text-[24px] font-bold text-black mb-6 text-center">
-            Document Required To Send Medicine From {originCity} To {destCountry}
+            {route?.docHeading || `Document Required To Send Medicine From ${originCity} To ${destCountry}`}
           </h2>
           
           <div className="flex flex-col md:flex-row gap-8 items-start mb-12">
@@ -333,7 +351,7 @@ export default function LocationDetail() {
             </div>
             
             <div className="shrink-0 w-full max-w-[280px] flex justify-center md:justify-end">
-               <img src="/docs-image.png" alt="Documents Required for Courier" className="w-full max-w-[280px] h-auto object-contain drop-shadow-sm rounded-xl" />
+               <img src={settings?.documentImage || '/docs-image.png'} alt="Documents Required for Courier" className="w-full max-w-[280px] h-auto object-contain drop-shadow-sm rounded-xl" />
             </div>
           </div>
         </motion.div>
@@ -341,7 +359,7 @@ export default function LocationDetail() {
         {/* Service We Offer Section */}
         <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.1 }} variants={sectionVariants}>
           <h2 className="text-[20px] md:text-[24px] font-bold text-black mb-6 text-center">
-            Service We Offer
+            {route?.serviceHeading || "Service We Offer"}
           </h2>
           
           <div className="mb-12">
@@ -370,12 +388,14 @@ export default function LocationDetail() {
       >
         <div className="max-w-[1300px] mx-auto px-4">
           <h2 className="text-[20px] md:text-[24px] font-bold text-black mb-8 text-center capitalize tracking-wide">
-            How To Process For Booking
+            {route?.processHeading || "How To Process For Booking"}
           </h2>
           
           <div className="flex flex-col md:flex-row gap-16 md:gap-24 justify-between items-center">
             <div className="flex-1 space-y-5 text-[14px] md:text-[15px] text-[#444] font-medium pt-2 w-full">
-              <h3 className="text-[18px] md:text-[20px] font-medium text-black mb-6">Process 1 : Instant Booking At Zero Payment</h3>
+              <h3 className="text-[18px] md:text-[20px] font-medium text-black mb-6">
+                {route?.process1Title || "Process 1 : Instant Booking At Zero Payment"}
+              </h3>
               <p><span className="text-[#0052CC]">Step 1.</span> Call /WhatsApp us on +91-8882691919</p>
               <p><span className="text-[#0052CC]">Step 2.</span> Share your medicine details.</p>
               <p><span className="text-[#0052CC]">Step 3.</span> Ask for documentation needed and get it checked.</p>
@@ -399,7 +419,9 @@ export default function LocationDetail() {
       >
         <div className="max-w-[1300px] mx-auto px-4 flex flex-col md:flex-row gap-10">
           <div className="flex-1 space-y-5 text-[14px] md:text-[15px] text-[#444] font-medium pt-2">
-            <h3 className="text-[18px] md:text-[20px] font-medium text-black mb-6">Process 2 : Book Directly From Rate Calculator</h3>
+            <h3 className="text-[18px] md:text-[20px] font-medium text-black mb-6">
+              {route?.process2Title || "Process 2 : Book Directly From Rate Calculator"}
+            </h3>
             <p><span className="text-[#0052CC]">Step 1.</span> Choose Service you want From Rate Calculator</p>
             <div className="pl-12 space-y-2 text-[#333]">
               <p>A. Pick up service or</p>

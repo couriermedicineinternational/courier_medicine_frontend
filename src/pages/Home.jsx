@@ -2,11 +2,13 @@ import { useState, useEffect, lazy, Suspense } from "react";
 import { AlertTriangle, RefreshCcw } from "lucide-react";
 import api from "../utils/api";
 
-// Only HeroSection is eagerly loaded (above-the-fold LCP content)
+import { applyPageSEO } from "../utils/seo";
+
+// HeroSection and StatsSection are eagerly loaded (above-the-fold content)
 import HeroSection from "../components/sections/HeroSection";
+import StatsSection from "../components/sections/StatsSection";
 
 // Below-the-fold sections are lazy loaded to reduce initial JS payload
-const StatsSection = lazy(() => import("../components/sections/StatsSection"));
 const WhatMedicinesSection = lazy(() => import("../components/sections/WhatMedicinesSection"));
 const EasySection = lazy(() => import("../components/sections/EasySection"));
 const FlagsSection = lazy(() => import("../components/sections/FlagsSection"));
@@ -30,7 +32,7 @@ const componentMap = {
 
 const DEFAULT_SECTIONS = [
   { key: "hero" },
-  { key: "stats" },
+  { key: "stats", title: "Our Milestone & Network Achievements" },
   { key: "what-medicines" },
   { key: "easy-courier" },
   { key: "flags" },
@@ -62,6 +64,20 @@ export default function Home() {
     loadHomepageData();
   }, []);
 
+  useEffect(() => {
+    const seoSec = sections.find(s => s.metaViewTitle || s.metaDescription || s.metaKeywords) || sections[0];
+    if (seoSec) {
+      applyPageSEO(
+        seoSec.metaViewTitle,
+        seoSec.metaDescription,
+        seoSec.metaKeywords,
+        "Courier Medicine - International Medicine Courier Services",
+        "Send medicines internationally from India with 100% custom clearance support and free pickup. We courier cancer drugs, lifesaving meds, ayurvedic and general prescriptions worldwide safely.",
+        "medicine courier, international medicine delivery, send medicines from India, medicine custom clearance, medicine export"
+      );
+    }
+  }, [sections]);
+
   return (
     <div id="home-page" className="w-full relative overflow-x-hidden bg-white font-sans">
       {hasError || sections.length === 0 ? (
@@ -87,8 +103,8 @@ export default function Home() {
             const Component = componentMap[section.key];
             if (!Component) return null;
             
-            // HeroSection is eagerly imported — render it directly without Suspense
-            if (section.key === "hero") {
+            // HeroSection and StatsSection are eagerly imported — render them directly without Suspense delay
+            if (section.key === "hero" || section.key === "stats") {
               return (
                 <Component 
                   key={section.key} 

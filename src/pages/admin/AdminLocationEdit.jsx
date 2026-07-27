@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../utils/api';
-import JoditEditor from 'jodit-react';
+import RichTextEditor from '../../components/RichTextEditor';
 import { Loader2, ArrowLeft } from 'lucide-react';
 
 export default function AdminLocationEdit() {
@@ -67,8 +67,21 @@ export default function AdminLocationEdit() {
         metaViewTitle: `Medicine Courier Service from ${origin} to ${dest}`,
         metaKeywords: `medicine courier, ${origin} to ${dest}, international courier`,
         metaDescription: `Best medicine courier from ${origin} to ${dest}.`,
-        medicineCourierServices: defaultSEO, documentsNeeded: defaultDocs, servicesWeOffer: defaultServices,
-        process1: defaultProcess1, process2: defaultProcess2, faq: defaultFaq
+        introHeading: `Medicine Courier From ${origin} To ${dest}`,
+        medicineCourierServices: defaultSEO,
+        docHeading: `Document Required To Send Medicine From ${origin} To ${dest}`,
+        documentsNeeded: defaultDocs,
+        serviceHeading: 'Service We Offer',
+        servicesWeOffer: defaultServices,
+        pickupServiceTitle: 'Service 1. Free Pick-Up Service',
+        pickupServiceContent: `<p className="mb-4">Already have the medicines ready? <strong>We offer free doorstep pickup services across ${origin}</strong>, making the entire courier process smooth and stress-free for you.</p><p className="mb-4 italic">We provide pick up service all over ${origin} Including major Places—we'll come to you.</p><p className="mb-10">You'll Also receive ${origin} to ${dest} Medicine Courier Tracking with real-time updates.</p>`,
+        procurementServiceTitle: 'Service 2. Medicine Procurement Service',
+        procurementServiceContent: `<p className="mb-4">We understand—it's not always possible to get the right medicines when you need them, especially if you're trying to arrange it from abroad. That's where we step in.</p><p className="mb-6 italic text-[#0000ee]">Whether you need Allopathy, Ayurvedic, or Homeopathy. Liquid, Tablets, Pills or Injection we can purchase all the medicines on your behalf and get it Delivered in ${dest} quickly and safely.</p>`,
+        processHeading: 'How To Process For Booking',
+        process1Title: 'Process 1 : Instant Booking At Zero Payment',
+        process1: defaultProcess1,
+        process2Title: 'Process 2 : Book Directly From Rate Calculator',
+        process2: defaultProcess2, faq: defaultFaq
       });
       setLoading(false);
       return;
@@ -121,10 +134,20 @@ export default function AdminLocationEdit() {
           metaViewTitle: loc.metaViewTitle || `Medicine Courier Service from ${origin} to ${dest}`,
           metaKeywords: loc.metaKeywords || `medicine courier, ${origin} to ${dest}, international courier`,
           metaDescription: loc.metaDescription || `Best medicine courier from ${origin} to ${dest}.`,
+          introHeading: loc.introHeading || `Medicine Courier From ${origin} To ${dest}`,
           medicineCourierServices: loc.medicineCourierServices || defaultSEO,
+          docHeading: loc.docHeading || `Document Required To Send Medicine From ${origin} To ${dest}`,
           documentsNeeded: loc.documentsNeeded || defaultDocs,
+          serviceHeading: loc.serviceHeading || 'Service We Offer',
           servicesWeOffer: loc.servicesWeOffer || defaultServices,
+          pickupServiceTitle: loc.pickupServiceTitle || 'Service 1. Free Pick-Up Service',
+          pickupServiceContent: loc.pickupServiceContent || `<p class="mb-4">Already have the medicines ready? <strong>We offer free doorstep pickup services across ${origin}</strong>, making the entire courier process smooth and stress-free for you.</p><p class="mb-4 italic">We provide pick up service all over ${origin} Including some major Places like, Sector 42, Sushant Lok Phase 1, MG Road, Golf Course Road, Sector 50 / Nirvana Country, Palam Vihar, Sector 31, Sohna Road, Ambience Island, or any other part of ${origin}—we'll come to you.</p><p class="mb-10">You'll Aslo receive ${origin} to ${dest} Medicine Courier Tracking with real-time updates and notifications from the moment your parcel is picked up to the time it is delivered in ${dest} and Our operations team ensures that all pickups happen on time, with zero delays, so you or your loved ones in ${dest} get their medications when they need them.</p>`,
+          procurementServiceTitle: loc.procurementServiceTitle || 'Service 2. Medicine Procurement Service',
+          procurementServiceContent: loc.procurementServiceContent || `<p class="mb-4">We understand—it's not always possible to get the right medicines when you need them, especially if you're trying to arrange it from abroad. That's where we step in.</p><p class="mb-6 italic text-[#0000ee]">Whether you need Allopathy, Ayurvedic, or Homeopathy. Liquid,Tablets,Pills or Injection we can purchase all the medicines on your behalf and get it Deliver in ${dest} quickly and safely as We've partnered with verified and reputed pharmacies, so you'll always receive genuine, sealed medicines—and often at discounted prices too. You can reach us via Call/WhatsApp at +91-8882691919 Or email us at couriermedicines@gmail.com — we usually respond within Minutes.</p><p class="font-bold text-black">Reputed Online Pharmacy to Buy Medicines <span class="text-[#0052CC] font-normal ml-2 space-x-2"><a href="https://www.1mg.com/" target="_blank" rel="noopener noreferrer" class="hover:underline">Tata 1mg</a> <a href="https://pharmeasy.in/" target="_blank" rel="noopener noreferrer" class="hover:underline">PharmEasy</a> <a href="https://www.netmeds.com/" target="_blank" rel="noopener noreferrer" class="hover:underline">Netmeds</a> <a href="https://www.apollopharmacy.in/" target="_blank" rel="noopener noreferrer" class="hover:underline">Apollo Pharmacy</a> <a href="https://www.amazon.in/pharmacy" target="_blank" rel="noopener noreferrer" class="hover:underline">Amazon Pharmacy</a></span></p>`,
+          processHeading: loc.processHeading || 'How To Process For Booking',
+          process1Title: loc.process1Title || 'Process 1 : Instant Booking At Zero Payment',
           process1: loc.process1 || defaultProcess1,
+          process2Title: loc.process2Title || 'Process 2 : Book Directly From Rate Calculator',
           process2: loc.process2 || defaultProcess2,
           faq: loc.faq || defaultFAQ,
           faqHeading: loc.faqHeading || 'Frequently Asked Questions',
@@ -210,11 +233,7 @@ export default function AdminLocationEdit() {
     }
   };
 
-  const editorConfig = {
-    readonly: false,
-    height: 300,
-    buttons: ['bold', 'italic', 'underline', 'strikethrough', 'ul', 'ol', 'font', 'fontsize', 'paragraph', 'brush', 'align', 'link', 'image', 'video', 'table', 'undo', 'redo', 'hr']
-  };
+
 
   if (loading) return <div className="p-10 flex justify-center"><Loader2 className="animate-spin w-8 h-8" /></div>;
 
@@ -277,27 +296,78 @@ export default function AdminLocationEdit() {
 
 
 
-        {/* Rich Text Areas */}
+        {/* Rich Text Areas & Section Headings */}
         <div className="space-y-8">
           <div>
+            <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5 block">Introduction Main Heading</label>
+            <input type="text" name="introHeading" value={formData.introHeading || ''} onChange={handleInputChange} className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700" placeholder="e.g. Medicine Courier From Delhi To Australia" />
+          </div>
+          <div>
             <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Medicine Courier Services (SEO Text)</label>
-            <JoditEditor value={formData.medicineCourierServices} config={editorConfig} onBlur={newContent => handleEditorChange('medicineCourierServices', newContent)} />
+            <RichTextEditor value={formData.medicineCourierServices} onChange={newContent => handleEditorChange('medicineCourierServices', newContent)} height={300} />
+          </div>
+
+          <div>
+            <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5 block">Documents Required Section Heading</label>
+            <input type="text" name="docHeading" value={formData.docHeading || ''} onChange={handleInputChange} className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700" placeholder="e.g. Document Required To Send Medicine From Delhi To Australia" />
           </div>
           <div>
-            <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Document Needed</label>
-            <JoditEditor value={formData.documentsNeeded} config={editorConfig} onBlur={newContent => handleEditorChange('documentsNeeded', newContent)} />
+            <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Document Needed (Content)</label>
+            <RichTextEditor value={formData.documentsNeeded} onChange={newContent => handleEditorChange('documentsNeeded', newContent)} height={300} />
+          </div>
+
+          <div>
+            <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5 block">Service We Offer Section Heading</label>
+            <input type="text" name="serviceHeading" value={formData.serviceHeading || ''} onChange={handleInputChange} className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700" placeholder="e.g. Service We Offer" />
           </div>
           <div>
-            <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Service We Offer</label>
-            <JoditEditor value={formData.servicesWeOffer} config={editorConfig} onBlur={newContent => handleEditorChange('servicesWeOffer', newContent)} />
+            <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Service We Offer (Content)</label>
+            <RichTextEditor value={formData.servicesWeOffer} onChange={newContent => handleEditorChange('servicesWeOffer', newContent)} height={300} />
           </div>
-          <div>
-            <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Process 1 : Instant Booking</label>
-            <JoditEditor value={formData.process1} config={editorConfig} onBlur={newContent => handleEditorChange('process1', newContent)} />
+
+          {/* Service 1. Free Pick-Up Service Section */}
+          <div className="bg-white p-4 rounded-xl border border-slate-200 space-y-4">
+            <h3 className="text-sm font-bold text-slate-800">Service 1. Free Pick-Up Service Section</h3>
+            <div>
+              <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5 block">Section Heading</label>
+              <input type="text" name="pickupServiceTitle" value={formData.pickupServiceTitle || ''} onChange={handleInputChange} className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700" placeholder="e.g. Service 1. Free Pick-Up Service" />
+            </div>
+            <div>
+              <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Content (SEO text / Area pickup details)</label>
+              <RichTextEditor value={formData.pickupServiceContent || ''} onChange={newContent => handleEditorChange('pickupServiceContent', newContent)} height={300} />
+            </div>
           </div>
+
+          {/* Service 2. Medicine Procurement Service Section */}
+          <div className="bg-white p-4 rounded-xl border border-slate-200 space-y-4">
+            <h3 className="text-sm font-bold text-slate-800">Service 2. Medicine Procurement Service Section</h3>
+            <div>
+              <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5 block">Section Heading</label>
+              <input type="text" name="procurementServiceTitle" value={formData.procurementServiceTitle || ''} onChange={handleInputChange} className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700" placeholder="e.g. Service 2. Medicine Procurement Service" />
+            </div>
+            <div>
+              <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Content (SEO text / Pharmacy links)</label>
+              <RichTextEditor value={formData.procurementServiceContent || ''} onChange={newContent => handleEditorChange('procurementServiceContent', newContent)} height={300} />
+            </div>
+          </div>
+
           <div>
-            <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Process 2 : Book Directly From Rate Calculator</label>
-            <JoditEditor value={formData.process2} config={editorConfig} onBlur={newContent => handleEditorChange('process2', newContent)} />
+            <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5 block">Booking Process Section Main Heading</label>
+            <input type="text" name="processHeading" value={formData.processHeading || ''} onChange={handleInputChange} className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700" placeholder="e.g. How To Process For Booking" />
+          </div>
+
+          <div>
+            <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5 block">Process 1 Heading</label>
+            <input type="text" name="process1Title" value={formData.process1Title || ''} onChange={handleInputChange} className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 mb-2" placeholder="e.g. Process 1 : Instant Booking At Zero Payment" />
+            <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Process 1 Content</label>
+            <RichTextEditor value={formData.process1} onChange={newContent => handleEditorChange('process1', newContent)} height={300} />
+          </div>
+
+          <div>
+            <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5 block">Process 2 Heading</label>
+            <input type="text" name="process2Title" value={formData.process2Title || ''} onChange={handleInputChange} className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 mb-2" placeholder="e.g. Process 2 : Book Directly From Rate Calculator" />
+            <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Process 2 Content</label>
+            <RichTextEditor value={formData.process2} onChange={newContent => handleEditorChange('process2', newContent)} height={300} />
           </div>
           <div>
             <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5 block">FAQ Heading</label>
@@ -323,10 +393,10 @@ export default function AdminLocationEdit() {
                 </div>
                 <div>
                   <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Answer</label>
-                  <JoditEditor 
+                  <RichTextEditor 
                     value={formData[`faq${idx}A`] || ''} 
-                    config={editorConfig} 
-                    onBlur={newContent => handleEditorChange(`faq${idx}A`, newContent)} 
+                    onChange={newContent => handleEditorChange(`faq${idx}A`, newContent)} 
+                    height={300}
                   />
                 </div>
               </div>

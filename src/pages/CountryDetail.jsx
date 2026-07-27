@@ -886,7 +886,11 @@ export default function CountryDetail() {
                     </p>
 
                     <p className="text-slate-600 font-medium leading-relaxed mt-2">
-                      <strong className="text-slate-900">Note :</strong> <em className="italic">Your documents are subject to our privacy policy, which guarantees your information is secure. We do not keep any documents after processing your order to maintain your privacy, and you will need to share them again for future orders.</em>
+                      {country?.docNote ? (
+                        <span dangerouslySetInnerHTML={{ __html: country.docNote }} />
+                      ) : (
+                        <><strong className="text-slate-900">Note :</strong> <em className="italic">Your documents are subject to our privacy policy, which guarantees your information is secure. We do not keep any documents after processing your order to maintain your privacy, and you will need to share them again for future orders.</em></>
+                      )}
                     </p>
 
                   </div>
@@ -911,7 +915,7 @@ export default function CountryDetail() {
 
                 >
 
-                  <img src="/docs-image.png" alt="Documents Required for Courier" className="w-full max-w-[280px] h-auto object-contain drop-shadow-sm rounded-xl" />
+                  <img src={country?.documentImage || settings?.documentImage || '/docs-image.png'} alt="Documents Required for Courier" className="w-full max-w-[280px] h-auto object-contain drop-shadow-sm rounded-xl" />
 
                 </motion.div>
 
@@ -941,7 +945,7 @@ export default function CountryDetail() {
 
                 <h3 className="inline-block text-lg md:text-xl font-black text-slate-900 border-x-3 border-primary px-5 uppercase tracking-wider leading-none font-display">
 
-                  Most Popular Services Chosen By Customer For {countryName}
+                  {country?.popularServicesTitle || `Most Popular Services Chosen By Customer For ${countryName}`}
 
                 </h3>
 
@@ -953,13 +957,21 @@ export default function CountryDetail() {
 
                 <p>
 
-                  <strong>UPS</strong> - Offers extremely fast delivery timelines. Ideal for life-saving or urgent temperature-controlled medicine shipments from India to {countryName}.
+                  {country?.popularService1Text ? (
+                    <span dangerouslySetInnerHTML={{ __html: country.popularService1Text }} />
+                  ) : (
+                    <><strong>UPS</strong> - Offers extremely fast delivery timelines. Ideal for life-saving or urgent temperature-controlled medicine shipments from India to {countryName}.</>
+                  )}
 
                 </p>
 
                 <p>
 
-                  <strong>DHL</strong> - Offers highly systematic documentation screening, ideal for typical chronic medicines like diabetes, heart, and kidney care requirements.
+                  {country?.popularService2Text ? (
+                    <span dangerouslySetInnerHTML={{ __html: country.popularService2Text }} />
+                  ) : (
+                    <><strong>DHL</strong> - Offers highly systematic documentation screening, ideal for typical chronic medicines like diabetes, heart, and kidney care requirements.</>
+                  )}
 
                 </p>
 
@@ -1273,7 +1285,7 @@ export default function CountryDetail() {
 
                 <h3 className="text-lg md:text-xl font-black uppercase tracking-wide font-display">
 
-                  No.1 International Medicine Courier Service from India to {countryName}
+                  {country?.bannerTitle || `No.1 International Medicine Courier Service from India to ${countryName}`}
 
                 </h3>
 
@@ -1285,7 +1297,7 @@ export default function CountryDetail() {
 
                     <CheckCircle size={16} className="text-white shrink-0" />
 
-                    <span>Quick Door-to-Door Delivery Service</span>
+                    <span>{country?.bannerBullet1 || "Quick Door-to-Door Delivery Service"}</span>
 
                   </motion.div>
 
@@ -1293,7 +1305,7 @@ export default function CountryDetail() {
 
                     <CheckCircle size={16} className="text-white shrink-0" />
 
-                    <span>Live Online Package Tracking</span>
+                    <span>{country?.bannerBullet2 || "Live Online Package Tracking"}</span>
 
                   </motion.div>
 
@@ -1301,7 +1313,7 @@ export default function CountryDetail() {
 
                     <CheckCircle size={16} className="text-white shrink-0" />
 
-                    <span>24x7 Responsive Customer Support</span>
+                    <span>{country?.bannerBullet3 || "24x7 Responsive Customer Support"}</span>
 
                   </motion.div>
 
@@ -1309,7 +1321,7 @@ export default function CountryDetail() {
 
                     <CheckCircle size={16} className="text-white shrink-0" />
 
-                    <span>Clear customs clearance assistance</span>
+                    <span>{country?.bannerBullet4 || "Clear customs clearance assistance"}</span>
 
                   </motion.div>
 
@@ -1331,7 +1343,7 @@ export default function CountryDetail() {
 
                 <h3 className="inline-block text-lg md:text-xl font-black text-slate-900 border-x-3 border-secondary px-5 uppercase tracking-wider leading-none font-display">
 
-                  Custom Duty Rules And Regulations
+                  {country?.customDutyHeading || "Custom Duty Rules And Regulations"}
 
                 </h3>
 
@@ -1371,7 +1383,7 @@ export default function CountryDetail() {
 
                   <p className="text-[#0F766E] leading-relaxed font-semibold">
 
-                    {country?.advice || `Customs Regulations and Duties for shipping medicine to ${countryName} is now easy and hassle-free. Exporting or importing personal shipments of medicine usually doesn't require extensive customs clearance. However, if more information is needed, our experienced team will work on your behalf with customs authorities to quickly resolve any issues. If customs ask the receiver for documentation or payment of duties, our team will help coordinate to ensure smooth communication, ensuring your parcel is delivered quickly.`} Personal imports of pharmaceutical products require complete batch validation, structured commercial MSDS shipping manifests, and validation invoice checklists. Any import tax or local tariff levied at destination borders is governed by destination state custom authorities.
+                    {country?.advice || `Customs Regulations and Duties for shipping medicine to ${countryName} is now easy and hassle-free. Exporting or importing personal shipments of medicine usually doesn't require extensive customs clearance. However, if more information is needed, our experienced team will work on your behalf with customs authorities to quickly resolve any issues. If customs ask the receiver for documentation or payment of duties, our team will help coordinate to ensure smooth communication, ensuring your parcel is delivered quickly.`}
 
                   </p>
 

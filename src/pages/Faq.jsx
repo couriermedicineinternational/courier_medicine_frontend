@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { ChevronDown, HelpCircle, ArrowLeft, Search } from "lucide-react";
 import DOMPurify from "dompurify";
 import api from "../utils/api";
+import { applyPageSEO } from "../utils/seo";
 
 export default function Faq() {
   const [openIdx, setOpenIdx] = useState(0);
@@ -38,8 +39,26 @@ export default function Faq() {
         }
 
         if (headerRes && headerRes.data && headerRes.data.data) {
-          setHeaderTitle(headerRes.data.data.title || "Frequently Asked Questions");
-          setHeaderImage(headerRes.data.data.bgImage || "https://images.unsplash.com/photo-1557425955-df376b5903c8?auto=format&fit=crop&w=1600&q=80");
+          const hData = headerRes.data.data;
+          setHeaderTitle(hData.title || "Frequently Asked Questions");
+          setHeaderImage(hData.bgImage || "https://images.unsplash.com/photo-1557425955-df376b5903c8?auto=format&fit=crop&w=1600&q=80");
+          applyPageSEO(
+            hData.metaViewTitle,
+            hData.metaDescription,
+            hData.metaKeywords,
+            "Frequently Asked Questions (FAQ) - Courier Medicine",
+            "Answers to all your questions about sending prescription drugs internationally from India, customs, documentation, and rates.",
+            "medicine courier faq, international medicine delivery questions, medicine export customs"
+          );
+        } else {
+          applyPageSEO(
+            "",
+            "",
+            "",
+            "Frequently Asked Questions (FAQ) - Courier Medicine",
+            "Answers to all your questions about sending prescription drugs internationally from India, customs, documentation, and rates.",
+            "medicine courier faq, international medicine delivery questions, medicine export customs"
+          );
         }
       } catch (err) {
         console.error('Error fetching FAQs dynamic content:', err);

@@ -234,7 +234,7 @@ export default function HeroSection({ title, subtitle, content }) {
 
   return (
     <>
-      <section id="hero-section" className="relative w-full pt-2 md:pt-3 pb-6 md:pb-8 font-sans">
+      <section id="hero-section" className="relative w-full pt-2 md:pt-3 pb-3 md:pb-8 font-sans">
         
         {/* Background Layer */}
         <div className="absolute inset-0 z-0 overflow-hidden bg-white">
@@ -267,7 +267,7 @@ export default function HeroSection({ title, subtitle, content }) {
                 alt="Medical Courier Agent" 
                 width={800}
                 height={533}
-                fetchpriority="high"
+                fetchPriority="high"
                 loading="eager"
                 className="w-full h-full object-cover object-top"
               />

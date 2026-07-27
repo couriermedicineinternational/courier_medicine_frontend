@@ -47,7 +47,7 @@ const normalizeCountryName = (name) => {
   const n = name.toLowerCase();
   if (n.includes("usa") || n.includes("united states")) return "usa";
   if (n.includes("uk") || n.includes("united kingdom")) return "united kingdom";
-  if (n.includes("uae") || n.includes("united arab emirates")) return "united arab emirates";
+  if (n.includes("uae") || n.includes("united arab emirates") || n.includes("dubai")) return "united arab emirates";
   return n.trim();
 };
 

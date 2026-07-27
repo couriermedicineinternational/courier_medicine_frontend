@@ -1,24 +1,23 @@
 import React, { useRef, useMemo } from 'react';
 import JoditEditor from 'jodit-react';
 
-export default function RichTextEditor({ value, onChange, placeholder = 'Start typing...', height = 400 }) {
+function RichTextEditorComponent({ value, onChange, placeholder = 'Start typing...', height = 300 }) {
   const editor = useRef(null);
 
-  // Configure Jodit editor options
+  // Configure Jodit editor options - Memoized config
   const config = useMemo(
     () => ({
       readonly: false,
       placeholder: placeholder,
-      theme: 'light', // As requested: default light theme for the editor toolbar itself
+      theme: 'light',
       height: height,
       
-      // Setup image uploader to use existing backend endpoint
       uploader: {
         insertImageAsBase64URI: false,
-        url: 'http://localhost:5000/api/upload',
+        url: `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/upload`,
         format: 'json',
         method: 'POST',
-        filesVariableName: 'image', // Match multer upload.single('image')
+        filesVariableName: 'image',
         isSuccess: function (resp) {
           return !resp.error && resp.success;
         },
@@ -44,43 +43,48 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Start t
         }
       },
       
-      // Comprehensive toolbar matching user's request
       buttons: [
         'source', '|',
         'save', 'print', '|',
         'cut', 'copy', 'paste', 'pasteAsText', 'pasteFromWord', '|',
         'undo', 'redo', '|',
-        'find', 'selectall', '|', // Note: Browser handles 'spellcheck' natively
+        'find', 'selectall', '|',
         'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', '|',
         'ul', 'ol', 'outdent', 'indent', 'quote', 'classSpan', '|', 
         'align', '|',
         'leftToRight', 'rightToLeft', '|',
         'link', '|',
-        'image', 'table', 'hr', 'video', '|', // video maps to iframe/embed
+        'image', 'table', 'hr', 'video', '|',
         'fullsize', 'about', '|',
         'symbol', 'pageBreak', 'insert', '|',
         'paragraph', 'font', 'fontsize', '|',
-        'brush' // background/text color picker
+        'brush'
       ],
       
-      // Status bar showing element path
       showCharsCounter: false,
       showWordsCounter: false,
-      showXPathInStatusbar: true
+      showXPathInStatusbar: false
     }),
-    [placeholder]
+    [placeholder, height]
   );
 
   return (
     <div className="border border-slate-200 rounded-xl overflow-hidden bg-white">
       <JoditEditor
         ref={editor}
-        value={value}
+        value={value || ''}
         config={config}
         tabIndex={1}
         onBlur={newContent => onChange(newContent)}
-        onChange={newContent => {}} // Handle onBlur for state updates to prevent cursor jumping
+        onChange={() => {}}
       />
     </div>
   );
 }
+
+// React.memo prevents JoditEditor from re-rendering when typing in normal text inputs
+const RichTextEditor = React.memo(RichTextEditorComponent, (prevProps, nextProps) => {
+  return prevProps.value === nextProps.value && prevProps.placeholder === nextProps.placeholder && prevProps.height === nextProps.height;
+});
+
+export default RichTextEditor;

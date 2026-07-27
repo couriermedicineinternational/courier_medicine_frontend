@@ -104,23 +104,35 @@ function formatValue(numPart) {
   return Math.floor(numValue).toLocaleString("en-US");
 }
 
+function normalizeLink(url) {
+  if (!url || !url.trim()) return '';
+  const trimmed = url.trim();
+  if (/^(?:https?:\/\/|\/|mailto:|tel:)/i.test(trimmed)) {
+    return trimmed;
+  }
+  return `https://${trimmed}`;
+}
+
 export default function StatsSection({ title, subtitle, content }) {
   // Use CMS data if available, fallback to hardcoded STATS_DATA for structure/styling
-  const displayStats = content?.stats && content.stats.length > 0 ? content.stats : STATS_DATA;
+  const rawStats = content?.stats && content.stats.length > 0 ? content.stats : STATS_DATA;
+  // Filter only active cards (where isActive is not explicitly false)
+  const displayStats = rawStats.filter(s => s.isActive !== false);
+
+  if (displayStats.length === 0) return null;
 
   return (
-    <div id="stats-section" className="flex flex-col bg-[#0052CC]/5 py-16 md:py-20">
+    <div id="stats-section" className="flex flex-col bg-[#0052CC]/5 pt-7 pb-10 md:py-20">
       {/* Top Intro Part */}
       <motion.div 
-        className="pb-12 md:pb-16"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="pb-6 md:pb-16"
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
       >
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
           <span className="text-[#0052CC] bg-[#0052CC]/10 text-[10px] md:text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full mb-6">
-            {title || "Who we are"}
+            {title || "Our Milestone & Network Achievements"}
           </span>
           <h2 className="text-3xl md:text-4xl lg:text-[42px] font-bold text-[#0F172A] tracking-tight leading-tight mb-5">
             Ensuring Safe, Legal & Worldwide <br className="hidden sm:block" />
@@ -152,11 +164,10 @@ export default function StatsSection({ title, subtitle, content }) {
       {/* Stats Banner Part */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <motion.div 
-          className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-8"
+          className={`grid grid-cols-2 ${displayStats.length >= 4 ? 'lg:grid-cols-4' : displayStats.length === 3 ? 'lg:grid-cols-3' : 'lg:grid-cols-2'} gap-3 sm:gap-6 md:gap-8`}
           variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
+          initial="visible"
+          animate="visible"
         >
           {displayStats.map((stat, idx) => {
             const isGoogle = (stat.label || "").toLowerCase().includes("google") || idx === 1;
@@ -181,16 +192,32 @@ export default function StatsSection({ title, subtitle, content }) {
             const numValue = parseFloat(numPart.replace(/,/g, ''));
             const isFloat = !Number.isNaN(numValue) && numPart.includes('.');
 
-            const CardComponent = (isGoogle || isTrustpilot) ? 'a' : 'div';
-            const cardProps = isGoogle ? {
-              href: "https://www.google.com/search?q=courier+medicines+international+services&oq=courier+medi&gs_lcrp=EgZjaHJvbWUqBwgBEAAYgAQyBwgAEAAYgAQyBwgBEAAYgAQyBwgCEAAYgAQyBggDEEUYOTIHCAQQABiABDIHCAUQABiABDIHCAYQABiABDIHCAcQABiABDIHCAgQABiABDIHCAkQABiABNIBCTc5NzNqMGoxNagCCLACAfEF92Jo1dH9Dio&sourceid=chrome&ie=UTF-8&zx=1783411816019#sv=CAwShQMKBmxjbF9wdhJbCgNwdnESVENnMHZaeTh4TVhneGVXMDJaM0ZrSWk0S0tHTnZkWEpwWlhJZ2JXVmthV05wYm1WeklHbHVkR1Z5Ym1GMGFXOXVZV3dnYzJWeWRtbGpaWE1RQWhnRBLGAQoDbHFpEr4BQ2loamIzVnlhV1Z5SUcxbFpHbGphVzVsY3lCcGJuUmxjbTVoZEdsdmJtRnNJSE5sY25acFkyVnpTTXoxek5tSHZJQ0FDRnBHRUFBUUFSQUNFQU1ZQUJnQkdBSVlBeUlvWTI5MWNtbGxjaUJ0WldScFkybHVaWE1nYVc1MFpYSnVZWFJwYjI1aGJDQnpaWEoyYVdObGN5b0tDQUlRQUJBQkVBSVFBNUlCRDJOdmRYSnBaWEpmYzJWeWRtbGpaURISCgN0YnMSC2xyZjohM3NJQUU9Ei0KAXESKGNvdXJpZXIgbWVkaWNpbmVzIGludGVybmF0aW9uYWwgc2VydmljZXMaEmxvY2FsLXBsYWNlLXZpZXdlchgKILTR36oN",
-              target: "_blank",
-              rel: "noopener noreferrer"
-            } : isTrustpilot ? {
-              href: "https://www.trustpilot.com/review/couriermedicines.com",
-              target: "_blank",
-              rel: "noopener noreferrer"
-            } : {};
+            let CardComponent = 'div';
+            let cardProps = {};
+
+            if (stat.link && String(stat.link).trim()) {
+              const targetUrl = normalizeLink(String(stat.link).trim());
+              CardComponent = 'a';
+              const isExternal = targetUrl.startsWith('http://') || targetUrl.startsWith('https://');
+              cardProps = {
+                href: targetUrl,
+                ...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})
+              };
+            } else if (isGoogle) {
+              CardComponent = 'a';
+              cardProps = {
+                href: "https://www.google.com/search?q=courier+medicines+international+services&oq=courier+medi&gs_lcrp=EgZjaHJvbWUqBwgBEAAYgAQyBwgAEAAYgAQyBwgBEAAYgAQyBwgCEAAYgAQyBggDEEUYOTIHCAQQABiABDIHCAUQABiABDIHCAYQABiABDIHCAcQABiABDIHCAgQABiABDIHCAkQABiABNIBCTc5NzNqMGoxNagCCLACAfEF92Jo1dH9Dio&sourceid=chrome&ie=UTF-8&zx=1783411816019#sv=CAwShQMKBmxjbF9wdhJbCgNwdnESVENnMHZaeTh4TVhneGVXMDJaM0ZrSWk0S0tHTnZkWEpwWlhJZ2JXVmthV05wYm1WeklHbHVkR1Z5Ym1GMGFXOXVZV3dnYzJWeWRtbGpaWE1RQWhnRBLGAQoDbHFpEr4BQ2loamIzVnlhV1Z5SUcxbFpHbGphVzVsY3lCcGJuUmxjbTVoZEdsdmJtRnNJSE5sY25acFkyVnpTTXoxek5tSHZJQ0FDRnBHRUFBUUFSQUNFQU1ZQUJnQkdBSVlBeUlvWTI5MWNtbGxjaUJ0WldScFkybHVaWE1nYVc1MFpYSnVZWFJwYjI1aGJDQnpaWEoyYVdObGN5b0tDQUlRQUJBQkVBSVFBNUlCRDJOdmRYSnBaWEpmYzJWeWRtbGpaURISCgN0YnMSC2xyZjohM3NJQUU9Ei0KAXESKGNvdXJpZXIgbWVkaWNpbmVzIGludGVybmF0aW9uYWwgc2VydmljZXMaEmxvY2FsLXBsYWNlLXZpZXdlchgKILTR36oN",
+                target: "_blank",
+                rel: "noopener noreferrer"
+              };
+            } else if (isTrustpilot) {
+              CardComponent = 'a';
+              cardProps = {
+                href: "https://www.trustpilot.com/review/couriermedicines.com",
+                target: "_blank",
+                rel: "noopener noreferrer"
+              };
+            }
 
             let finalBgColor = staticStyle.bgColor;
             let finalIconColor = staticStyle.iconColor;

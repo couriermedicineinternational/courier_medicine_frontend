@@ -83,7 +83,7 @@ export default function AdminLocations() {
   );
 
   // Pagination parameters
-  const itemsPerPage = 15;
+  const itemsPerPage = 25;
   const totalPages = Math.ceil(filteredLocations.length / itemsPerPage) || 1;
   const paginatedLocations = filteredLocations.slice((page - 1) * itemsPerPage, page * itemsPerPage);
 

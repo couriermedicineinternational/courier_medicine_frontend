@@ -24,6 +24,9 @@ export default function AdminFaqs() {
   // FAQ Page Header states
   const [headerTitle, setHeaderTitle] = useState("");
   const [headerImage, setHeaderImage] = useState("");
+  const [metaViewTitle, setMetaViewTitle] = useState("");
+  const [metaKeywords, setMetaKeywords] = useState("");
+  const [metaDescription, setMetaDescription] = useState("");
   const [isSavingHeader, setIsSavingHeader] = useState(false);
   const [headerSaveSuccess, setHeaderSaveSuccess] = useState(false);
 
@@ -50,6 +53,9 @@ export default function AdminFaqs() {
       if (headerRes.data && headerRes.data.success && headerRes.data.data) {
         setHeaderTitle(headerRes.data.data.title || "Frequently Asked Questions");
         setHeaderImage(headerRes.data.data.bgImage || "");
+        setMetaViewTitle(headerRes.data.data.metaViewTitle || "");
+        setMetaKeywords(headerRes.data.data.metaKeywords || "");
+        setMetaDescription(headerRes.data.data.metaDescription || "");
       }
     } catch (err) {
       console.error("Error fetching FAQs and header settings:", err);
@@ -120,13 +126,19 @@ export default function AdminFaqs() {
     }
   };
 
-  // Save FAQ Header
+  // Save FAQ Page Header
   const handleSaveHeader = async (e) => {
     e.preventDefault();
     setIsSavingHeader(true);
     setHeaderSaveSuccess(false);
     try {
-      const res = await api.put("/faqs/header", { title: headerTitle, bgImage: headerImage });
+      const res = await api.put("/faqs/header", {
+        title: headerTitle,
+        bgImage: headerImage,
+        metaViewTitle,
+        metaKeywords,
+        metaDescription
+      });
       if (res.data && res.data.success) {
         setHeaderSaveSuccess(true);
         setTimeout(() => setHeaderSaveSuccess(false), 3000);
@@ -160,8 +172,8 @@ export default function AdminFaqs() {
       {/* FAQ Page Header Settings Card */}
       <div className="bg-white border border-slate-200/60 rounded-3xl p-5 md:p-6 shadow-sm space-y-4">
         <div>
-          <h3 className="text-sm font-extrabold text-slate-900 tracking-tight uppercase">FAQ Page Header CMS</h3>
-          <p className="text-xs text-slate-400 mt-0.5">Customize the page banner image and main header title for the public FAQs page.</p>
+          <h3 className="text-sm font-extrabold text-slate-900 tracking-tight uppercase">FAQ Page Header & SEO CMS</h3>
+          <p className="text-xs text-slate-400 mt-0.5">Customize the page banner image, title, and search engine SEO meta tags for the FAQ page.</p>
         </div>
         
         {headerSaveSuccess && (
@@ -193,6 +205,48 @@ export default function AdminFaqs() {
             />
           </div>
 
+          {/* Page SEO Meta Settings */}
+          <div className="p-4 space-y-3 bg-slate-50/70 rounded-2xl border border-slate-200/60 mt-3">
+            <div className="flex items-center gap-2 pb-1 border-b border-slate-200/60">
+              <Search size={14} className="text-primary" />
+              <span className="text-[10px] font-black uppercase text-slate-600 tracking-wider">FAQ Page SEO Meta Settings</span>
+            </div>
+
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Meta Title (Browser Tab Heading)</label>
+                <input
+                  type="text"
+                  value={metaViewTitle}
+                  onChange={(e) => setMetaViewTitle(e.target.value)}
+                  className="w-full bg-white border border-slate-200 focus:border-primary focus:outline-none px-3 py-2 rounded-xl text-xs font-bold text-slate-800"
+                  placeholder="e.g. FAQ - Frequently Asked Questions | Courier Medicine"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Meta Description</label>
+                <textarea
+                  value={metaDescription}
+                  onChange={(e) => setMetaDescription(e.target.value)}
+                  className="w-full bg-white border border-slate-200 focus:border-primary focus:outline-none px-3 py-2 rounded-xl text-xs font-medium text-slate-700 h-16 resize-none"
+                  placeholder="Enter meta description for FAQ page..."
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Meta Keywords (Comma Separated)</label>
+                <input
+                  type="text"
+                  value={metaKeywords}
+                  onChange={(e) => setMetaKeywords(e.target.value)}
+                  className="w-full bg-white border border-slate-200 focus:border-primary focus:outline-none px-3 py-2 rounded-xl text-xs font-semibold text-slate-800"
+                  placeholder="e.g. medicine courier faq, medicine shipping questions"
+                />
+              </div>
+            </div>
+          </div>
+
           <div className="flex justify-end pt-1">
             <button
               type="submit"
@@ -200,7 +254,7 @@ export default function AdminFaqs() {
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow-sm shadow-primary/10 hover:scale-[1.01] active:scale-[0.99] transition-transform disabled:opacity-50"
             >
               <Save size={13} />
-              {isSavingHeader ? "Saving Header..." : "Save Page Header Settings"}
+              {isSavingHeader ? "Saving Settings..." : "Save Page Header & SEO Settings"}
             </button>
           </div>
         </form>

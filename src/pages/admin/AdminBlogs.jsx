@@ -26,6 +26,9 @@ export default function AdminBlogs() {
   const [headerSubtitle, setHeaderSubtitle] = useState("");
   const [headerTag, setHeaderTag] = useState("");
   const [headerImage, setHeaderImage] = useState("");
+  const [metaViewTitle, setMetaViewTitle] = useState("");
+  const [metaKeywords, setMetaKeywords] = useState("");
+  const [metaDescription, setMetaDescription] = useState("");
   const [isSavingHeader, setIsSavingHeader] = useState(false);
   const [headerSaveSuccess, setHeaderSaveSuccess] = useState(false);
 
@@ -66,6 +69,9 @@ export default function AdminBlogs() {
         setHeaderSubtitle(headerRes.data.data.subtitle || "");
         setHeaderTag(headerRes.data.data.tag || "Regulations & Updates");
         setHeaderImage(headerRes.data.data.bgImage || "");
+        setMetaViewTitle(headerRes.data.data.metaViewTitle || "");
+        setMetaKeywords(headerRes.data.data.metaKeywords || "");
+        setMetaDescription(headerRes.data.data.metaDescription || "");
       }
     } catch (err) {
       console.error("Error fetching blogs and header settings:", err);
@@ -88,7 +94,10 @@ export default function AdminBlogs() {
         title: headerTitle, 
         subtitle: headerSubtitle,
         tag: headerTag,
-        bgImage: headerImage 
+        bgImage: headerImage,
+        metaViewTitle,
+        metaKeywords,
+        metaDescription
       });
       if (res.data && res.data.success) {
         setHeaderSaveSuccess(true);
@@ -308,13 +317,55 @@ export default function AdminBlogs() {
             />
           </div>
 
+          {/* Page SEO Meta Settings */}
+          <div className="p-4 space-y-3 bg-slate-50/70 rounded-2xl border border-slate-200/60 mt-3">
+            <div className="flex items-center gap-2 pb-1 border-b border-slate-200/60">
+              <Search size={14} className="text-primary" />
+              <span className="text-[10px] font-black uppercase text-slate-600 tracking-wider">Blog Page SEO Meta Settings</span>
+            </div>
+
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Meta Title (Browser Tab Heading)</label>
+                <input
+                  type="text"
+                  value={metaViewTitle}
+                  onChange={(e) => setMetaViewTitle(e.target.value)}
+                  className="w-full bg-white border border-slate-200 focus:border-primary focus:outline-none px-3 py-2 rounded-xl text-xs font-bold text-slate-800"
+                  placeholder="e.g. Our Blog - Regulations & Updates | Courier Medicine"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Meta Description</label>
+                <textarea
+                  value={metaDescription}
+                  onChange={(e) => setMetaDescription(e.target.value)}
+                  className="w-full bg-white border border-slate-200 focus:border-primary focus:outline-none px-3 py-2 rounded-xl text-xs font-medium text-slate-700 h-16 resize-none"
+                  placeholder="Enter meta description for blog page..."
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Meta Keywords (Comma Separated)</label>
+                <input
+                  type="text"
+                  value={metaKeywords}
+                  onChange={(e) => setMetaKeywords(e.target.value)}
+                  className="w-full bg-white border border-slate-200 focus:border-primary focus:outline-none px-3 py-2 rounded-xl text-xs font-semibold text-slate-800"
+                  placeholder="e.g. medicine courier blog, international medicine news"
+                />
+              </div>
+            </div>
+          </div>
+
           <div className="flex justify-end">
             <button
               type="submit"
               disabled={isSavingHeader}
               className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-primary text-white text-xs font-bold hover:scale-[1.01] active:scale-[0.99] transition-all shadow-sm shadow-primary/10 disabled:opacity-50"
             >
-              {isSavingHeader ? "Saving..." : "Save Header Settings"}
+              {isSavingHeader ? "Saving..." : "Save Header & SEO Settings"}
             </button>
           </div>
         </form>

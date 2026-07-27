@@ -321,11 +321,15 @@ function RenderVisionMissionSection({ title, subtitle, content }) {
 }
 
 // 4. Main Exported About Page Component
+import { applyPageSEO } from "../utils/seo";
+
 export default function About() {
-  const [isLoading, setIsLoading] = useState(true);
   const [sections, setSections] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+
     const loadAboutData = async () => {
       try {
         const res = await api.get("/about");
@@ -341,6 +345,20 @@ export default function About() {
     
     loadAboutData();
   }, []);
+
+  useEffect(() => {
+    const seoSec = sections.find(s => s.metaViewTitle || s.metaDescription || s.metaKeywords) || sections[0];
+    if (seoSec) {
+      applyPageSEO(
+        seoSec.metaViewTitle,
+        seoSec.metaDescription,
+        seoSec.metaKeywords,
+        "About Us - Courier Medicine International",
+        "Learn about Courier Medicine - India's premier international pharmaceutical logistics courier delivering prescription medicines worldwide safely.",
+        "about courier medicine, medicine export company India, international medicine logistics"
+      );
+    }
+  }, [sections]);
 
   return (
     <AnimatePresence mode="wait">

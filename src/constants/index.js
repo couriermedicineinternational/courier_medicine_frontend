@@ -1043,6 +1043,7 @@ export const ALL_COUNTRIES = [
   { code: "GH", name: "Ghana", slug: "india-to-ghana-medicine-courier-charges.htm", basePrice: 3100, advice: "FDA Ghana clearance. Doctor's prescription and commercial invoice mandatory." },
   { code: "KR", name: "South Korea", slug: "india-to-south-korea-medicine-courier-charges.htm", basePrice: 3000, advice: "MFDS rules apply. Doctor's prescription required. Max 3-month supply." },
   { code: "AE", name: "United Arab Emirates (UAE)", slug: "india-to-united-arab-emirates-uae-medicine-courier-charges.htm", basePrice: 1800, advice: "MOHAP approvals verified. Urgent express entry via Dubai / Abu Dhabi customs hubs." },
+  { code: "DUBAI", name: "Dubai", slug: "india-to-dubai-medicine-courier-charges.htm", basePrice: 1800, advice: "" },
   { code: "TH", name: "Thailand", slug: "india-to-thailand-medicine-courier-charges.htm", basePrice: 2600, advice: "Thai FDA rules apply. Doctor's prescription and invoice required." },
   { code: "SA", name: "Saudi Arabia", slug: "india-to-saudi-arabia-medicine-courier-charges.htm", basePrice: 2300, advice: "SFDA regulations apply. Doctor's prescription and chemist invoice mandatory." },
   { code: "BE", name: "Belgium", slug: "india-to-belgium-medicine-courier-charges.htm", basePrice: 3200, advice: "FAMHP rules apply. Doctor's prescription required for customs clearance." },

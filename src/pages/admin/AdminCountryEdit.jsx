@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../utils/api';
-import JoditEditor from 'jodit-react';
+import RichTextEditor from '../../components/RichTextEditor';
 import { Loader2, ArrowLeft } from 'lucide-react';
 
 export default function AdminCountryEdit() {
@@ -46,7 +46,18 @@ export default function AdminCountryEdit() {
     faq7Q: '', faq7A: '',
     faq8Q: '', faq8A: '',
     faq9Q: '', faq9A: '',
-    faq10Q: '', faq10A: ''
+    faq10Q: '', faq10A: '',
+    popularServicesTitle: '',
+    popularService1Text: '',
+    popularService2Text: '',
+    bannerTitle: '',
+    bannerBullet1: '',
+    bannerBullet2: '',
+    bannerBullet3: '',
+    bannerBullet4: '',
+    docNote: '',
+    customDutyHeading: '',
+    customDutyDisclaimer: ''
   });
 
 
@@ -72,12 +83,23 @@ export default function AdminCountryEdit() {
       const defaultFAQ = `<ul><li><strong>How can I send medicine from ${origin} to ${dest}?</strong><br/>To send medicine from ${origin} to ${dest}, you need to share a copy of your doctor's prescription and purchase bill with us. We will arrange a free doorstep pickup at your address in ${origin}, verify and pack the medicines, and ship them securely via priority carriers.</li><li><strong>Is it legal to courier medicines from ${origin} to ${dest}?</strong><br/>Yes, it is completely legal to courier personal-use medications from ${origin} to ${dest} under personal import rules. You must provide a valid medical prescription matching the receiver's name.</li><li><strong>What types of medicines can I send from ${origin}?</strong><br/>We courier all types of medicines from ${origin}: Allopathic, Homeopathic, Ayurvedic, liquid syrups, capsules, tablets, chronic disease care drugs, and temperature-controlled cold chain medicines.</li><li><strong>How long does it take for the package to reach ${dest} from ${origin}?</strong><br/>Typical transit delivery timeline from ${origin} to ${dest} is 4 to 6 Business days via express global cargo carriers. Delays in customs clearance are excluded from transit times.</li></ul>`;
       
       setFormData({
-        name: '', code: '', slug: '', basePrice: 3000, advice: '', isActive: true, heroTitle: '', introHeading: '', docHeading: '', doc1Title: '', doc1Content: '', doc2Title: '', doc2Content: '', doc3Title: '', doc3Content: '', serviceHeading: '', service1Title: '', service1Content: '', service2Title: '', service2Content: '', service3Title: '', service3Content: '', service4Title: '', service4Content: '',
+        name: '', code: '', slug: '', basePrice: 3000, advice: `Customs Regulations and Duties for shipping medicine to ${dest} is now easy and hassle-free. Exporting or importing personal shipments of medicine usually doesn't require extensive customs clearance. However, if more information is needed, our experienced team will work on your behalf with customs authorities to quickly resolve any issues. If customs ask the receiver for documentation or payment of duties, our team will help coordinate to ensure smooth communication, ensuring your parcel is delivered quickly.`, isActive: true, heroTitle: '', introHeading: '', docHeading: 'Document Required to Send Medicines', doc1Title: '1. Prescription Required:', doc1Content: `<p>To courier medicines, an original or soft copy of the prescription is necessary. If you’re unable to provide the prescription, We Can Help You With This. Call / WhatsApp our medicine expert team.</p>`, doc2Title: '2. Medicine Purchase Bill required:', doc2Content: `<p>An original or soft copy of Medicine bill is required, with detailing about the medicines. If you don't have, We Can Help You With This. Call / WhatsApp our medicine Expert Team.</p>`, doc3Title: '3. Receiver ID Required:', doc3Content: `<p>We require a valid identification document for the Patient / Receiver as this is important for customs clearance in ${dest} and helps guarantee safe Delivery of your medication.</p>`, serviceHeading: 'Our Premium Services', service1Title: 'Pickup Service', service1Content: `<p>If you already have medicine with you, than We Offer a Free Pick-Up Service Across India for seamless Delivery to Any Place In ${dest}.</p>`, service2Title: 'Medicine Purchase', service2Content: `<p>Courier Medicines can purchase all type of medicine on your behalf, Including Allopathy, Homeopathy, Ayurvedic, and Patanjali products.</p>`, service3Title: 'Tracking Available', service3Content: `<p>We share live tracking for all shipments. Stay informed every step of the way !</p>`, service4Title: 'Payment Options', service4Content: `<p>We support a range of secure payment options for your convenience.</p>`,
         metaViewTitle: `Medicine Courier Service from ${origin} to ${dest}`,
         metaKeywords: `medicine courier, ${origin} to ${dest}, international courier`,
         metaDescription: `Best medicine courier from ${origin} to ${dest}.`,
         medicineCourierServices: defaultSEO, documentsNeeded: defaultDocs, servicesWeOffer: defaultServices,
-        process1: defaultProcess1, process2: defaultProcess2, faq: defaultFAQ
+        process1: defaultProcess1, process2: defaultProcess2, faq: defaultFAQ,
+        popularServicesTitle: `Most Popular Services Chosen By Customer For ${dest}`,
+        popularService1Text: `UPS - Offers extremely fast delivery timelines. Ideal for life-saving or urgent temperature-controlled medicine shipments to ${dest}.`,
+        popularService2Text: `DHL - Offers highly systematic documentation screening, ideal for typical chronic medicines like diabetes, heart, and kidney care requirements for ${dest}.`,
+        bannerTitle: `No.1 International Medicine Courier Service from India to ${dest}`,
+        bannerBullet1: `Quick Door-to-Door Delivery Service`,
+        bannerBullet2: `Live Online Package Tracking`,
+        bannerBullet3: `24x7 Responsive Customer Support`,
+        bannerBullet4: `Clear customs clearance assistance`,
+        docNote: `Note : Your documents are subject to our privacy policy, which guarantees your information is secure. We do not keep any documents after processing your order to maintain your privacy, and you will need to share them again for future orders.`,
+        customDutyHeading: `Custom Duty Rules And Regulations`,
+        customDutyDisclaimer: `Personal imports of pharmaceutical products require complete batch validation, structured commercial MSDS shipping manifests, and validation invoice checklists. Any import tax or local tariff levied at destination borders is governed by destination state custom authorities.`
       });
       setLoading(false);
       return;
@@ -105,8 +127,8 @@ export default function AdminCountryEdit() {
           basePrice: country.basePrice || 3000,
           advice: country.advice || `Customs Regulations and Duties for shipping medicine to ${dest} is now easy and hassle-free. Exporting or importing personal shipments of medicine usually doesn't require extensive customs clearance. However, if more information is needed, our experienced team will work on your behalf with customs authorities to quickly resolve any issues. If customs ask the receiver for documentation or payment of duties, our team will help coordinate to ensure smooth communication, ensuring your parcel is delivered quickly.`,
           isActive: country.isActive !== undefined ? country.isActive : true,
-          heroTitle: country.heroTitle || '',
-          introHeading: country.introHeading || '',
+          heroTitle: country.heroTitle || `Send Medicine Courier from India to ${dest}`,
+          introHeading: country.introHeading || `Welcome to Courier Medicines International Services – Top Leading International Medicine Delivery from India to ${dest}`,
           metaViewTitle: country.metaViewTitle || `Medicine Courier from India to ${dest} | Best Rates`,
           metaKeywords: country.metaKeywords || `medicine courier India, send medicine to ${dest}`,
           metaDescription: country.metaDescription || `Send medicines from India to ${dest} safely. We offer 100% custom clearance and doorstep pickup.`,
@@ -152,7 +174,18 @@ export default function AdminCountryEdit() {
           faq9Q: country.faq9Q || `Can I send homeopathic or ayurvedic medicines?`,
           faq9A: country.faq9A || `<p>Yes, you can courier Allopathic, Homeopathic, Ayurvedic, and Unani medicines. Just ensure you have a valid prescription and the original pharmacy purchase bill for smooth customs clearance.</p>`,
           faq10Q: country.faq10Q || `What happens if my package is held at customs in ${dest}?`,
-          faq10A: country.faq10A || `<p>Our logistics team ensures all paperwork is perfectly compliant before shipping. In the rare event of a customs hold, our clearance experts coordinate with the local authorities in ${dest} to resolve queries and expedite release.</p>`
+          faq10A: country.faq10A || `<p>Our logistics team ensures all paperwork is perfectly compliant before shipping. In the rare event of a customs hold, our clearance experts coordinate with the local authorities in ${dest} to resolve queries and expedite release.</p>`,
+          popularServicesTitle: country.popularServicesTitle || `Most Popular Services Chosen By Customer For ${dest}`,
+          popularService1Text: country.popularService1Text || `UPS - Offers extremely fast delivery timelines. Ideal for life-saving or urgent temperature-controlled medicine shipments to ${dest}.`,
+          popularService2Text: country.popularService2Text || `DHL - Offers highly systematic documentation screening, ideal for typical chronic medicines like diabetes, heart, and kidney care requirements for ${dest}.`,
+          bannerTitle: country.bannerTitle || `No.1 International Medicine Courier Service from India to ${dest}`,
+          bannerBullet1: country.bannerBullet1 || `Quick Door-to-Door Delivery Service`,
+          bannerBullet2: country.bannerBullet2 || `Live Online Package Tracking`,
+          bannerBullet3: country.bannerBullet3 || `24x7 Responsive Customer Support`,
+          bannerBullet4: country.bannerBullet4 || `Clear customs clearance assistance`,
+          docNote: country.docNote || `Note : Your documents are subject to our privacy policy, which guarantees your information is secure. We do not keep any documents after processing your order to maintain your privacy, and you will need to share them again for future orders.`,
+          customDutyHeading: country.customDutyHeading || `Custom Duty Rules And Regulations`,
+          customDutyDisclaimer: country.customDutyDisclaimer || `Personal imports of pharmaceutical products require complete batch validation, structured commercial MSDS shipping manifests, and validation invoice checklists. Any import tax or local tariff levied at destination borders is governed by destination state custom authorities.`
         });
         
       }
@@ -232,11 +265,6 @@ export default function AdminCountryEdit() {
     }
   };
 
-  const editorConfig = {
-    readonly: false,
-    height: 300,
-    buttons: ['bold', 'italic', 'underline', 'strikethrough', 'ul', 'ol', 'font', 'fontsize', 'paragraph', 'brush', 'align', 'link', 'image', 'video', 'table', 'undo', 'redo', 'hr']
-  };
 
   if (loading) return <div className="p-10 flex justify-center"><Loader2 className="animate-spin w-8 h-8" /></div>;
 
@@ -314,8 +342,9 @@ export default function AdminCountryEdit() {
 
           <div>
             <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Introduction / Welcome Text (SEO)</label>
-            <JoditEditor value={formData.medicineCourierServices} config={editorConfig} onBlur={newContent => handleEditorChange('medicineCourierServices', newContent)} />
+            <RichTextEditor value={formData.medicineCourierServices} onChange={newContent => handleEditorChange('medicineCourierServices', newContent)} height={300} />
           </div>
+        </div>
 
 
           <div className="bg-white p-4 rounded-xl border border-slate-200">
@@ -336,7 +365,7 @@ export default function AdminCountryEdit() {
                 </div>
                 <div>
                   <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Content (SEO text)</label>
-                  <JoditEditor value={formData.service1Content} config={editorConfig} onBlur={newContent => handleEditorChange('service1Content', newContent)} />
+                  <RichTextEditor value={formData.service1Content} onChange={newContent => handleEditorChange('service1Content', newContent)} height={300} />
                 </div>
               </div>
 
@@ -349,7 +378,7 @@ export default function AdminCountryEdit() {
                 </div>
                 <div>
                   <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Content (SEO text)</label>
-                  <JoditEditor value={formData.service2Content} config={editorConfig} onBlur={newContent => handleEditorChange('service2Content', newContent)} />
+                  <RichTextEditor value={formData.service2Content} onChange={newContent => handleEditorChange('service2Content', newContent)} height={300} />
                 </div>
               </div>
 
@@ -362,7 +391,7 @@ export default function AdminCountryEdit() {
                 </div>
                 <div>
                   <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Content (SEO text)</label>
-                  <JoditEditor value={formData.service3Content} config={editorConfig} onBlur={newContent => handleEditorChange('service3Content', newContent)} />
+                  <RichTextEditor value={formData.service3Content} onChange={newContent => handleEditorChange('service3Content', newContent)} height={300} />
                 </div>
               </div>
 
@@ -375,20 +404,14 @@ export default function AdminCountryEdit() {
                 </div>
                 <div>
                   <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Content (SEO text)</label>
-                  <JoditEditor value={formData.service4Content} config={editorConfig} onBlur={newContent => handleEditorChange('service4Content', newContent)} />
+                  <RichTextEditor value={formData.service4Content} onChange={newContent => handleEditorChange('service4Content', newContent)} height={300} />
                 </div>
               </div>
             </div>
           </div>
 
 
-          <div>
-            <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5 block">Customs Advice / Regulatory Framework</label>
-            <textarea name="advice" value={formData.advice} onChange={handleInputChange} className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 h-24 resize-none" placeholder="Enter special customs duty and pharmaceutical clearance rules required by this country..." />
-          </div>
-        </div>
-
-
+          {/* Documents Required Section */}
           <div className="bg-white p-4 rounded-xl border border-slate-200">
             <h3 className="text-sm font-bold text-slate-800 mb-4">Documents Required Section</h3>
             
@@ -407,7 +430,7 @@ export default function AdminCountryEdit() {
                 </div>
                 <div>
                   <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Content (SEO text)</label>
-                  <JoditEditor value={formData.doc1Content} config={editorConfig} onBlur={newContent => handleEditorChange('doc1Content', newContent)} />
+                  <RichTextEditor value={formData.doc1Content} onChange={newContent => handleEditorChange('doc1Content', newContent)} height={300} />
                 </div>
               </div>
 
@@ -420,7 +443,7 @@ export default function AdminCountryEdit() {
                 </div>
                 <div>
                   <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Content (SEO text)</label>
-                  <JoditEditor value={formData.doc2Content} config={editorConfig} onBlur={newContent => handleEditorChange('doc2Content', newContent)} />
+                  <RichTextEditor value={formData.doc2Content} onChange={newContent => handleEditorChange('doc2Content', newContent)} height={300} />
                 </div>
               </div>
 
@@ -433,8 +456,154 @@ export default function AdminCountryEdit() {
                 </div>
                 <div>
                   <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Content (SEO text)</label>
-                  <JoditEditor value={formData.doc3Content} config={editorConfig} onBlur={newContent => handleEditorChange('doc3Content', newContent)} />
+                  <RichTextEditor value={formData.doc3Content} onChange={newContent => handleEditorChange('doc3Content', newContent)} height={300} />
                 </div>
+              </div>
+
+              {/* Doc Note Disclaimer */}
+              <div className="p-4 bg-slate-50 rounded-lg border border-slate-100 space-y-2">
+                <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider block">Documents Note Disclaimer Text</label>
+                <textarea 
+                  name="docNote" 
+                  value={formData.docNote} 
+                  onChange={handleInputChange} 
+                  className="w-full bg-white border border-slate-200 focus:border-primary focus:outline-none p-2.5 rounded-xl text-xs font-medium text-slate-700 h-20 resize-none" 
+                  placeholder="Note : Your documents are subject to our privacy policy, which guarantees your information is secure. We do not keep any documents after processing your order to maintain your privacy..."
+                />
+              </div>
+            </div>
+          </div>
+          <div className="bg-white p-4 rounded-xl border border-slate-200 space-y-4">
+            <h3 className="text-sm font-bold text-slate-800">Custom Duty Rules & Regulations Section</h3>
+            
+            <div>
+              <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5 block">Section Main Heading</label>
+              <input 
+                type="text" 
+                name="customDutyHeading" 
+                value={formData.customDutyHeading} 
+                onChange={handleInputChange} 
+                className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700" 
+                placeholder="e.g. Custom Duty Rules And Regulations" 
+              />
+            </div>
+
+            <div>
+              <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5 block">Customs Advice / Regulatory Text</label>
+              <textarea 
+                name="advice" 
+                value={formData.advice} 
+                onChange={handleInputChange} 
+                className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none p-2.5 rounded-xl text-xs font-semibold text-slate-700 h-28 resize-none" 
+                placeholder="Enter special customs duty and pharmaceutical clearance rules required by this country..." 
+              />
+            </div>
+          </div>
+
+          {/* Popular Services Chosen CMS Section */}
+          <div className="bg-white p-4 rounded-xl border border-slate-200 space-y-4">
+            <h3 className="text-sm font-bold text-slate-800">Popular Services Chosen Section</h3>
+            
+            <div>
+              <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5 block">Section Main Heading</label>
+              <input 
+                type="text" 
+                name="popularServicesTitle" 
+                value={formData.popularServicesTitle} 
+                onChange={handleInputChange} 
+                className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700" 
+                placeholder="e.g. Most Popular Services Chosen By Customer For Australia" 
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-100 space-y-2">
+                <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider block">UPS Carrier Box Description</label>
+                <textarea 
+                  name="popularService1Text" 
+                  value={formData.popularService1Text} 
+                  onChange={handleInputChange} 
+                  className="w-full bg-white border border-slate-200 focus:border-primary focus:outline-none p-2.5 rounded-xl text-xs font-medium text-slate-700 h-24 resize-none" 
+                  placeholder="UPS - Offers extremely fast delivery timelines. Ideal for life-saving or urgent temperature-controlled medicine shipments..."
+                />
+              </div>
+
+              <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-100 space-y-2">
+                <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider block">DHL Carrier Box Description</label>
+                <textarea 
+                  name="popularService2Text" 
+                  value={formData.popularService2Text} 
+                  onChange={handleInputChange} 
+                  className="w-full bg-white border border-slate-200 focus:border-primary focus:outline-none p-2.5 rounded-xl text-xs font-medium text-slate-700 h-24 resize-none" 
+                  placeholder="DHL - Offers highly systematic documentation screening, ideal for typical chronic medicines like diabetes, heart, and kidney care requirements."
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Gradient Highlight Banner CMS Section */}
+          <div className="bg-white p-4 rounded-xl border border-slate-200 space-y-4">
+            <h3 className="text-sm font-bold text-slate-800">Highlight Banner Section</h3>
+            
+            <div>
+              <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5 block">Banner Main Title</label>
+              <input 
+                type="text" 
+                name="bannerTitle" 
+                value={formData.bannerTitle} 
+                onChange={handleInputChange} 
+                className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700" 
+                placeholder="e.g. No.1 International Medicine Courier Service from India to Australia" 
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1 block">Bullet Point 1</label>
+                <input 
+                  type="text" 
+                  name="bannerBullet1" 
+                  value={formData.bannerBullet1} 
+                  onChange={handleInputChange} 
+                  className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none px-3 py-2 rounded-xl text-xs font-semibold text-slate-700" 
+                  placeholder="e.g. Quick Door-to-Door Delivery Service" 
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1 block">Bullet Point 2</label>
+                <input 
+                  type="text" 
+                  name="bannerBullet2" 
+                  value={formData.bannerBullet2} 
+                  onChange={handleInputChange} 
+                  className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none px-3 py-2 rounded-xl text-xs font-semibold text-slate-700" 
+                  placeholder="e.g. Live Online Package Tracking" 
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1 block">Bullet Point 3</label>
+                <input 
+                  type="text" 
+                  name="bannerBullet3" 
+                  value={formData.bannerBullet3} 
+                  onChange={handleInputChange} 
+                  className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none px-3 py-2 rounded-xl text-xs font-semibold text-slate-700" 
+                  placeholder="e.g. 24x7 Responsive Customer Support" 
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1 block">Bullet Point 4</label>
+                <input 
+                  type="text" 
+                  name="bannerBullet4" 
+                  value={formData.bannerBullet4} 
+                  onChange={handleInputChange} 
+                  className="w-full bg-slate-50 border border-slate-200 focus:border-primary focus:outline-none px-3 py-2 rounded-xl text-xs font-semibold text-slate-700" 
+                  placeholder="e.g. Clear customs clearance assistance" 
+                />
               </div>
             </div>
           </div>
@@ -468,7 +637,7 @@ export default function AdminCountryEdit() {
                 </div>
                 <div>
                   <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Answer</label>
-                  <JoditEditor value={formData.faq1A} config={editorConfig} onBlur={newContent => handleEditorChange('faq1A', newContent)} />
+                  <RichTextEditor value={formData.faq1A} onChange={newContent => handleEditorChange('faq1A', newContent)} height={300} />
                 </div>
               </div>
 
@@ -481,7 +650,7 @@ export default function AdminCountryEdit() {
                 </div>
                 <div>
                   <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Answer</label>
-                  <JoditEditor value={formData.faq2A} config={editorConfig} onBlur={newContent => handleEditorChange('faq2A', newContent)} />
+                  <RichTextEditor value={formData.faq2A} onChange={newContent => handleEditorChange('faq2A', newContent)} height={300} />
                 </div>
               </div>
 
@@ -494,7 +663,7 @@ export default function AdminCountryEdit() {
                 </div>
                 <div>
                   <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Answer</label>
-                  <JoditEditor value={formData.faq3A} config={editorConfig} onBlur={newContent => handleEditorChange('faq3A', newContent)} />
+                  <RichTextEditor value={formData.faq3A} onChange={newContent => handleEditorChange('faq3A', newContent)} height={300} />
                 </div>
               </div>
 
@@ -507,7 +676,7 @@ export default function AdminCountryEdit() {
                 </div>
                 <div>
                   <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Answer</label>
-                  <JoditEditor value={formData.faq4A} config={editorConfig} onBlur={newContent => handleEditorChange('faq4A', newContent)} />
+                  <RichTextEditor value={formData.faq4A} onChange={newContent => handleEditorChange('faq4A', newContent)} height={300} />
                 </div>
               </div>
 
@@ -520,7 +689,7 @@ export default function AdminCountryEdit() {
                 </div>
                 <div>
                   <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Answer</label>
-                  <JoditEditor value={formData.faq5A} config={editorConfig} onBlur={newContent => handleEditorChange('faq5A', newContent)} />
+                  <RichTextEditor value={formData.faq5A} onChange={newContent => handleEditorChange('faq5A', newContent)} height={300} />
                 </div>
               </div>
 
@@ -533,7 +702,7 @@ export default function AdminCountryEdit() {
                 </div>
                 <div>
                   <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Answer</label>
-                  <JoditEditor value={formData.faq6A} config={editorConfig} onBlur={newContent => handleEditorChange('faq6A', newContent)} />
+                  <RichTextEditor value={formData.faq6A} onChange={newContent => handleEditorChange('faq6A', newContent)} height={300} />
                 </div>
               </div>
 
@@ -546,7 +715,7 @@ export default function AdminCountryEdit() {
                 </div>
                 <div>
                   <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Answer</label>
-                  <JoditEditor value={formData.faq7A} config={editorConfig} onBlur={newContent => handleEditorChange('faq7A', newContent)} />
+                  <RichTextEditor value={formData.faq7A} onChange={newContent => handleEditorChange('faq7A', newContent)} height={300} />
                 </div>
               </div>
 
@@ -559,7 +728,7 @@ export default function AdminCountryEdit() {
                 </div>
                 <div>
                   <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Answer</label>
-                  <JoditEditor value={formData.faq8A} config={editorConfig} onBlur={newContent => handleEditorChange('faq8A', newContent)} />
+                  <RichTextEditor value={formData.faq8A} onChange={newContent => handleEditorChange('faq8A', newContent)} height={300} />
                 </div>
               </div>
 
@@ -572,7 +741,7 @@ export default function AdminCountryEdit() {
                 </div>
                 <div>
                   <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Answer</label>
-                  <JoditEditor value={formData.faq9A} config={editorConfig} onBlur={newContent => handleEditorChange('faq9A', newContent)} />
+                  <RichTextEditor value={formData.faq9A} onChange={newContent => handleEditorChange('faq9A', newContent)} height={300} />
                 </div>
               </div>
 
@@ -585,7 +754,7 @@ export default function AdminCountryEdit() {
                 </div>
                 <div>
                   <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 block">Answer</label>
-                  <JoditEditor value={formData.faq10A} config={editorConfig} onBlur={newContent => handleEditorChange('faq10A', newContent)} />
+                  <RichTextEditor value={formData.faq10A} onChange={newContent => handleEditorChange('faq10A', newContent)} height={300} />
                 </div>
               </div>
             </div>

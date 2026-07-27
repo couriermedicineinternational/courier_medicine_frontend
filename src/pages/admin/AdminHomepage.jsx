@@ -11,7 +11,8 @@ import {
   ChevronDown,
   ChevronUp,
   Eye,
-  EyeOff
+  EyeOff,
+  Link2
 } from "lucide-react";
 import ImageUpload from "../../components/ui/ImageUpload";
 import AdminTestimonials from "./AdminTestimonials";
@@ -29,6 +30,11 @@ export default function AdminHomepage() {
   const [sortOrder, setSortOrder] = useState(0);
   const [isActive, setIsActive] = useState(true);
   const [content, setContent] = useState(null);
+  
+  // SEO Meta States
+  const [metaViewTitle, setMetaViewTitle] = useState("");
+  const [metaKeywords, setMetaKeywords] = useState("");
+  const [metaDescription, setMetaDescription] = useState("");
   
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -65,6 +71,9 @@ export default function AdminHomepage() {
       setSortOrder(section.sortOrder || 0);
       setIsActive(section.isActive !== undefined ? section.isActive : true);
       setContent(section.content || {});
+      setMetaViewTitle(section.metaViewTitle || "");
+      setMetaKeywords(section.metaKeywords || "");
+      setMetaDescription(section.metaDescription || "");
       setSaveSuccess(false);
       setSaveError("");
     }
@@ -103,7 +112,10 @@ export default function AdminHomepage() {
         subtitle,
         sortOrder,
         isActive,
-        content
+        content,
+        metaViewTitle,
+        metaKeywords,
+        metaDescription
       };
       
       const res = await api.put(`/homepage/${activeSectionKey}`, payload);
@@ -248,8 +260,28 @@ export default function AdminHomepage() {
             <h4 className="text-[10px] font-black uppercase text-slate-500 tracking-wider border-b border-slate-100 pb-2">Achievement Counters</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {(content.stats || []).map((stat, idx) => (
-                <div key={idx} className="bg-slate-50/50 border border-slate-200/50 rounded-2xl p-4 space-y-2">
-                  <span className="text-[9px] font-mono font-black text-slate-400">COUNTER BLOCK #{idx + 1}</span>
+                <div key={idx} className="bg-slate-50/50 border border-slate-200/50 rounded-2xl p-4 space-y-3 relative">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[9px] font-mono font-black text-slate-400">COUNTER BLOCK #{idx + 1}</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const stats = [...content.stats];
+                        stats[idx].isActive = stats[idx].isActive === false ? true : false;
+                        updateContentField("stats", stats);
+                      }}
+                      className={`p-1.5 rounded-xl border transition-all flex items-center gap-1.5 text-[10px] font-bold ${
+                        stat.isActive !== false
+                          ? "bg-emerald-50 text-emerald-600 border-emerald-200 hover:bg-emerald-100"
+                          : "bg-slate-200/60 text-slate-500 border-slate-300 hover:bg-slate-200"
+                      }`}
+                      title={stat.isActive !== false ? "Card Active (Visible on site)" : "Card Inactive (Hidden from site)"}
+                    >
+                      {stat.isActive !== false ? <Eye size={12} /> : <EyeOff size={12} />}
+                      <span>{stat.isActive !== false ? "Visible" : "Hidden"}</span>
+                    </button>
+                  </div>
+
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
                       <label className="text-[9px] font-extrabold text-slate-500 uppercase">Value</label>
@@ -281,6 +313,7 @@ export default function AdminHomepage() {
                       />
                     </div>
                   </div>
+
                   <div className="space-y-1">
                     <label className="text-[9px] font-extrabold text-slate-500 uppercase">Label / Description</label>
                     <input
@@ -294,6 +327,23 @@ export default function AdminHomepage() {
                       className="w-full bg-white border border-slate-200 focus:border-primary focus:outline-none px-3 py-2 rounded-xl text-xs font-semibold"
                       placeholder="e.g. Global Customers"
                       required
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[9px] font-extrabold text-slate-500 uppercase flex items-center gap-1">
+                      <Link2 size={11} className="text-primary" /> Target Link URL (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      value={stat.link || ""}
+                      onChange={(e) => {
+                        const stats = [...content.stats];
+                        stats[idx].link = e.target.value;
+                        updateContentField("stats", stats);
+                      }}
+                      className="w-full bg-white border border-slate-200 focus:border-primary focus:outline-none px-3 py-2 rounded-xl text-xs font-semibold text-primary"
+                      placeholder="e.g. https://... or /locations.php"
                     />
                   </div>
                 </div>
@@ -617,11 +667,10 @@ export default function AdminHomepage() {
             </div>
           ) : (
             sections.map((sec) => (
-              <button
+              <div
                 key={sec.key}
-                type="button"
                 onClick={() => handleSelectSection(sec.key)}
-                className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-left transition-all ${
+                className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-left transition-all cursor-pointer ${
                   activeSectionKey === sec.key 
                     ? "bg-primary text-white shadow-sm" 
                     : "text-slate-700 hover:bg-slate-50"
@@ -648,7 +697,7 @@ export default function AdminHomepage() {
                     {sec.isActive ? <Eye size={13} /> : <EyeOff size={13} />}
                   </button>
                 </div>
-              </button>
+              </div>
             ))
           )}
         </div>
@@ -741,6 +790,48 @@ export default function AdminHomepage() {
                   <label htmlFor="section-is-active" className="text-xs font-bold text-slate-700">
                     Render this section dynamically on public homepage
                   </label>
+                </div>
+
+                {/* Page SEO Meta Settings */}
+                <div className="p-4 space-y-3 bg-slate-50/70 rounded-2xl border border-slate-200/60 mt-3">
+                  <div className="flex items-center gap-2 pb-1 border-b border-slate-200/60">
+                    <Search size={14} className="text-primary" />
+                    <span className="text-[10px] font-black uppercase text-slate-600 tracking-wider">Homepage SEO Meta Settings</span>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Meta Title (Browser Tab Heading)</label>
+                      <input
+                        type="text"
+                        value={metaViewTitle}
+                        onChange={(e) => setMetaViewTitle(e.target.value)}
+                        className="w-full bg-white border border-slate-200 focus:border-primary focus:outline-none px-3 py-2 rounded-xl text-xs font-bold text-slate-800"
+                        placeholder="e.g. Courier Medicine - Send Medicines Worldwide"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Meta Description</label>
+                      <textarea
+                        value={metaDescription}
+                        onChange={(e) => setMetaDescription(e.target.value)}
+                        className="w-full bg-white border border-slate-200 focus:border-primary focus:outline-none px-3 py-2 rounded-xl text-xs font-medium text-slate-700 h-16 resize-none"
+                        placeholder="Enter meta description for search engine results..."
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Meta Keywords (Comma Separated)</label>
+                      <input
+                        type="text"
+                        value={metaKeywords}
+                        onChange={(e) => setMetaKeywords(e.target.value)}
+                        className="w-full bg-white border border-slate-200 focus:border-primary focus:outline-none px-3 py-2 rounded-xl text-xs font-semibold text-slate-800"
+                        placeholder="e.g. medicine courier, send medicines, international medicine shipping"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
 

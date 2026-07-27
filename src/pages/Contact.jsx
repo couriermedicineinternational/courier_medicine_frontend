@@ -9,6 +9,7 @@ import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
 import { COUNTRY_CALLING_CODES } from "../constants/countryCodes";
 import api from "../utils/api";
+import { applyPageSEO } from "../utils/seo";
 
 const DEFAULT_SECTIONS = [
   {
@@ -70,6 +71,20 @@ export default function Contact() {
         setIsLoading(false);
       });
   }, []);
+
+  useEffect(() => {
+    const seoSec = sections.find(s => s.metaViewTitle || s.metaDescription || s.metaKeywords) || sections[0];
+    if (seoSec) {
+      applyPageSEO(
+        seoSec.metaViewTitle,
+        seoSec.metaDescription,
+        seoSec.metaKeywords,
+        "Contact Us - Courier Medicine International",
+        "Get in touch with Courier Medicine team for international medicine courier, custom clearance, rates, and tracking inquiries.",
+        "contact courier medicine, medicine courier phone number, courier medicine office Delhi"
+      );
+    }
+  }, [sections]);
 
   const getSection = (key) => {
     const sec = sections.find(s => s.key === key);

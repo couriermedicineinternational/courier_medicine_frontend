@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import DOMPurify from "dompurify";
 import api from "../utils/api";
+import { applyPageSEO } from "../utils/seo";
 import { BLOG_PAGE } from "../constants";
 import { Calendar, User, Clock, ArrowRight, ArrowLeft, BookOpen, CheckCircle, AlertCircle, Lightbulb, Tag } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
@@ -70,6 +71,28 @@ export default function Blog() {
     };
     fetchBlogsAndHeader();
   }, [page, blogIdFromUrl]);
+
+  useEffect(() => {
+    if (selectedPost) {
+      applyPageSEO(
+        selectedPost.title ? `${selectedPost.title} - Blog` : "",
+        selectedPost.excerpt || selectedPost.metaDescription || "",
+        (selectedPost.tags || []).join(", "),
+        selectedPost.title || "Blog Article - Courier Medicine",
+        selectedPost.excerpt || "Read our latest article on international medicine shipping regulations.",
+        "medicine courier blog, medicine shipping guide"
+      );
+    } else if (headerData) {
+      applyPageSEO(
+        headerData.metaViewTitle,
+        headerData.metaDescription,
+        headerData.metaKeywords,
+        "Our Blog - Regulations & Updates | Courier Medicine",
+        "Read regulations, updates, shipping schedules, and critical logistics advisories for international prescription medicine parcels.",
+        "medicine courier blog, international medicine news, shipping guidelines"
+      );
+    }
+  }, [selectedPost, headerData]);
 
   // When opening/closing a post, scroll to top & update URL
   const openPost = async (post) => {

@@ -206,38 +206,41 @@ export default function PopularCountries() {
                   : `India To ${country.name} Medicine Courier Charges`;
 
                 return (
-                  <motion.button
+                  <Link
                     id={`country-card-${country.code.toLowerCase()}`}
                     key={country.code}
-                    variants={cardVariants}
-                    initial="hidden"
-                    whileInView="show"
-                    viewport={{ once: true, amount: 0.15 }}
-                    whileHover={{ 
-                      y: -4, 
-                      scale: 1.01,
-                      boxShadow: "0 10px 20px -5px rgba(0, 82, 204, 0.08), 0 8px 10px -6px rgba(0, 82, 204, 0.05)",
-                      borderColor: "rgba(0, 82, 204, 0.2)"
-                    }}
-                    whileTap={{ scale: 0.985 }}
-                    onClick={() => navigate(`/${country.slug}`)}
-                    className="w-full text-left bg-gradient-to-br from-white via-white to-slate-50/30 border border-slate-200/80 rounded-xl p-4 md:p-5 font-bold text-xs md:text-sm relative overflow-hidden group cursor-pointer"
+                    to={`/${country.slug}`}
+                    className="block w-full text-left bg-gradient-to-br from-white via-white to-slate-50/30 border border-slate-200/80 rounded-xl p-4 md:p-5 font-bold text-xs md:text-sm relative overflow-hidden group cursor-pointer"
                   >
-                    {/* Bottom accent highlight line on hover */}
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-secondary to-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-350 origin-left" />
-                    
-                    <div className="flex items-center justify-between gap-4">
-                      <span className="text-[#0052CC] group-hover:text-primary transition-colors duration-300 font-sans tracking-wide leading-snug">
-                        {displayTitle}
-                      </span>
-                      <span className="bg-slate-50 group-hover:bg-[#0052CC]/10 text-slate-400 group-hover:text-[#0052CC] p-1.5 rounded-full transition-all duration-300 shrink-0">
-                        <ArrowUpRight 
-                          size={14} 
-                          className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" 
-                        />
-                      </span>
-                    </div>
-                  </motion.button>
+                    <motion.div
+                      variants={cardVariants}
+                      initial="hidden"
+                      whileInView="show"
+                      viewport={{ once: true, amount: 0.15 }}
+                      whileHover={{ 
+                        y: -4, 
+                        scale: 1.01,
+                        boxShadow: "0 10px 20px -5px rgba(0, 82, 204, 0.08), 0 8px 10px -6px rgba(0, 82, 204, 0.05)",
+                        borderColor: "rgba(0, 82, 204, 0.2)"
+                      }}
+                      whileTap={{ scale: 0.985 }}
+                    >
+                      {/* Bottom accent highlight line on hover */}
+                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-secondary to-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-350 origin-left" />
+                      
+                      <div className="flex items-center justify-between gap-4">
+                        <span className="text-[#0052CC] group-hover:text-primary transition-colors duration-300 font-sans tracking-wide leading-snug">
+                          {displayTitle}
+                        </span>
+                        <span className="bg-slate-50 group-hover:bg-[#0052CC]/10 text-slate-400 group-hover:text-[#0052CC] p-1.5 rounded-full transition-all duration-300 shrink-0">
+                          <ArrowUpRight 
+                            size={14} 
+                            className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" 
+                          />
+                        </span>
+                      </div>
+                    </motion.div>
+                  </Link>
                 );
               })}
             </motion.div>
